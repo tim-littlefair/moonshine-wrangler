@@ -88,3 +88,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+### Project-specific items begin here
+
+# This project expects to use a virtual environment in the following directory
+.venv3
+
+# The _work directory will contain artifacts we do not want in version control
+_work
+
