@@ -8,7 +8,7 @@
 # unless a virtual environment has been activated
 # in the project directory before the 'make' command
 
-.PHONY: init clean test .venv_reminder test
+.PHONY: init clean test check .venv_reminder test
 
 init: .venv3
 	pip install -r requirements.txt || make .venv_reminder
@@ -18,10 +18,15 @@ init: .venv3
 	make .venv_reminder
 
 test:
-	nosetests tests
+	pytest tests
+	make check
 
 clean:
 	rm -rf .venv3
+
+check:
+	flake8 moonshinewrangler
+	pycodestyle moonshinewrangler
 
 .venv_reminder:
 	echo Please run 'source .venv3/bin/activate' before attempting to run 'make'
