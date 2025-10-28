@@ -1,4 +1,7 @@
+# Direct dependencies of this library 
+# please keep in alphabetical order
 flake8
 pycodestyle
 pytest
+requests
 sphinx
