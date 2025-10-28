@@ -8,6 +8,7 @@
 
 import os
 import requests
+import subprocess
 
 _REFERENCE_FILE_URLS = (
     # The following URLs are for Wayback Machine/archive.org saves of files published by FMIC
@@ -44,5 +45,26 @@ def get_reference_files(target_dir):
         print(f"{save_path} saved")
 
 
+def _extract_strings_from_file_in_dmg(dmg_path, file_entry_path):
+    cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}' | /usr/bin/strings"
+    sp_result = subprocess.run(cmd, shell=True, capture_output=True)
+    # print(sp_result)
+    return str(sp_result.stdout, "UTF-8").split("\n")
+
+
+def find_fender_lt_json_snippets():
+    fender_lt_json_snippets = [
+        line
+        for line in _extract_strings_from_file_in_dmg(
+            "_work/reference_files/Fender%20Tone.dmg",
+            "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
+        )
+        if "nodeType" in line
+    ]
+    print(f"{len(fender_lt_json_snippets)} possible JSON snippets found in Fender Tone DMG file")
+    return fender_lt_json_snippets
+
+
 if __name__ == "__main__":
     get_reference_files("_work/reference_files")
+    find_fender_lt_json_snippets()
