@@ -12,13 +12,13 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='sample',
+    name='moonshinewrangler',
     version='0.1.0',
-    description='Sample package for Python-Guide.org',
+    description='Python serialization library for formats used for Fender Mustang modelling guitar amplifier presets',
     long_description=readme,
-    author='Kenneth Reitz',
-    author_email='me@kennethreitz.com',
-    url='https://github.com/kennethreitz/samplemod',
+    author='Tim Littlefair',
+    author_email=' 5130151+tim-littlefair@users.noreply.github.com',
+    url='https://github.com/tim-littlefair/moonshine-wrangler',
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
 )

@@ -1,10 +1,7 @@
-Sample Module Repository
-========================
+moonshine-wrangler
+==================
 
-This simple project is an example repo for Python projects.
+Based on Kenneth Reitz's 'samplemod' sample module project.
 
-`Learn more <http://www.kennethreitz.org/essays/repository-structure-and-python>`_.
+`Learn more <https://kennethreitz.org/essays/2013-01-repository_structure_and_python>`_.
 
----------------
-
-If you want to learn more about ``setup.py`` files, check out `this repository <https://github.com/kennethreitz/setup.py>`_.
