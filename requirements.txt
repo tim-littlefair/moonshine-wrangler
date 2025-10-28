@@ -1,2 +1,4 @@
-nose
+flake8
+pycodestyle
+pytest
 sphinx
