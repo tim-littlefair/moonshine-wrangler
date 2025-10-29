@@ -45,26 +45,55 @@ def get_reference_files(target_dir):
         print(f"{save_path} saved")
 
 
-def _extract_strings_from_file_in_dmg(dmg_path, file_entry_path):
-    cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}' | /usr/bin/strings"
-    sp_result = subprocess.run(cmd, shell=True, capture_output=True)
-    # print(sp_result)
+def _extract_file_bytes_from_dmg(dmg_path, file_entry_path):
+    extract_cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}'"
+    sp_result = subprocess.run(extract_cmd, shell=True, capture_output=True)
+    assert sp_result.returncode == 0
+    return sp_result.stdout
+
+
+def _extract_strings_from_file_bytes(file_bytes):
+    extract_cmd = "/usr/bin/strings"
+    sp_result = subprocess.run(
+        extract_cmd, shell=True, capture_output=True,
+        input=file_bytes
+    )
+    assert sp_result.returncode == 0
     return str(sp_result.stdout, "UTF-8").split("\n")
 
 
 def find_fender_lt_json_snippets():
+    fender_tone_macos_executable_bytes = _extract_file_bytes_from_dmg(
+        "_work/reference_files/Fender%20Tone.dmg",
+        "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
+    )
+    fender_tone_macos_executable_strings = _extract_strings_from_file_bytes(
+        fender_tone_macos_executable_bytes
+    )
     fender_lt_json_snippets = [
         line
-        for line in _extract_strings_from_file_in_dmg(
-            "_work/reference_files/Fender%20Tone.dmg",
-            "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
-        )
+        for line in fender_tone_macos_executable_strings
         if "nodeType" in line
     ]
     print(f"{len(fender_lt_json_snippets)} possible JSON snippets found in Fender Tone DMG file")
     return fender_lt_json_snippets
 
 
+def extract_fender_fuse_exe():
+    pax_archive_bytes = _extract_file_bytes_from_dmg(
+        "_work/reference_files/FenderFUSE_FULL_2.7.1.dmg",
+        "Fender FUSE Installer/Fender FUSE Installer.app/Contents/Resources/Fender FUSE.pkg/Contents/Resources/Fender FUSE.pax.gz"
+    )
+    pax_cmd = "/usr/bin/pax -z | grep -i -E '.exe$'"
+    sp_result = subprocess.run(pax_cmd, shell=True, stdin=pax_archive_bytes, capture_output=True)
+    assert sp_result.returncode == 0
+    print(str(sp_result.stdout, "UTF-8"))
+
+
+def find_fender_fuse_xml_db():
+    pass
+
+
 if __name__ == "__main__":
-    get_reference_files("_work/reference_files")
+    # get_reference_files("_work/reference_files")
     find_fender_lt_json_snippets()
