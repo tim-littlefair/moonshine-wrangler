@@ -6,9 +6,17 @@
 # library which, for copyright and other reasons, we prefer not
 # to store in version control.
 
+import hashlib
+import json
 import os
 import requests
 import subprocess
+
+
+def _filter_name_chars(s):
+    s = s.replace(" ", "_")
+    return "".join([char for char in s if char.isalnum() or char == "_"])
+
 
 _REFERENCE_FILE_URLS = (
     # The following URLs are for Wayback Machine/archive.org saves of files published by FMIC
@@ -62,7 +70,7 @@ def _extract_strings_from_file_bytes(file_bytes):
     return str(sp_result.stdout, "UTF-8").split("\n")
 
 
-def find_fender_lt_json_snippets():
+def find_fender_lt_json_snippets(tone_lt_dir):
     fender_tone_macos_executable_bytes = _extract_file_bytes_from_dmg(
         "_work/reference_files/Fender%20Tone.dmg",
         "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
@@ -70,12 +78,44 @@ def find_fender_lt_json_snippets():
     fender_tone_macos_executable_strings = _extract_strings_from_file_bytes(
         fender_tone_macos_executable_bytes
     )
-    fender_lt_json_snippets = [
-        line
-        for line in fender_tone_macos_executable_strings
-        if "nodeType" in line
-    ]
-    return fender_lt_json_snippets
+    json_dict_objects = {}
+    candidate_lineno = 0
+    for candidate_text in fender_tone_macos_executable_strings[1694300:]:
+        try:
+            candidate_lineno += 1
+            candidate_dict = json.loads(candidate_text)
+            if not isinstance(candidate_dict, dict):
+                # The line of text was decodeable as JSON but did not
+                # deserialize to a dictionary
+                # Expected for integers, floats and strings which match
+                # JSON constants like null, true, false
+                continue
+            candidate_pretty_json = json.dumps(candidate_dict, indent=4, sort_keys=True)
+            candidate_pretty_hash = hashlib.sha256(candidate_pretty_json.encode("utf-8")).hexdigest()[0:7]
+            if candidate_pretty_hash not in json_dict_objects.keys():
+                # First occurrence of a particular pattern has been seen
+                node_type = candidate_dict.get("nodeType", "unknown_node_type")
+                if node_type == "dspUnit":
+                    node_type = candidate_dict.get("info", {}).get("subcategory", "unknown_dsp_unit_type")
+                node_name = _filter_name_chars(
+                    candidate_dict.get("info", {}).get("displayName", "unknown_name")
+                )
+                candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
+                json_dict_objects[candidate_pretty_hash] = [
+                    candidate_fname, candidate_pretty_json, [str(candidate_lineno),]
+                ]
+            else:
+                # Second or later occurrence of a particular pattern has been seen
+                json_dict_objects[candidate_pretty_hash][2] += [str(candidate_lineno),]
+        except json.decoder.JSONDecodeError:
+            # print(candidate_text)
+            continue
+    # All snippets have been processed - dump the valid ones
+    os.makedirs(tone_lt_dir, exist_ok=True)
+    for fname, text, lines in sorted(json_dict_objects.values()):
+        line_list = ", ".join(lines)
+        open(os.path.join(tone_lt_dir, fname), "wt").write(text)
+        print(f"{fname} found at line(s): {line_list}")
 
 
 def extract_fender_fuse_exe_strings():
@@ -96,7 +136,7 @@ def extract_fender_fuse_exe_strings():
         input=pax_archive_bytes
     )
     assert sp_result.returncode == 0
-    return str(sp_result.stdout, "UTF-8").split("\n")
+    return str(sp_result.stdout).split("\n")
 
 
 def extract_fender_fuse_db_xml(fuse_xml_path):
@@ -136,5 +176,5 @@ def extract_fender_fuse_db_xml(fuse_xml_path):
 
 if __name__ == "__main__":
     get_reference_files("_work/reference_files")
-    find_fender_lt_json_snippets()
+    find_fender_lt_json_snippets("_work/tone_lt_data")
     extract_fender_fuse_db_xml("_work/fuse_data/mustang_I_II_V2_range.xml")
