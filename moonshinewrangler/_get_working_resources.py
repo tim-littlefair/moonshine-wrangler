@@ -75,25 +75,66 @@ def find_fender_lt_json_snippets():
         for line in fender_tone_macos_executable_strings
         if "nodeType" in line
     ]
-    print(f"{len(fender_lt_json_snippets)} possible JSON snippets found in Fender Tone DMG file")
     return fender_lt_json_snippets
 
 
-def extract_fender_fuse_exe():
+def extract_fender_fuse_exe_strings():
     pax_archive_bytes = _extract_file_bytes_from_dmg(
         "_work/reference_files/FenderFUSE_FULL_2.7.1.dmg",
-        "Fender FUSE Installer/Fender FUSE Installer.app/Contents/Resources/Fender FUSE.pkg/Contents/Resources/Fender FUSE.pax.gz"
+        "Fender FUSE Installer/Fender FUSE Installer.app/Contents/Resources/Fender FUSE.pkg/Contents/Archive.pax.gz"
     )
-    pax_cmd = "/usr/bin/pax -z | grep -i -E '.exe$'"
-    sp_result = subprocess.run(pax_cmd, shell=True, stdin=pax_archive_bytes, capture_output=True)
+    # fuse_exe_path_within_pax = "./Applications/Fender FUSE.app/Contents/Resources/FenderFUSE.app/Contents/Resources/FenderFUSE.exe"
+    # The output of pax_cmd is actually a pax archive,
+    # but the only file it contains is the FUSE
+    # (Windows/Mono/Silverlight) executable so
+    # we run strings on it as if it were the bare executable
+    # pax_cmd = f"/usr/bin/gzip -d | /usr/bin/pax -r -w {fuse_exe_path_within_pax} | /usr/bin/strings"
+    # pax_cmd = f"/usr/bin/gzip -d | /usr/bin/pax -r '{fuse_exe_path_within_pax}' -w -x tar -o write_opt=nodir | /usr/bin/strings"
+    pax_cmd = "/usr/bin/gzip -d | /usr/bin/strings"
+    sp_result = subprocess.run(
+        pax_cmd, shell=True, capture_output=True,
+        input=pax_archive_bytes
+    )
     assert sp_result.returncode == 0
-    print(str(sp_result.stdout, "UTF-8"))
+    return str(sp_result.stdout, "UTF-8").split("\n")
 
 
-def find_fender_fuse_xml_db():
-    pass
+def extract_fender_fuse_db_xml(fuse_xml_path):
+    fuse_exe_strings = extract_fender_fuse_exe_strings()
+    fuse_fx_db_lines = []
+    # The executable inside the archive contains an XML stream with
+    # root element with tag <FXDataBase>.
+    # Inside the root element there are multiple elements with tag <Product>,
+    # each of which contains the parameters applicable for a single
+    # product or group of products supported by the application.
+    # We choose to preserve only one <Product> element, the one
+    # associated with name "Mustang V2 I/II".
+    line_array_index = 0
+    preserve_lines = False
+    while line_array_index < len(fuse_exe_strings):
+        line = fuse_exe_strings[line_array_index]
+        if "</FXDataBase>" in line:
+            fuse_fx_db_lines += [line, '']
+            break
+        elif preserve_lines is True:
+            fuse_fx_db_lines += [line]
+            if '</Product>' in line:
+                preserve_lines = False
+        if line.startswith("<FXDataBase "):
+            previous_line = fuse_exe_strings[line_array_index-1]
+            assert '<?xml version="1.0" encoding="utf-8"?>' in previous_line
+            fuse_fx_db_lines += [previous_line, line]
+        elif '<Product Name="Mustang V2 I/II" ID="13">' in line:
+            fuse_fx_db_lines += [line]
+            preserve_lines = True
+        line_array_index += 1
+    fuse_db_xml = "\n".join(fuse_fx_db_lines)
+    os.makedirs(os.path.dirname(fuse_xml_path), exist_ok=True)
+    open(fuse_xml_path, "wt").write(fuse_db_xml)
+    print(f"Fender FUSE database for Mustang V2 I/II extracted to {fuse_xml_path}")
 
 
 if __name__ == "__main__":
-    # get_reference_files("_work/reference_files")
+    get_reference_files("_work/reference_files")
     find_fender_lt_json_snippets()
+    extract_fender_fuse_db_xml("_work/fuse_data/mustang_I_II_V2_range.xml")
