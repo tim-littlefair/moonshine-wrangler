@@ -24,7 +24,7 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
     )
     json_dict_objects = {}
     candidate_lineno = 0
-    for candidate_text in fender_tone_macos_executable_strings[1694300:]:
+    for candidate_text in fender_tone_macos_executable_strings:
         try:
             candidate_lineno += 1
             candidate_dict = json.loads(candidate_text)
