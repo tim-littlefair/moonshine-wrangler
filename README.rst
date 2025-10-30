@@ -1,9 +1,6 @@
 moonshine-wrangler
 ==================
 
-Based on the 'samplemod' sample module project discussed by Kenneth Reitz.
-
-`Learn more <https://kennethreitz.org/essays/2013-01-repository_structure_and_python>`_.
 
 Meaning of the project name
 ---------------------------
@@ -56,9 +53,33 @@ This project will attempt to follow PEP-8 with the following exception:
   characters or less.
   Longer lines may be tolerated for appropriately strong reasons (e.g. URLs)
 
+PEP-8 does not make a recommendation in relation to usage of single- and double-
+quote characters around strings, but does contain an exhortation to make a rule
+and stick to it.
+
+As a former C/C++ programmer, I prefer to use double-quotes to enclose
+strings in Python as this matches the meaning of the character in C/C++, 
+and single-quotes have a different meaning in those languages.  I will 
+use single-quotes where required to enclose a string containing double-quotes,
+and I may also use them for other reasons (for example if I am re-using 
+a snippet of code copied from a Stack Overflow answer or other outside 
+source).  Where a group of string constants appear together (e.g. in 
+an array or as keys, or values in a dictionary structure), and some
+strings need single-quotes and others don't, I will use my own judgement
+to decide whether to prefer double-quotes where single-quotes are not 
+required or whether to be consistent across the structure.
+
+PEP-8 mandates that strings surrounded by 3 quote characters should always
+use double-quotes, that mandate will be enforced.
+
 At the time of writing, requirements.txt makes both pycodestyle and flake8 
 available for style enforcement.  A decision will be made at some later
 time in relation to whether one of these or some other tool is used as 
 the primary enforcement method.
 
+Credits
+-------
 
+The directory layout for this project is based on the 'samplemod' sample module project discussed by Kenneth Reitz.
+
+`Learn more <https://kennethreitz.org/essays/2013-01-repository_structure_and_python>`_.
