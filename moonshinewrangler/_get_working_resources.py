@@ -46,14 +46,14 @@ def get_reference_files(target_dir):
         print(f"{save_path} saved")
 
 
-def _extract_file_bytes_from_dmg(dmg_path, file_entry_path):
+def extract_file_bytes_from_dmg(dmg_path, file_entry_path):
     extract_cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}'"
     sp_result = subprocess.run(extract_cmd, shell=True, capture_output=True)
     assert sp_result.returncode == 0
     return sp_result.stdout
 
 
-def _extract_strings_from_file_bytes(file_bytes):
+def extract_strings_from_file_bytes(file_bytes):
     extract_cmd = "/usr/bin/strings"
     sp_result = subprocess.run(
         extract_cmd, shell=True, capture_output=True,
@@ -63,7 +63,7 @@ def _extract_strings_from_file_bytes(file_bytes):
     return str(sp_result.stdout, "UTF-8").split("\n")
 
 
-def _filter_name_chars(s):
+def filter_name_chars(s):
     s = s.replace(" ", "_")
     return "".join([char for char in s if char.isalnum() or char == "_"])
 
