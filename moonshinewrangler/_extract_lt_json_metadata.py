@@ -13,8 +13,53 @@ import sys
 
 import _get_working_resources as _GWR
 
+from _lt40s_names import MODULE_NAMES
 
-def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
+
+def get_node_type_and_name(candidate_dict):
+    node_type = candidate_dict.get("nodeType", "module_list")
+    if node_type == "dspUnit":
+        node_type = candidate_dict.get("info", {}).get("subcategory", "unknown_dsp_unit_type")
+
+    node_name = "invalid"
+    try:
+        if node_type == "module_list":
+            node_name = candidate_dict["productFamily"]
+        elif node_type == "preset":
+            node_name = _GWR.filter_name_chars(candidate_dict["info"]["displayName"])
+        else:
+            # presumably an amp, effect or a utility
+            node_name = candidate_dict["FenderId"]
+
+            if candidate_dict["info"]["displayName"] not in MODULE_NAMES:
+                # displayName not recognized (presently using LT40S names only).
+                # Reject this item.
+                return None
+
+            # Many or all of these are rendered in two similar but slightly
+            # different JSON structures, with one variant having
+            # attributes at ui.uiParameters[*].remap.format, the other
+            # missing the .format attribute (but sometimes having more
+            # entries under ui.uiParameters[]).
+            # By inspection of info.displayName values I believe that the files
+            # which will be activated for LT40S are those with the .format
+            # attribute.
+            # As I intend to use this attribute, I will only accept
+            # files where this attribute is present.
+            # TODO: Does this cause a problem for LT25, LT50, Rumble LT25 models?
+            ui_params = candidate_dict["ui"].get("uiParameters", [])
+            if len(ui_params) > 0 and "format" not in ui_params[0]["remap"].keys():
+                return None
+        return node_type, node_name
+    except KeyError:
+        print(
+            f"Unable to derive name for node of type {node_type} with keys [{','.join(candidate_dict.keys())}]",
+            file=sys.stderr
+        )
+        return None
+
+
+def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
     fender_tone_macos_executable_bytes = _GWR.extract_file_bytes_from_dmg(
         "_work/reference_files/Fender%20Tone.dmg",
         "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
@@ -24,6 +69,8 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
     )
     json_dict_objects = {}
     candidate_lineno = 0
+    product_module_json_text = None
+
     for candidate_text in fender_tone_macos_executable_strings:
         try:
             candidate_lineno += 1
@@ -37,6 +84,25 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
             if len(candidate_dict.keys()) == 0:
                 # There are a few empty dictionaries, clearly these
                 # are not interesting
+                continue
+            node_type_and_name = get_node_type_and_name(candidate_dict)
+            if node_type_and_name is None:
+                continue
+            node_type, node_name = node_type_and_name
+
+            if node_name == product_family_name:
+                assert node_type == "module_list"
+                # This file contains a lists of the amp and effect modules
+                # available on the selected family
+                product_module_json_text = candidate_text
+                # Reset the line number to zero to reprocess all
+                # lines already checked
+            elif product_module_json_text is None:
+                # We haven't seen the module_list node yet so
+                # we don't know which effects to preserve and
+                # which to ignore.
+                # Ignore for now, this line will be processed again after
+                # the module list is seen and the line number is reset.
                 continue
 
             # The extracted data contains quite a few records which are not
@@ -70,33 +136,15 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
 
                 # First occurrence of a particular canonical JSON text has been seen
 
-                node_type = candidate_dict.get("nodeType", "module_list")
-                if node_type == "dspUnit":
-                    node_type = candidate_dict.get("info", {}).get("subcategory", "unknown_dsp_unit_type")
-
-                node_name = "invalid"
-                try:
-                    if node_type == "module_list":
-                        node_name = candidate_dict["productFamily"]
-                    elif node_type == "preset":
-                        node_name = _GWR.filter_name_chars(candidate_dict["info"]["displayName"])
-                    else:
-                        # presumably an effect or a utility
-                        node_name = candidate_dict["FenderId"]
-                except KeyError:
-                    print(
-                        f"Unable to derive name for node of type {node_type} with keys [{','.join(candidate_dict.keys())}]",
-                        file=sys.stderr
-                    )
-                    continue
-
                 # The LT data captured includes metadata associated with the
                 # Fender Rumble LT25 as well as the Mustang LT25/LT40S/LT50
                 # amps.
-                # We use the filter_string parameter to restrict the data
+                # We use the product_family_name parameter to restrict the data
                 # captured to one family or the other so that we have
                 # less data to plough through.
-                if node_type == "preset" and filter_string not in candidate_text:
+                if node_type == "preset" and product_family_name not in candidate_text:
+                    continue
+                elif node_name not in product_module_json_text:
                     continue
 
                 candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
@@ -107,7 +155,6 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
                 # Second or later occurrence of a particular pattern has been seen
                 json_dict_objects[candidate_pretty_hash][2] += [str(candidate_lineno),]
         except json.decoder.JSONDecodeError:
-            # print(candidate_text)
             continue
     # All snippets have been processed - dump the valid ones
     os.makedirs(tone_lt_dir, exist_ok=True)
@@ -119,4 +166,4 @@ def find_fender_lt_json_snippets(tone_lt_dir, filter_string):
 
 if __name__ == "__main__":
     find_fender_lt_json_snippets("_work/tone_mustang_lt_data", "mustang")
-    # find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")
+    find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")

@@ -1,0 +1,72 @@
+#! python
+# _lt40s_names.py
+
+# WIP:
+# Presently this file contains all names returned by the command
+# grep -h -E '^        "displayName"' _work/tone_mustang_lt_data/*.json | sort | uniq > moonshinewrangler/_lt40s_names.py
+# with names which have manually been checked against the LT40S manual and found not present commented out.
+# The only names checked so far have been those for which duplicate module json files are being exported.
+
+# TODO: Replace this with a mechanism which can be aware of which LT- series device is of interest
+
+MODULE_NAMES = [
+    "50S TWIN",
+    "5 BAND EQ",
+    "5-BAND EQ",
+    "60S UK CLEAN",
+    "70S ROCK",
+    "70S UK CLEAN",
+    "80S ROCK",
+    "90S ROCK",
+    "ALT METAL",
+    # "ANGRY BRIT",
+    "ARENA",
+    "BASSMAN",
+    "BIG FUZZ",
+    "BLUES DRIVE",
+    "BURN",
+    "CHAMPION",
+    "CHORUS",
+    "Chorus Triangle",
+    "DELAY",
+    "DELUXE CLN",
+    "DELUXE DIRT",
+    "DOOM METAL",
+    "ECHO",
+    "EMPTY",
+    "EQ5 Graphic",
+    "EXCELSIOR",
+    "FLANGER",
+    "FUZZ",
+    "HALL RVRB",
+    "LARGE HALL",
+    "METAL 2000",
+    "Metal Gate",
+    "METAL GATE",
+    "MYTHIC DRIVE",
+    "OCTOBOT",
+    "OVERDRIVE",
+    "Pass Thru",
+    "PHASER",
+    "PLATE",
+    "PRINCETON",
+    "REVERSE",
+    "ROCK DIRT",
+    "ROOM RVRB",
+    "Sine Tremolo",
+    "SMALL ROOM",
+    "SMALLTONE",
+    "SPRING 65",
+    "STEP FILTER",
+    "SUPER CLEAN",
+    "SUPER HEAVY",
+    "Sustain",
+    "SUSTAIN",
+    "TOUCH WAH",
+    "TREMOLO",
+    "Triangle Flanger",
+    "TWIN CLEAN",
+    "VariFuzz",
+    "Vibratone",
+    "VIBRATONE",
+]
