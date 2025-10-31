@@ -33,6 +33,7 @@
 # TODO: This comment probably needs to be somewhere other than in a Python
 # source file.
 
+import copy
 import hashlib
 import json
 import os
@@ -41,7 +42,74 @@ import sys
 import _get_working_resources as _GWR
 
 
-def get_node_type_and_name(candidate_dict):
+def _make_preset_canonical(candidate_dict):
+    # This function assumes and asserts that the audio chain is either
+    # stomp-mod-amp-reverb-delay (for Mustang LT- 25, 40S, 50 and MMP) or
+    # stomp-mod-amp-eq-delay (for Rumble LT-25 only).
+    # The older Mustang I-V V2 series or higher-end GT-, GTX- series may
+    # be capable of operating effects in orders varying for this - I don't
+    # know whether these can be replicated on the models covered by this
+    # software.
+
+    if len(candidate_dict["audioGraph"]["nodes"]) != 5:
+        return None
+
+    # We retain a deep copy of the original dict in case assertions here
+    # fail and we want to restore the initial state before exiting.
+    original_dict = copy.deepcopy(candidate_dict)
+
+    # The audioGraph.connections array models a set of cables connecting
+    # input, through effect and amp modules, through to output, but is
+    # very verbose, and redundant if we make the assumption described
+    # in the comment above, so we remove it.
+    del candidate_dict["audioGraph"]["connections"]
+
+    # The audioGraph.nodes array gives all of the effects and parameters
+    # but the order of items in the array is random and does not reflect
+    # the module processing order.  By sorting it into the expected order
+    # described in the top of function comment we ensure that the canonical
+    # preset retains an explicit expression of the assumed order.
+
+    # Some presets have multiple variants which differ only in
+    # whether nodes with FenderId DUBS_Passthru have explicit
+    # bypass and bypassMode parameters.  This setting is irrelevant for
+    # passthru nodes, so we remove this source of difference.
+
+    # Finally, we filter the FenderId of the node to remove prefixes
+    # and suffixes which differ between LT- and MMP- ranges.
+    required_order = None
+    if candidate_dict["info"]["product_id"] == "rumble-lt":
+        required_order = ("stomp", "mod", "amp", "eq", "delay")
+    else:
+        required_order = ("stomp", "mod", "amp", "delay", "reverb")
+    original_nodes = candidate_dict["audioGraph"]["nodes"]
+    reordered_nodes = [None, None, None, None, None]
+    for i in range(0, 5):
+        try:
+            (next_node,) = [
+                a_node
+                for a_node in original_nodes
+                if (
+                    a_node["nodeId"] == required_order[i]
+                    # or a_node["nodeId"].replace("eq", "delay") in required_order[i]
+                    # or required_order[i].startswith(a_node["nodeId"])
+                    # or required_order[i].endswith(a_node["nodeId"])
+                )
+            ]
+            if next_node["FenderId"] == "DUBS_Passthru":
+                next_node["dspUnitParameters"] = {}
+            next_node["FenderId"] = _GWR.filter_fender_id(next_node["FenderId"])
+            reordered_nodes[i] = next_node
+        except ValueError:
+            print(f"Missing expected node {i} : {required_order[i]}")
+            print(f"{[n.get('nodeId', "?").encode("utf-8") for n in original_nodes]}")
+            candidate_dict = original_dict
+            return None
+    candidate_dict["audioGraph"]["nodes"] = reordered_nodes
+    return candidate_dict
+
+
+def _get_node_type_and_name(candidate_dict):
     try:
         node_type = candidate_dict.get("nodeType", "module_list")
         if node_type == "dspUnit":
@@ -55,11 +123,25 @@ def get_node_type_and_name(candidate_dict):
                 }
             )
             node_type = info["subcategory"]
-            node_name = _GWR.filter_name_chars(info["displayName"])
+            node_name = _GWR.filter_fender_id(candidate_dict["FenderId"])
+            param_count = len(candidate_dict["ui"]["uiParameters"])
+            if param_count > 0:
+                node_name += f".{param_count:02}params"
             return node_type, node_name
         elif node_type == "preset":
             node_name = _GWR.filter_name_chars(candidate_dict["info"]["displayName"])
-            return node_type, node_name
+            candidate_dict = _make_preset_canonical(candidate_dict)
+            if candidate_dict is not None:
+                return node_type, node_name
+            elif node_name == "EMPTY_________":
+                # ignore these
+                pass
+            else:
+                print(
+                    f"Preset with node_name {node_name} cannot be made canonical",
+                    file=sys.stderr
+                )
+            return None
         if node_type == "module_list":
             node_name = candidate_dict["productFamily"]
         else:
@@ -105,7 +187,7 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
                 # There are a few empty dictionaries, clearly these
                 # are not interesting
                 continue
-            node_type_and_name = get_node_type_and_name(candidate_dict)
+            node_type_and_name = _get_node_type_and_name(candidate_dict)
             if node_type_and_name is None:
                 continue
             node_type, node_name = node_type_and_name
@@ -177,4 +259,4 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
 
 if __name__ == "__main__":
     find_fender_lt_json_snippets("_work/tone_mustang_lt_data", "mustang")
-    # find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")
+    find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")

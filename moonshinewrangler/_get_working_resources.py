@@ -68,5 +68,12 @@ def filter_name_chars(s):
     return "".join([char for char in s if char.isalnum() or char == "_"])
 
 
+def filter_fender_id(s):
+    regex_list = ("DUBS_Mustang", "DUBS_", "ACD_", "GT")
+    for regex in regex_list:
+        s = s.replace(regex, "")
+    return s
+
+
 if __name__ == "__main__":
     get_reference_files("_work/reference_files")
