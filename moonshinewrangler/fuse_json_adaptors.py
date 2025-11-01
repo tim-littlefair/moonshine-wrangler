@@ -46,15 +46,32 @@ class ContinuousValuedParameterAdaptor:
         self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max)
         self.json_to_ui = RangeAdaptor(json_min, json_max, ui_min, ui_max, ui_format)
 
-        def fuse_to_json(self, fuse_value):
-            return self.fuse_to_json.adapt(fuse_value)
+    """
+    def fuse_to_json(self, fuse_value):
+        return self.fuse_to_json.adapt(fuse_value)
 
-        def json_to_ui(self, json_value):
-            return self.json_to_ui.adapt(json_value)
+    def json_to_ui(self, json_value):
+        return self.json_to_ui.adapt(json_value)
+    """
+
+
+class StringChoiceParameterAdaptor:
+
+    def __init__(
+        self,
+        json_strings,
+        ui_strings
+    ):
+        self.json_strings = json_strings
+        self.ui_strings = ui_strings
+        self.fuse_to_json = lambda v: self.json_strings[v]
+        self.json_to_ui = lambda v: self.ui_strings[v]
 
 
 if __name__ == "__main__":
-    # Minimal test
+
+    # Minimal tests
+
     cvpa = ContinuousValuedParameterAdaptor()
     expect_zero_point_zero = cvpa.fuse_to_json.adapt(0x0300)
     expect_zero_point_five = cvpa.fuse_to_json.adapt(0x8100)  # aka decimal 33024
@@ -62,3 +79,12 @@ if __name__ == "__main__":
     assert expect_zero_point_zero == 0.0, f"Expected 0.0, got {expect_zero_point_zero}"
     assert expect_zero_point_five == 0.5, f"Expected 0.5, got {expect_zero_point_five}"
     assert expect_one_point_zero == 1.0, f"Expected 0.1, got {expect_one_point_zero}"
+
+    scpa = StringChoiceParameterAdaptor(
+        ["red", "green", "blue"],
+        {"red": "RED", "green": "GREEN", "blue": "BLUE"}
+    )
+    expect_red = scpa.fuse_to_json(0)
+    expect_GREEN = scpa.json_to_ui("green")
+    assert expect_red == "red", f"Expected 'red' got {expect_red}"
+    assert expect_GREEN == "GREEN", f"Expected 'GREEN' got {expect_GREEN}"

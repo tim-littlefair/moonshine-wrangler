@@ -69,7 +69,7 @@ def filter_name_chars(s):
 
 
 def filter_fender_id(s):
-    regex_list = ("DUBS_Mustang", "DUBS_", "ACD_", "GT")
+    regex_list = ("DUBS_Mustang", "DUBS_", "Reverb", "ACD_", "GT")
     for regex in regex_list:
         s = s.replace(regex, "")
     return s
