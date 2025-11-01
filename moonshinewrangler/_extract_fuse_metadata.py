@@ -10,31 +10,6 @@ import os
 import subprocess
 
 
-def _filter_name_chars(s):
-    s = s.replace(" ", "_")
-    return "".join([char for char in s if char.isalnum() or char == "_"])
-
-
-_REFERENCE_FILE_URLS = (
-    # The following URLs are for Wayback Machine/archive.org saves of files published by FMIC
-    'https://web.archive.org/web/20170403031521/http://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/pc/FenderFUSE_FULL_2.7.1.exe',
-    'https://web.archive.org/web/20170403031521/http://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/mac/FenderFUSE_FULL_2.7.1.dmg',
-    'https://web.archive.org/web/20241223024259/https://download.fender.com/tone/windows/Fender%20Tone.msi',
-    'https://web.archive.org/web/20241223024259/https://download.fender.com/tone/macos/Fender%20Tone.dmg',
-
-    # The following documents published by FMIC were only available on guitarpedaldemos.com at the time this project was initiated
-    'https://web.archive.org/web/20250604021422/https://guitarpedaldemos.com/wp-content/uploads/2020/04/MustangI-V_v.2_advanced_manual_revA_English.pdf',
-    'https://web.archive.org/web/20250815193142/https://guitarpedaldemos.com/wp-content/uploads/2025/06/Fender_FUSE_2.0_manual_for__Mustang_1-2_Rev-G_English.pdf',
-
-    # The following files are sourced from:
-    # https://guitarpedaldemos.com/fender-fuse-mustang-v2-archive
-    # For some reason Wayback Machine/archive.org fails to capture them
-    'https://guitarpedaldemos.com/wp-content/uploads/2020/04/entire-archive.zip',
-    'https://guitarpedaldemos.com/wp-content/uploads/2020/04/intheblues.zip',
-    'https://guitarpedaldemos.com/wp-content/uploads/2020/04/factory-presets.zip',
-)
-
-
 def _extract_file_bytes_from_dmg(dmg_path, file_entry_path):
     extract_cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}'"
     sp_result = subprocess.run(extract_cmd, shell=True, capture_output=True)
