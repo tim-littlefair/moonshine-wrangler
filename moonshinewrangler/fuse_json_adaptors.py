@@ -41,7 +41,7 @@ class ContinuousValuedParameterAdaptor:
         fuse_min=0x0300, fuse_max=0xff00,
         json_min=0.0, json_max=1.0,
         ui_min=1.0, ui_max=10.0,
-        ui_format="%2.1f",
+        ui_format="2.1f",
     ):
         self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max)
         self.json_to_ui = RangeAdaptor(json_min, json_max, ui_min, ui_max, ui_format)

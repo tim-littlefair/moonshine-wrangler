@@ -25,7 +25,7 @@ pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
 pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
 pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
 
-default_param_converters = [
+_PARAM_CONVERTERS = [
     pc_volume, pc_gain,
     pc_treble, pc_mid, pc_bass,
     pc_presence
@@ -34,7 +34,7 @@ default_param_converters = [
 ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id param_converters")
 
 _MODULE_CONVERTERS = (
-    ModuleConverter("Amplifier", 117, 'Twin57', default_param_converters),
+    ModuleConverter("Amplifier", 117, 'Twin57', _PARAM_CONVERTERS),
 )
 
 
@@ -46,6 +46,19 @@ def fuse_mc_lookup(fuse_module_id):
     ]
     assert len(matching_mcs) == 1
     return matching_mcs[0]
+
+
+def fuse_pc_lookup(mc, fuse_param_id):
+    matching_pcs = [
+        pc
+        for pc in mc.param_converters
+        if pc.fuse_param_id == fuse_param_id
+    ]
+    assert len(matching_pcs) <= 1
+    if len(matching_pcs) == 1:
+        return matching_pcs[0]
+    else:
+        return None
 
 
 if __name__ == "__main__":
@@ -65,9 +78,27 @@ if __name__ == "__main__":
 
             fuse_amp_element = preset_tree.getroot()[0]
             assert fuse_amp_element.tag == "Amplifier"
-            ui_params = {}
             json_amp_dict = {}
             mc = fuse_mc_lookup(int(fuse_amp_element[0].attrib.get("ID")))
             json_amp_dict["FenderId"] = mc.json_id
-            for param in fuse_amp_element.items():
-                pass
+            json_params = {}
+            ui_params = {}
+            for fuse_param_element in fuse_amp_element[0]:
+                pc = fuse_pc_lookup(mc, int(fuse_param_element.attrib.get("ControlIndex")))
+                if pc is not None:
+                    json_name = pc.json_param_name
+                    json_value = pc.parameter_adaptor.fuse_to_json.adapt(
+                        int(fuse_param_element.text)
+                    )
+                    json_params[json_name] = json_value
+                    ui_name = pc.ui_param_name
+                    ui_value = pc.parameter_adaptor.json_to_ui.adapt(
+                        json_value
+                    )
+                    ui_params[ui_name] = ui_value
+                else:
+                    fuse_ci = fuse_param_element.attrib.get("ControlIndex")
+                    json_params["__"+fuse_ci] = fuse_param_element.text
+            print()
+            print(json_params)
+            print(ui_params)
