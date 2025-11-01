@@ -31,6 +31,43 @@ default_param_converters = [
     pc_presence
 ]
 
-ModuleConverter = namedtuple("ModuleConverter", "fuse_id json_id param_converters")
+ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id param_converters")
 
-mc_fender_twin_57 = ModuleConverter(117, 'Twin57', default_param_converters)
+_MODULE_CONVERTERS = (
+    ModuleConverter("Amplifier", 117, 'Twin57', default_param_converters),
+)
+
+
+def fuse_mc_lookup(fuse_module_id):
+    matching_mcs = [
+        mc
+        for mc in _MODULE_CONVERTERS
+        if mc.fuse_id == fuse_module_id
+    ]
+    assert len(matching_mcs) == 1
+    return matching_mcs[0]
+
+
+if __name__ == "__main__":
+
+    import sys
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
+        # print("\n".join(zf.namelist()))
+        with zf.open("intheblues/mustangv2mark-knopfler.fuse") as mk_stream:
+            preset_tree = ET.ElementTree(
+                ET.fromstring(str(mk_stream.read(), "utf-8"))
+            )
+            print(preset_tree)
+            preset_tree.write(sys.stdout, "unicode")
+
+            fuse_amp_element = preset_tree.getroot()[0]
+            assert fuse_amp_element.tag == "Amplifier"
+            ui_params = {}
+            json_amp_dict = {}
+            mc = fuse_mc_lookup(int(fuse_amp_element[0].attrib.get("ID")))
+            json_amp_dict["FenderId"] = mc.json_id
+            for param in fuse_amp_element.items():
+                pass
