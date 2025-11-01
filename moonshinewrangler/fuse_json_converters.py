@@ -103,9 +103,6 @@ def convert_fuse_module(fuse_amp_element):
         else:
             fuse_ci = fuse_param_element.attrib.get("ControlIndex")
             json_params["__"+fuse_ci] = fuse_param_element.text
-    print()
-    print(json_params)
-    print(ui_params)
     return (
         {"FenderId": mc.json_id, "dspUnitParameters": json_params},
         {mc.ui_name: ui_params}
@@ -126,6 +123,7 @@ if __name__ == "__main__":
             )
             print(preset_tree)
             preset_tree.write(sys.stdout, "unicode")
+            print()
 
             json_preset_dict = {}
             ui_preset_dict = {}
