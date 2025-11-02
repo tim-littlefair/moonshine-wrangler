@@ -8,6 +8,20 @@
 # and also converting the JSON value to the corresponding value displayed
 # on a device user interface.
 
+# The majority of u16 FUSE parameters appear to match to JSON float values
+# ranging over the domain 0.0-1.0.
+# By a rough scan of the 45 .fuse files from the @intheblues Mustang Mondays
+# dataset, u16 values 33024 (0x8100) and 65280 (0xFF00) are very common
+# (204 and 112 occurrences respectively), while 65535 occurs 39 times in
+# total (but usually always associated with the same parameter, index 9,
+# "Noise Gate Depth" ).
+# Based on this data, the present working hypothesis for converting
+# these values is that u16 values in the range 0x0300-0xFF00 are mapped
+# by linear interpolation to 0.0 to 1.0 (making 33024 map to 0.5 which
+# is an expected frequent value), and that 65535 is reserved as a null
+# indicator value used where the float is undefined.
+
+
 class RangeAdaptor:
 
     def __init__(self, min_in, max_in, min_out, max_out, format=None):
@@ -46,13 +60,11 @@ class ContinuousValuedParameterAdaptor:
         self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max)
         self.json_to_ui = RangeAdaptor(json_min, json_max, ui_min, ui_max, ui_format)
 
-    """
     def fuse_to_json(self, fuse_value):
         return self.fuse_to_json.adapt(fuse_value)
 
     def json_to_ui(self, json_value):
         return self.json_to_ui.adapt(json_value)
-    """
 
 
 class StringChoiceParameterAdaptor:

@@ -53,7 +53,7 @@ pc_compressor_type = ParamConverter(5, None, "type", None, "TYPE", low_med_hi_ma
 ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id ui_name param_converters")
 
 _MODULE_CONVERTERS = (
-    ModuleConverter("Amplifier", 117, "Twin57", "TWIN CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
+    ModuleConverter("Amplifier", 117, "Twin65", "TWIN CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Effect", 0, "Passthru", "EMPTY", ()),
     ModuleConverter("Effect", 58, "LargeHall", "LARGE HALL", _DEFAULT_REVERB_PARAM_CONVERTERS),
     ModuleConverter("Effect", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,))
@@ -111,7 +111,9 @@ def convert_fuse_module(fuse_amp_element):
 
 if __name__ == "__main__":
 
+    import json
     import sys
+    import traceback
     import xml.etree.ElementTree as ET
     import zipfile
 
@@ -121,7 +123,7 @@ if __name__ == "__main__":
             preset_tree = ET.ElementTree(
                 ET.fromstring(str(mk_stream.read(), "utf-8"))
             )
-            print(preset_tree)
+            ET.indent(preset_tree.getroot())
             preset_tree.write(sys.stdout, "unicode")
             print()
 
@@ -155,5 +157,7 @@ if __name__ == "__main__":
                     json_modules += [j]
                     ui_modules += [u]
             except RuntimeError:
-                print(ui_modules)
-                raise
+                traceback.print_exception()
+                print("Partial results:")
+            print(json.dumps(json_modules, indent=4))
+            print(json.dumps(ui_modules, indent=4))
