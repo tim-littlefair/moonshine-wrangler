@@ -17,26 +17,30 @@ from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 ParamConverter = namedtuple("ParamConverter", "fuse_param_id fuse_module_id json_param_name json_module_id ui_param_name parameter_adaptor")
 
 default_cvpa = CVPA()
-pc_volume = ParamConverter(0, None, "volume", None, "VOLUME", default_cvpa)
+volume_cvpa = CVPA(json_min=-60.0, json_max=0.0)
+pc_volume = ParamConverter(0, None, "volume", None, "VOLUME", volume_cvpa)
 pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
-# FUSE params 2 and 3 are called GAIN2 and MASTER VOLUME
-# Neither appears to be used for JSON
+_pc_gain2 = ParamConverter(2, None, "_gain2", None, "_GAIN2", default_cvpa)
+_pc_mvol = ParamConverter(3, None, "_master_volume", None, "_MASTER_VOLUME", default_cvpa)
 pc_treble = ParamConverter(4, None, "treble", None, "TREBLE", default_cvpa)
 pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
 pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
 pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
+_pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
+
 
 _DEFAULT_AMP_PARAM_CONVERTERS = (
     pc_volume, pc_gain,
+    _pc_gain2, _pc_mvol,
     pc_treble, pc_mid, pc_bass,
-    pc_presence,
+    pc_presence, _pc_resonance,
 )
 
 pc_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
 pc_decay = ParamConverter(1, None, "decay", None, "DECAY", default_cvpa)
 pc_dwell = ParamConverter(2, None, "dwell", None, "DWELL", default_cvpa)
-pc_diffusion = ParamConverter(3, None, "diffusion", None, "DIFFUSION", default_cvpa)
-pc_tone = ParamConverter(4, None, "Tone", None, "TONE", default_cvpa)
+pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
+pc_tone = ParamConverter(4, None, "tone", None, "TONE", default_cvpa)
 
 _DEFAULT_REVERB_PARAM_CONVERTERS = (
     pc_level, pc_decay, pc_dwell,
