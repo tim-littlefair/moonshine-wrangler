@@ -1,0 +1,64 @@
+[
+    {
+        "FenderId": "Overdrive",
+        "dspUnitParameters": {
+            "level": 0.294,
+            "low": 0.746,
+            "mid": 0.607,
+            "high": 0.702
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "SuperSonic",
+        "dspUnitParameters": {
+            "volume": 0.0,
+            "gain": 0.143,
+            "_gain2": 0.19,
+            "_master_volume": 0.329,
+            "treble": 0.504,
+            "mid": 0.294,
+            "bass": 0.663,
+            "presence": 0.5,
+            "_resonance": 0.5,
+            "__9": "65535",
+            "__10": "65280",
+            "__11": "33024",
+            "__12": "6",
+            "__13": "6",
+            "__14": "6",
+            "__15": "2",
+            "__16": "3",
+            "__17": "12",
+            "__18": "6",
+            "__19": "2",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "TapeDelayLite",
+        "dspUnitParameters": {
+            "level": 0.135,
+            "time": 0.349,
+            "feedback": 0.206,
+            "flutter": 0.385,
+            "brightness": 0.5,
+            "__5": "256"
+        }
+    },
+    {
+        "FenderId": "Spring65",
+        "dspUnitParameters": {
+            "level": 0.107,
+            "decay": 0.778,
+            "dwell": 0.778,
+            "diffuse": 0.714,
+            "tone": 0.488
+        }
+    }
+]

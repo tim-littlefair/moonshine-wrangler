@@ -1,0 +1,59 @@
+[
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "SuperSonic",
+        "dspUnitParameters": {
+            "volume": -27.714,
+            "gain": 0.218,
+            "_gain2": 0.123,
+            "_master_volume": 0.782,
+            "treble": 0.667,
+            "mid": 0.544,
+            "bass": 0.667,
+            "presence": 0.496,
+            "_resonance": 0.496,
+            "__9": "65535",
+            "__10": "32768",
+            "__11": "32768",
+            "__12": "6",
+            "__13": "6",
+            "__14": "6",
+            "__15": "3",
+            "__16": "4",
+            "__17": "11",
+            "__18": "6",
+            "__19": "1",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "TapeDelayLite",
+        "dspUnitParameters": {
+            "level": 0.131,
+            "time": 0.357,
+            "feedback": 0.171,
+            "flutter": 0.377,
+            "brightness": 0.433,
+            "__5": "0"
+        }
+    },
+    {
+        "FenderId": "LargeHall",
+        "dspUnitParameters": {
+            "level": 0.179,
+            "decay": 0.496,
+            "dwell": 0.496,
+            "diffuse": 0.496,
+            "tone": 0.786
+        }
+    }
+]

@@ -116,6 +116,15 @@ class StringChoiceParameterAdaptor:
         self.json_to_ui = lambda v: self.ui_strings[v]
 
 
+class BooleanParameterAdaptor:
+
+    def __init__(
+        self
+    ):
+        self.fuse_to_json = lambda v: v != 0
+        self.json_to_ui = lambda v: v
+
+
 if __name__ == "__main__":
 
     # Minimal tests

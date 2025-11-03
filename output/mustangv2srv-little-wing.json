@@ -1,0 +1,57 @@
+[
+    {
+        "FenderId": "Overdrive",
+        "dspUnitParameters": {
+            "level": 0.337,
+            "low": 0.496,
+            "mid": 0.369,
+            "high": 1.0
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Deluxe65",
+        "dspUnitParameters": {
+            "volume": -18.095,
+            "gain": 0.75,
+            "_gain2": -0.008,
+            "_master_volume": 1.0,
+            "treble": 0.567,
+            "mid": 0.817,
+            "bass": 0.488,
+            "presence": -0.008,
+            "_resonance": -0.008,
+            "__9": "65535",
+            "__10": "33024",
+            "__11": "256",
+            "__12": "3",
+            "__13": "3",
+            "__14": "3",
+            "__15": "0",
+            "__16": "0",
+            "__17": "3",
+            "__18": "3",
+            "__19": "1",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Spring65",
+        "dspUnitParameters": {
+            "level": 0.127,
+            "decay": 0.544,
+            "dwell": 0.286,
+            "diffuse": 1.0,
+            "tone": 0.5
+        }
+    }
+]

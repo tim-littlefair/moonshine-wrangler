@@ -13,16 +13,12 @@ from collections import namedtuple
 from fuse_json_adaptors import RangeAdaptor as RA
 from fuse_json_adaptors import ContinuousValuedParameterAdaptor as CVPA
 from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
+from fuse_json_adaptors import BooleanParameterAdaptor as BPA
 
 
 ParamConverter = namedtuple("ParamConverter", "fuse_param_id fuse_module_id json_param_name json_module_id ui_param_name parameter_adaptor")
 
 default_cvpa = CVPA()
-
-
-def set_default_cvpa(preferred_cvpa):
-    global default_cvpa
-    default_cvpa = preferred_cvpa
 
 
 volume_cvpa = CVPA(
@@ -85,25 +81,46 @@ pc_overdrive_low = ParamConverter(2, None, "low", None, "LOW", default_cvpa)
 pc_overdrive_mid = ParamConverter(3, None, "mid", None, "MID", default_cvpa)
 pc_overdrive_high = ParamConverter(4, None, "high", None, "HIGH", default_cvpa)
 
-_DEFAULT_OVERDRIVE_PARAM_CONVERTERS = (
+_OVERDRIVE_PARAM_CONVERTERS = (
     pc_overdrive_level, pc_overdrive_gain,
     pc_overdrive_low, pc_overdrive_mid, pc_overdrive_high
 )
 
 """
-        <Param Name="Level" Name10="Level" Name8="Level" ControlIndex="0" ParamIndex="0" ParamGroup="1" ParamType="1">65535</Param>
-        <Param Name="Delay Time" Name10="Delay Time" Name8="Dly Time" ControlIndex="1" ParamIndex="1" ParamGroup="1" ParamType="6">33153</Param>
-        <Param Name="Feedback" Name10="Feedback" Name8="Fdback" ControlIndex="2" ParamIndex="2" ParamGroup="1" ParamType="1">33153</Param>
-        <Param Name="Brightness" Name10="Brightness" Name8="Bright" ControlIndex="3" ParamIndex="3" ParamGroup="1" ParamType="1">33153</Param>
-        <Param Name="Attenuation" Name10="Attnuation" Name8="Attnuat" ControlIndex="4" ParamIndex="4" ParamGroup="1" ParamType="1">33153</Param>
+        <Param Name="Level" Name10="Level" Name8="Level" ControlIndex="0" ParamIndex="0" ParamGroup="1" ParamType="1">32382</Param>
+        <Param Name="Delay Time" Name10="Delay Time" Name8="Dly Time" ControlIndex="1" ParamIndex="1" ParamGroup="1" ParamType="6">7453</Param>
+        <Param Name="Feedback" Name10="Feedback" Name8="Fdback" ControlIndex="2" ParamIndex="2" ParamGroup="1" ParamType="1">257</Param>
+        <Param Name="Flutter" Name10="Flutter" Name8="Flutter" ControlIndex="3" ParamIndex="3" ParamGroup="1" ParamType="1">25700</Param>
+        <Param Name="Brightness" Name10="Brightness" Name8="Bright" ControlIndex="4" ParamIndex="4" ParamGroup="1" ParamType="1">33153</Param>
+        <Param Name="Stereo" Name10="Stereo" Name8="Stereo" ControlIndex="5" ParamIndex="5" ParamGroup="2" ParamType="1">257</Param>
 """
+
+
+pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
+pc_delay_delay = ParamConverter(1, None, "time", None, "TIME", default_cvpa)
+pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
+pc_delay_brightness3 = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
+pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
+_MONO_DELAY_PARAM_CONVERTERS = (
+    pc_delay_level, pc_delay_delay, pc_delay_feedback,
+    pc_delay_brightness3, pc_delay_attenuation
+)
+
+pc_delay_flutter = ParamConverter(3, None, "flutter", None, "FLUTTER", default_cvpa)
+pc_delay_brightness4 = ParamConverter(4, None, "brightness", None, "BRIGHTNESS", default_cvpa)
+pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", BPA())
+_TAPE_DELAY_PARAM_CONVERTERS = (
+    pc_delay_level, pc_delay_delay, pc_delay_feedback,
+    pc_delay_flutter, pc_delay_brightness4,
+    # pc_delay_stereo
+)
 
 pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
 pc_delay_delay = ParamConverter(1, None, "delay", None, "DELAY", default_cvpa)
 pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
 pc_delay_brightness = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
 pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
-_DELAY_PARAM_CONVERTERS = (
+_MONO_DELAY_PARAM_CONVERTERS = (
     pc_delay_level, pc_delay_delay,
     pc_delay_feedback, pc_delay_brightness, pc_delay_attenuation
 )
@@ -118,9 +135,14 @@ _MODULE_CONVERTERS = (
     ModuleConverter("Amplifier", 249, "Ac30Tb", "60S UK CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
 
     ModuleConverter(None, 0, "Passthru", "NONE", ()),
-    ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _DEFAULT_OVERDRIVE_PARAM_CONVERTERS),
+
+    ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _OVERDRIVE_PARAM_CONVERTERS),
     ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,)),
-    ModuleConverter("Delay", 22, "MonoDelay", "DELAY", _DELAY_PARAM_CONVERTERS),
+
+    ModuleConverter("Delay", 22, "MonoDelay", "DELAY", _MONO_DELAY_PARAM_CONVERTERS),
+    ModuleConverter("Delay", 43, "TapeDelayLite", "ECHO", _TAPE_DELAY_PARAM_CONVERTERS),
+
+    ModuleConverter("Reverb", 11, "Spring65", "SPRING 65", _DEFAULT_REVERB_PARAM_CONVERTERS),
     ModuleConverter("Reverb", 58, "LargeHall", "LARGE HALL", _DEFAULT_REVERB_PARAM_CONVERTERS),
 )
 
@@ -181,7 +203,7 @@ def convert_fuse_module(fuse_module_type, fuse_module_element):
             json_params["__"+fuse_ci] = fuse_param_element.text
     return (
         {"FenderId": mc.json_id, "dspUnitParameters": json_params},
-        {mc.ui_name: ui_params}
+        {"module_type": mc.fuse_type, "module_name": mc.ui_name, "params": ui_params}
     )
 
 
@@ -254,9 +276,13 @@ if __name__ == "__main__":
             if len(failed_modules) == 0:
                 output_fn = output_fn.replace(".fuse", ".json")
                 print(json.dumps(json_modules, indent=4), file=open(output_fn, "wt"))
+                print()
                 print(f"UI parameters for {fn}")
-                print(json.dumps(ui_modules, indent=4))
-                print
+                for module in ui_modules:
+                    assert len(module.keys()) == 3
+                    if module["module_type"] is not None:
+                        print(f"{module["module_type"]}: {module["module_name"]} {module["params"] or ""}")
+                print()
             else:
                 print(
                     f"Failed to find one or more modules for {fn}\n{"\n".join(failed_modules)}",
