@@ -1,0 +1,46 @@
+[
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Ac30Tb",
+        "dspUnitParameters": {
+            "volume": -18.949,
+            "gain": 0.825,
+            "_gain2": 0.5,
+            "_master_volume": 0.5,
+            "treble": 0.738,
+            "mid": 0.317,
+            "bass": 0.619,
+            "presence": 0.5,
+            "_resonance": 0.5,
+            "__9": "65535",
+            "__10": "33024",
+            "__11": "33024",
+            "__12": "15",
+            "__13": "15",
+            "__14": "15",
+            "__15": "0",
+            "__16": "0",
+            "__17": "8",
+            "__18": "15",
+            "__19": "1",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    }
+]

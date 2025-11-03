@@ -1,0 +1,91 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="83" POS="0" BypassState="1">
+      <Param ControlIndex="0">38144</Param>
+      <Param ControlIndex="1">61696</Param>
+      <Param ControlIndex="2">256</Param>
+      <Param ControlIndex="3">65280</Param>
+      <Param ControlIndex="4">32768</Param>
+      <Param ControlIndex="5">48896</Param>
+      <Param ControlIndex="6">30464</Param>
+      <Param ControlIndex="7">256</Param>
+      <Param ControlIndex="8">256</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">65280</Param>
+      <Param ControlIndex="11">256</Param>
+      <Param ControlIndex="12">3</Param>
+      <Param ControlIndex="13">3</Param>
+      <Param ControlIndex="14">3</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">3</Param>
+      <Param ControlIndex="18">3</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="186" POS="0" BypassState="1">
+        <Param ControlIndex="0">26880</Param>
+        <Param ControlIndex="1">49664</Param>
+        <Param ControlIndex="2">40960</Param>
+        <Param ControlIndex="3">27136</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="45" POS="5" BypassState="0">
+        <Param ControlIndex="0">62976</Param>
+        <Param ControlIndex="1">65280</Param>
+        <Param ControlIndex="2">10496</Param>
+        <Param ControlIndex="3">44544</Param>
+        <Param ControlIndex="4">33792</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">23296</Param>
+        <Param ControlIndex="1">23808</Param>
+        <Param ControlIndex="2">13824</Param>
+        <Param ControlIndex="3">25600</Param>
+        <Param ControlIndex="4">20992</Param>
+        <Param ControlIndex="5">256</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">11264</Param>
+        <Param ControlIndex="1">33792</Param>
+        <Param ControlIndex="2">33536</Param>
+        <Param ControlIndex="3">23552</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Jonny Lang 1997" author="intheblues" rating="0" genre1="6" genre2="40" genre3="-1" tags="jonny lang, blues, intheblues, mustang monday" fenderid="0">Jonny Lang Tone by intheblues on YouTube and Facebook
+Based off the 1997 tones of Jonny Lang's Live Clips
+http://www.youtube.com/intheblues http://www.Facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="1" HeelSetting="24576" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="1" />
+  <UsbGain>0</UsbGain>
+</Preset>

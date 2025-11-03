@@ -1,0 +1,94 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="100" POS="0" BypassState="1">
+      <Param ControlIndex="0">59392</Param>
+      <Param ControlIndex="1">51456</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">33024</Param>
+      <Param ControlIndex="4">21248</Param>
+      <Param ControlIndex="5">20480</Param>
+      <Param ControlIndex="6">29440</Param>
+      <Param ControlIndex="7">58368</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">2</Param>
+      <Param ControlIndex="13">2</Param>
+      <Param ControlIndex="14">2</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">3</Param>
+      <Param ControlIndex="18">2</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="60" POS="0" BypassState="0">
+        <Param ControlIndex="0">33024</Param>
+        <Param ControlIndex="1">32000</Param>
+        <Param ControlIndex="2">33024</Param>
+        <Param ControlIndex="3">30976</Param>
+        <Param ControlIndex="4">44800</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="64" POS="5" BypassState="0">
+        <Param ControlIndex="0">57088</Param>
+        <Param ControlIndex="1">25344</Param>
+        <Param ControlIndex="2">25600</Param>
+        <Param ControlIndex="3">62976</Param>
+        <Param ControlIndex="4">62208</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="22" POS="6" BypassState="0">
+        <Param ControlIndex="0">8704</Param>
+        <Param ControlIndex="1">17152</Param>
+        <Param ControlIndex="2">19712</Param>
+        <Param ControlIndex="3">22016</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="33" POS="3" BypassState="1">
+        <Param ControlIndex="0">8192</Param>
+        <Param ControlIndex="1">22272</Param>
+        <Param ControlIndex="2">16128</Param>
+        <Param ControlIndex="3">13568</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Fender Blues Deluxe (Drive)" author="intheblues" rating="0" genre1="6" genre2="8" genre3="-1" tags="Fender, Blues Deluxe, Blues, Deluxe, Tweed, intheblues, Shane, Brian" fenderid="0">Fender Blues Deluxe Reissue Drive Channel Preset with Reverb and Overdrive Pedal.  from Shane &amp; Ric at www.YouTube.com/intheblues
+
+This was modelled in an A/B situation with Brians amplifier to give you what we feel is so close to the original you won't be able to tell the difference.  Turn the amplifier up to 3-5 for the full vibe of the tone.
+
+www.YouTube.com/intheblues
+www.Facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

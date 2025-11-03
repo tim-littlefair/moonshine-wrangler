@@ -1,0 +1,90 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="246" POS="0" BypassState="1">
+      <Param ControlIndex="0">60037</Param>
+      <Param ControlIndex="1">30720</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">33024</Param>
+      <Param ControlIndex="4">37888</Param>
+      <Param ControlIndex="5">65280</Param>
+      <Param ControlIndex="6">18432</Param>
+      <Param ControlIndex="7">38400</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">65280</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">14</Param>
+      <Param ControlIndex="13">14</Param>
+      <Param ControlIndex="14">14</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">2</Param>
+      <Param ControlIndex="18">14</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="60" POS="0" BypassState="0">
+        <Param ControlIndex="0">22272</Param>
+        <Param ControlIndex="1">46336</Param>
+        <Param ControlIndex="2">33792</Param>
+        <Param ControlIndex="3">33024</Param>
+        <Param ControlIndex="4">49408</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="45" POS="5" BypassState="0">
+        <Param ControlIndex="0">62976</Param>
+        <Param ControlIndex="1">65280</Param>
+        <Param ControlIndex="2">10496</Param>
+        <Param ControlIndex="3">44544</Param>
+        <Param ControlIndex="4">33792</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">12032</Param>
+        <Param ControlIndex="1">20480</Param>
+        <Param ControlIndex="2">11520</Param>
+        <Param ControlIndex="3">19456</Param>
+        <Param ControlIndex="4">33024</Param>
+        <Param ControlIndex="5">256</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="4" BypassState="1">
+        <Param ControlIndex="0">11264</Param>
+        <Param ControlIndex="1">19200</Param>
+        <Param ControlIndex="2">9984</Param>
+        <Param ControlIndex="3">27648</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Fender '57 Bandmaster (custom)" author="intheblues" rating="0" genre1="6" genre2="9" genre3="-1" tags="mustang monday, fender, bandmaster, intheblues, 57 bandmaster, tweed, blues, shane, ric" fenderid="0">This is the Fender '57 Bandmaster from Shane and Ric at intheblues on YouTube.  This is part of the Mustang Monday series on YouTube.  For more free presets please go to http://www.youtube.com/intheblues or join us on Facebook at http://www.facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="1" HeelSetting="24576" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="1" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="1" />
+  <UsbGain>0</UsbGain>
+</Preset>

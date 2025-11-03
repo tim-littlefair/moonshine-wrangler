@@ -1,0 +1,78 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="114" POS="0" BypassState="1">
+      <Param ControlIndex="0">35482</Param>
+      <Param ControlIndex="1">14848</Param>
+      <Param ControlIndex="2">8704</Param>
+      <Param ControlIndex="3">51200</Param>
+      <Param ControlIndex="4">43776</Param>
+      <Param ControlIndex="5">35840</Param>
+      <Param ControlIndex="6">43776</Param>
+      <Param ControlIndex="7">32768</Param>
+      <Param ControlIndex="8">32768</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">32768</Param>
+      <Param ControlIndex="11">32768</Param>
+      <Param ControlIndex="12">6</Param>
+      <Param ControlIndex="13">6</Param>
+      <Param ControlIndex="14">6</Param>
+      <Param ControlIndex="15">3</Param>
+      <Param ControlIndex="16">4</Param>
+      <Param ControlIndex="17">11</Param>
+      <Param ControlIndex="18">6</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="0" POS="0" BypassState="1" />
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="5" BypassState="0" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">9216</Param>
+        <Param ControlIndex="1">23808</Param>
+        <Param ControlIndex="2">11776</Param>
+        <Param ControlIndex="3">25088</Param>
+        <Param ControlIndex="4">28672</Param>
+        <Param ControlIndex="5">0</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="58" POS="7" BypassState="1">
+        <Param ControlIndex="0">12288</Param>
+        <Param ControlIndex="1">32768</Param>
+        <Param ControlIndex="2">32768</Param>
+        <Param ControlIndex="3">32768</Param>
+        <Param ControlIndex="4">51456</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Joe Bonamassa" author="intheblues" rating="0" genre1="40" genre2="-1" genre3="-1" tags="joe, bonamassa, blue and evil, intheblues, mustang monday, 2016" fenderid="0">This is a Joe Bonamassa tone based on the Blue &amp; Evil song.  This is part of the Mustang Monday series for 2016 from Shane at INTHEBLUES on YouTube - Subscribe for more patches - http://www.YouTube.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="1" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

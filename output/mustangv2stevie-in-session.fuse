@@ -1,0 +1,76 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="121" POS="0" BypassState="1">
+      <Param ControlIndex="0">42677</Param>
+      <Param ControlIndex="1">13312</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">32256</Param>
+      <Param ControlIndex="4">22528</Param>
+      <Param ControlIndex="5">23552</Param>
+      <Param ControlIndex="6">50432</Param>
+      <Param ControlIndex="7">33024</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">0</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">11</Param>
+      <Param ControlIndex="13">11</Param>
+      <Param ControlIndex="14">11</Param>
+      <Param ControlIndex="15">1</Param>
+      <Param ControlIndex="16">2</Param>
+      <Param ControlIndex="17">8</Param>
+      <Param ControlIndex="18">11</Param>
+      <Param ControlIndex="19">0</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="186" POS="0" BypassState="0">
+        <Param ControlIndex="0">43264</Param>
+        <Param ControlIndex="1">27392</Param>
+        <Param ControlIndex="2">32512</Param>
+        <Param ControlIndex="3">65280</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="5" BypassState="1" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="0" POS="6" BypassState="1" />
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">5376</Param>
+        <Param ControlIndex="1">35840</Param>
+        <Param ControlIndex="2">19200</Param>
+        <Param ControlIndex="3">65280</Param>
+        <Param ControlIndex="4">31488</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Stevie in Session" author="intheblues" rating="0" genre1="6" genre2="-1" genre3="-1" tags="SRV, Stevie, Ray, Vaughan, In Session, Albert King, Mustang Monday, 2017, intheblues" fenderid="0">Created by Shane from intheblues on YouTube for 2017 - http://www.YouTube.com/intheblues This is created for my Mustang Monday series and is based on the Stratocater tones by Stevie Ray Vaughan (SRV) on the album "in session" with Albert King.</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="1" HeelSetting="16384" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="1" />
+  <UsbGain>0</UsbGain>
+</Preset>

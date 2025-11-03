@@ -1,0 +1,91 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="121" POS="0" BypassState="1">
+      <Param ControlIndex="0">49408</Param>
+      <Param ControlIndex="1">15360</Param>
+      <Param ControlIndex="2">12032</Param>
+      <Param ControlIndex="3">32256</Param>
+      <Param ControlIndex="4">22784</Param>
+      <Param ControlIndex="5">23552</Param>
+      <Param ControlIndex="6">50432</Param>
+      <Param ControlIndex="7">22784</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">0</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">11</Param>
+      <Param ControlIndex="13">11</Param>
+      <Param ControlIndex="14">11</Param>
+      <Param ControlIndex="15">1</Param>
+      <Param ControlIndex="16">2</Param>
+      <Param ControlIndex="17">8</Param>
+      <Param ControlIndex="18">11</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="273" POS="0" BypassState="0">
+        <Param ControlIndex="0">27648</Param>
+        <Param ControlIndex="1">6144</Param>
+        <Param ControlIndex="2">45056</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="25" POS="5" BypassState="0">
+        <Param ControlIndex="0">65280</Param>
+        <Param ControlIndex="1">256</Param>
+        <Param ControlIndex="2">65280</Param>
+        <Param ControlIndex="3">14080</Param>
+        <Param ControlIndex="4">26112</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="21" POS="6" BypassState="0">
+        <Param ControlIndex="0">17408</Param>
+        <Param ControlIndex="1">33024</Param>
+        <Param ControlIndex="2">19200</Param>
+        <Param ControlIndex="3">33024</Param>
+        <Param ControlIndex="4">33280</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="75" POS="7" BypassState="1">
+        <Param ControlIndex="0">14848</Param>
+        <Param ControlIndex="1">33024</Param>
+        <Param ControlIndex="2">37376</Param>
+        <Param ControlIndex="3">33024</Param>
+        <Param ControlIndex="4">46848</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Calitone" author="intheblues" rating="0" genre1="40" genre2="42" genre3="6" tags="intheblues, calitone, RHCP, John Frusciante, Red Hot Chili Peppers" fenderid="0">Created by Shane at intheblues on YouTube as part of the Mustang Monday series I have released - http://www.youtube.com/intheblues  
+
+This is based off the RHCP tones from several of their songs including Californication, Soul to Squeeze and more.  
+
+Please subscribe on Facebook or YouTube for more presets</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

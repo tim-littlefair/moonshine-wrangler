@@ -1,0 +1,90 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="255" POS="0" BypassState="1">
+      <Param ControlIndex="0">42783</Param>
+      <Param ControlIndex="1">43520</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">65280</Param>
+      <Param ControlIndex="4">23446</Param>
+      <Param ControlIndex="5">40448</Param>
+      <Param ControlIndex="6">45056</Param>
+      <Param ControlIndex="7">34560</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">17</Param>
+      <Param ControlIndex="13">17</Param>
+      <Param ControlIndex="14">17</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">11</Param>
+      <Param ControlIndex="18">17</Param>
+      <Param ControlIndex="19">0</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="60" POS="0" BypassState="0">
+        <Param ControlIndex="0">43008</Param>
+        <Param ControlIndex="1">20992</Param>
+        <Param ControlIndex="2">38656</Param>
+        <Param ControlIndex="3">50688</Param>
+        <Param ControlIndex="4">51456</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="64" POS="5" BypassState="0">
+        <Param ControlIndex="0">56320</Param>
+        <Param ControlIndex="1">44544</Param>
+        <Param ControlIndex="2">25600</Param>
+        <Param ControlIndex="3">62976</Param>
+        <Param ControlIndex="4">62208</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="2" BypassState="0">
+        <Param ControlIndex="0">4096</Param>
+        <Param ControlIndex="1">12800</Param>
+        <Param ControlIndex="2">4608</Param>
+        <Param ControlIndex="3">17152</Param>
+        <Param ControlIndex="4">24064</Param>
+        <Param ControlIndex="5">256</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="4" BypassState="1">
+        <Param ControlIndex="0">11008</Param>
+        <Param ControlIndex="1">50944</Param>
+        <Param ControlIndex="2">50944</Param>
+        <Param ControlIndex="3">46848</Param>
+        <Param ControlIndex="4">32256</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Live Gravity" author="intheblues" rating="0" genre1="32" genre2="40" genre3="6" tags="Mustang Monday, intheblues, Fender Fuse, 2017, John Mayer, Gravity, Live Gravity, John Mayer Solo, Stratocaster" fenderid="0">Created by Shane from the intheblues channel on YouTube as part of the Mustang Monday 2017 series of custom patches. http://www.YouTube.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

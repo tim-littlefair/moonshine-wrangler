@@ -1,0 +1,85 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="103" POS="0" BypassState="1">
+      <Param ControlIndex="0">41583</Param>
+      <Param ControlIndex="1">65535</Param>
+      <Param ControlIndex="2">33153</Param>
+      <Param ControlIndex="3">33153</Param>
+      <Param ControlIndex="4">49344</Param>
+      <Param ControlIndex="5">38396</Param>
+      <Param ControlIndex="6">37959</Param>
+      <Param ControlIndex="7">33153</Param>
+      <Param ControlIndex="8">33153</Param>
+      <Param ControlIndex="9">33153</Param>
+      <Param ControlIndex="10">33153</Param>
+      <Param ControlIndex="11">33153</Param>
+      <Param ControlIndex="12">1</Param>
+      <Param ControlIndex="13">1</Param>
+      <Param ControlIndex="14">1</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">8</Param>
+      <Param ControlIndex="18">1</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">21331</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="186" POS="0" BypassState="1">
+        <Param ControlIndex="0">33153</Param>
+        <Param ControlIndex="1">36751</Param>
+        <Param ControlIndex="2">53941</Param>
+        <Param ControlIndex="3">13593</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="5" BypassState="1" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="22" POS="6" BypassState="1">
+        <Param ControlIndex="0">10923</Param>
+        <Param ControlIndex="1">33153</Param>
+        <Param ControlIndex="2">33153</Param>
+        <Param ControlIndex="3">33153</Param>
+        <Param ControlIndex="4">33153</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="38" POS="7" BypassState="1">
+        <Param ControlIndex="0">22616</Param>
+        <Param ControlIndex="1">32896</Param>
+        <Param ControlIndex="2">32896</Param>
+        <Param ControlIndex="3">32896</Param>
+        <Param ControlIndex="4">32896</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Popa Chubby Beatdown" author="intheblues" rating="0.0" genre1="6" genre2="40" genre3="42" tags="blues, popa chubby, ted, shane, intheblues, mustang monday, signature series, 9" fenderid="5920">Popa Chubby tone from the song "Life is a Beatdown" live (from YouTube).
+For more great presets visit my YouTube channel or Facebook Page.
+http://www.YouTube.com/intheblues
+http://www.Facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">2</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="5" HeelSetting="4112" ToeSetting="40863" PedalMode="0" BypassEffectWhenVolumeMode="1" VolumeSwitchRevert="0" DefaultPedalState="1" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

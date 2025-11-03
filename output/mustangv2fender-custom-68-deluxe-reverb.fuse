@@ -1,0 +1,99 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="83" POS="0" BypassState="1">
+      <Param ControlIndex="0">42240</Param>
+      <Param ControlIndex="1">27392</Param>
+      <Param ControlIndex="2">256</Param>
+      <Param ControlIndex="3">65280</Param>
+      <Param ControlIndex="4">29952</Param>
+      <Param ControlIndex="5">48896</Param>
+      <Param ControlIndex="6">13312</Param>
+      <Param ControlIndex="7">256</Param>
+      <Param ControlIndex="8">256</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">256</Param>
+      <Param ControlIndex="12">3</Param>
+      <Param ControlIndex="13">3</Param>
+      <Param ControlIndex="14">3</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">3</Param>
+      <Param ControlIndex="18">3</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="60" POS="0" BypassState="0">
+        <Param ControlIndex="0">25600</Param>
+        <Param ControlIndex="1">47872</Param>
+        <Param ControlIndex="2">33024</Param>
+        <Param ControlIndex="3">3840</Param>
+        <Param ControlIndex="4">44288</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="64" POS="5" BypassState="0">
+        <Param ControlIndex="0">56320</Param>
+        <Param ControlIndex="1">44544</Param>
+        <Param ControlIndex="2">25600</Param>
+        <Param ControlIndex="3">62976</Param>
+        <Param ControlIndex="4">62208</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">18688</Param>
+        <Param ControlIndex="1">23808</Param>
+        <Param ControlIndex="2">13824</Param>
+        <Param ControlIndex="3">25600</Param>
+        <Param ControlIndex="4">20992</Param>
+        <Param ControlIndex="5">256</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">8960</Param>
+        <Param ControlIndex="1">33792</Param>
+        <Param ControlIndex="2">33536</Param>
+        <Param ControlIndex="3">23552</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Fender Custom '68 Deluxe Reverb" author="intheblues" rating="0.0" genre1="6" genre2="8" genre3="40" tags="fender, 68, deluxe, reverb, reissue, custom, intheblues, mustang monday, shane, brian" fenderid="8886">Howdy all, this is Shane from the intheblues channel on YouTube.
+
+This patch is the Fender 68 Custom Deluxe Reverb Amplifier made in a side by side comparison with the actual amplifier.  We modelled this after the vintage setting on Deluxe reverb instead of the Custom channel with the Bassman tone stack.  We modelled this with the Fender 68 Custom Deluxe Reverb amplifier on about 7 on the volume, just over the edge of clean.
+
+A huge thanks to Brian for helping with this patch and sending it out to me.
+
+Check out my YouTube channel as I have loads of great Mustang videos as well as hundreds of other gear reviews. 
+
+http://www.youtube.com/intheblues
+http://www.facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="1" HeelSetting="24576" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="1" />
+  <UsbGain>0</UsbGain>
+</Preset>

@@ -1,0 +1,84 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="83" POS="0" BypassState="1">
+      <Param ControlIndex="0">42240</Param>
+      <Param ControlIndex="1">37888</Param>
+      <Param ControlIndex="2">256</Param>
+      <Param ControlIndex="3">65280</Param>
+      <Param ControlIndex="4">36352</Param>
+      <Param ControlIndex="5">23040</Param>
+      <Param ControlIndex="6">32000</Param>
+      <Param ControlIndex="7">256</Param>
+      <Param ControlIndex="8">256</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">256</Param>
+      <Param ControlIndex="12">3</Param>
+      <Param ControlIndex="13">3</Param>
+      <Param ControlIndex="14">3</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">11</Param>
+      <Param ControlIndex="18">3</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="186" POS="0" BypassState="0">
+        <Param ControlIndex="0">33024</Param>
+        <Param ControlIndex="1">27648</Param>
+        <Param ControlIndex="2">43008</Param>
+        <Param ControlIndex="3">19712</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="5" BypassState="0" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="22" POS="6" BypassState="1">
+        <Param ControlIndex="0">4608</Param>
+        <Param ControlIndex="1">27392</Param>
+        <Param ControlIndex="2">12800</Param>
+        <Param ControlIndex="3">35072</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">6656</Param>
+        <Param ControlIndex="1">35840</Param>
+        <Param ControlIndex="2">19200</Param>
+        <Param ControlIndex="3">65280</Param>
+        <Param ControlIndex="4">33024</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="John Mayer Trio - Vultures" author="intheblues" rating="0" genre1="6" genre2="32" genre3="-1" tags="vultures, john mayer, trio, blues, intheblues, mustang monday, stratocaster, mayer, clean, strat" fenderid="0">Created by Shane of intheblues on YouTube
+http://www.youtube.com/intheblues
+This John Mayer Preset is the Vultures tone from the John Mayer Trio live album called Try.  I hope you enjoy this one.</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

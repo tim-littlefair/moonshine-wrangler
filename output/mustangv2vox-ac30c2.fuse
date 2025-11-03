@@ -1,0 +1,93 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="97" POS="0" BypassState="1">
+      <Param ControlIndex="0">48384</Param>
+      <Param ControlIndex="1">20736</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">25600</Param>
+      <Param ControlIndex="4">52480</Param>
+      <Param ControlIndex="5">51200</Param>
+      <Param ControlIndex="6">40448</Param>
+      <Param ControlIndex="7">256</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">7</Param>
+      <Param ControlIndex="13">7</Param>
+      <Param ControlIndex="14">7</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">7</Param>
+      <Param ControlIndex="18">7</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="186" POS="0" BypassState="0">
+        <Param ControlIndex="0">27392</Param>
+        <Param ControlIndex="1">35072</Param>
+        <Param ControlIndex="2">30464</Param>
+        <Param ControlIndex="3">65280</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="64" POS="5" BypassState="0">
+        <Param ControlIndex="0">56320</Param>
+        <Param ControlIndex="1">27136</Param>
+        <Param ControlIndex="2">25600</Param>
+        <Param ControlIndex="3">62976</Param>
+        <Param ControlIndex="4">62208</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">24064</Param>
+        <Param ControlIndex="1">27648</Param>
+        <Param ControlIndex="2">15104</Param>
+        <Param ControlIndex="3">25600</Param>
+        <Param ControlIndex="4">37888</Param>
+        <Param ControlIndex="5">256</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">14592</Param>
+        <Param ControlIndex="1">28672</Param>
+        <Param ControlIndex="2">31232</Param>
+        <Param ControlIndex="3">20992</Param>
+        <Param ControlIndex="4">65280</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="VOX AC30C2" author="intheblues" rating="0" genre1="6" genre2="9" genre3="8" tags="intheblues, VOX, AC30, AC-30, AC30C2, AC15, AC-15, AC15C1, shane, mustang monday" fenderid="0">This is a VOX AC30C2 preset by Shane at intheblues on YouTube. This is part of the "Mustang Monday" Series released every Monday for 10 weeks in a row.
+
+This AC30 preset is based on the Top Boost setting on a modern VOX AC30C2 which I used for years.
+
+http://www.youtube.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="4" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="1" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="2" />
+  <UsbGain>0</UsbGain>
+</Preset>

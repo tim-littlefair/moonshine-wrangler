@@ -1,0 +1,92 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="121" POS="0" BypassState="1">
+      <Param ControlIndex="0">44204</Param>
+      <Param ControlIndex="1">47185</Param>
+      <Param ControlIndex="2">33153</Param>
+      <Param ControlIndex="3">32382</Param>
+      <Param ControlIndex="4">44204</Param>
+      <Param ControlIndex="5">32256</Param>
+      <Param ControlIndex="6">23040</Param>
+      <Param ControlIndex="7">33153</Param>
+      <Param ControlIndex="8">33153</Param>
+      <Param ControlIndex="9">33153</Param>
+      <Param ControlIndex="10">33153</Param>
+      <Param ControlIndex="11">33153</Param>
+      <Param ControlIndex="12">11</Param>
+      <Param ControlIndex="13">11</Param>
+      <Param ControlIndex="14">11</Param>
+      <Param ControlIndex="15">1</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">8</Param>
+      <Param ControlIndex="18">11</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">31868</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="60" POS="3" BypassState="1">
+        <Param ControlIndex="0">17920</Param>
+        <Param ControlIndex="1">44288</Param>
+        <Param ControlIndex="2">29184</Param>
+        <Param ControlIndex="3">42752</Param>
+        <Param ControlIndex="4">24832</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="18" POS="4" BypassState="1">
+        <Param ControlIndex="0">31020</Param>
+        <Param ControlIndex="1">3855</Param>
+        <Param ControlIndex="2">6939</Param>
+        <Param ControlIndex="3">6939</Param>
+        <Param ControlIndex="4">33153</Param>
+      </Module>
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="42" POS="1" BypassState="1">
+        <Param ControlIndex="0">15360</Param>
+        <Param ControlIndex="1">55040</Param>
+        <Param ControlIndex="2">7424</Param>
+        <Param ControlIndex="3">25600</Param>
+        <Param ControlIndex="4">65280</Param>
+        <Param ControlIndex="5">33024</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="58" POS="5" BypassState="1">
+        <Param ControlIndex="0">12800</Param>
+        <Param ControlIndex="1">15872</Param>
+        <Param ControlIndex="2">32768</Param>
+        <Param ControlIndex="3">1280</Param>
+        <Param ControlIndex="4">45056</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Hendrix Tones" author="intheblues" rating="4.4" genre1="6" genre2="40" genre3="-1" tags="Red House, Wind Cries Mary, All Along the Watchtower, Hendrix, Jimi, Mustang Monday, intheblues, Shane, Signature Series, 10" fenderid="7243">This is the last preset for the Mustang Monday Signature series by Shane at intheblues on Youtube.
+
+This is the hendrix patch based on tones such as All Along the Watchtower as well as Wind Cries Mary.  It can also be used for Red House as well</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65535" PedalMode="0" BypassEffectWhenVolumeMode="1" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

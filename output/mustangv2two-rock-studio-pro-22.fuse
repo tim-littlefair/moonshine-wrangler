@@ -1,0 +1,88 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="255" POS="0" BypassState="1">
+      <Param ControlIndex="0">43008</Param>
+      <Param ControlIndex="1">46848</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">41472</Param>
+      <Param ControlIndex="4">22784</Param>
+      <Param ControlIndex="5">52992</Param>
+      <Param ControlIndex="6">40960</Param>
+      <Param ControlIndex="7">15616</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">0</Param>
+      <Param ControlIndex="10">32768</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">4</Param>
+      <Param ControlIndex="13">17</Param>
+      <Param ControlIndex="14">17</Param>
+      <Param ControlIndex="15">1</Param>
+      <Param ControlIndex="16">2</Param>
+      <Param ControlIndex="17">11</Param>
+      <Param ControlIndex="18">17</Param>
+      <Param ControlIndex="19">2</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="7" POS="0" BypassState="1">
+        <Param ControlIndex="0">36096</Param>
+        <Param ControlIndex="1">3840</Param>
+        <Param ControlIndex="2">20224</Param>
+        <Param ControlIndex="3">32512</Param>
+        <Param ControlIndex="4">32512</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="4" BypassState="0" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="43" POS="6" BypassState="0">
+        <Param ControlIndex="0">19200</Param>
+        <Param ControlIndex="1">32256</Param>
+        <Param ControlIndex="2">16896</Param>
+        <Param ControlIndex="3">19456</Param>
+        <Param ControlIndex="4">30720</Param>
+        <Param ControlIndex="5">0</Param>
+      </Module>
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="11" POS="7" BypassState="1">
+        <Param ControlIndex="0">17664</Param>
+        <Param ControlIndex="1">35840</Param>
+        <Param ControlIndex="2">25600</Param>
+        <Param ControlIndex="3">15104</Param>
+        <Param ControlIndex="4">42240</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Two-Rock Studio Pro 22" author="intheblues" rating="0" genre1="6" genre2="40" genre3="-1" tags="Two-Rock, two rock, studio pro, 22, 35, intheblues, mustang monday" fenderid="0">Howdy all,
+
+This is the Two-Rock Studio Pro 22 preset created by Shane at www.YouTube.com/intheblues for Mustang Monday.  This preset was based off my Two Rock Studio Pro 22 Guitar Amplifier set up so it's just off-clean.  When you start to dig in on your rhythm hand it sould break up just enough.  I made this preset for the Mustang IV so you may need to adjust the EQ if you are using another amplifier in the range.
+
+Please subscribe to my YouTube channel for more Fender Mustang III and IV V.2 Presets.</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

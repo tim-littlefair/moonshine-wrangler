@@ -113,7 +113,10 @@ ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id ui_na
 
 _MODULE_CONVERTERS = (
     ModuleConverter("Amplifier", 83, "Deluxe65", "DELUXE CLN",  _DEFAULT_AMP_PARAM_CONVERTERS),
+    ModuleConverter("Amplifier", 114, "SuperSonic", "BURN", _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Amplifier", 117, "Twin65", "TWIN CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
+    ModuleConverter("Amplifier", 249, "Ac30Tb", "60S UK CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
+
     ModuleConverter(None, 0, "Passthru", "NONE", ()),
     ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _DEFAULT_OVERDRIVE_PARAM_CONVERTERS),
     ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,)),
@@ -236,14 +239,16 @@ if __name__ == "__main__":
     import zipfile
 
     with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
-        for fn in [n for n in zf.namelist() if n.startswith("intheblues")]:
+        os.makedirs("output", exist_ok=True)
+        failures_stream = open("output/failures.txt", "wt")
+
+        for fn in [n for n in zf.namelist() if n.startswith("intheblues") and n.endswith(".fuse")]:
             if fn not in (
                 "intheblues/mustangv2brick-in-the-wall.fuse",
                 "intheblues/mustangv2mark-knopfler.fuse",
             ):
-                continue
+                pass  # continue
 
-            os.makedirs("output", exist_ok=True)
             output_fn = fn.replace("intheblues/", "output/")
             failed_modules, json_modules, ui_modules = fuse_to_json(zf.open(fn), open(output_fn, "wt"))
             if len(failed_modules) == 0:
@@ -251,6 +256,10 @@ if __name__ == "__main__":
                 print(json.dumps(json_modules, indent=4), file=open(output_fn, "wt"))
                 print(f"UI parameters for {fn}")
                 print(json.dumps(ui_modules, indent=4))
+                print
             else:
-                print(f"Failed to find one or more modules for {fn}\n{"\n".join(failed_modules)}")
-            print()
+                print(
+                    f"Failed to find one or more modules for {fn}\n{"\n".join(failed_modules)}",
+                    file=failures_stream
+                )
+                print(file=failures_stream)
