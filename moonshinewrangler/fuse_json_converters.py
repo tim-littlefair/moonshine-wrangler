@@ -40,22 +40,33 @@ volume_cvpa = CVPA(
     )
 )
 
+delay_time_cvpa = CVPA(
+    # in JSON, volume is represented as a db value between 0.03 and 1.5 seconds
+    # on the UI's it is represented on the same scale as in JSON
+    json_min=0.03, json_max=1.5,
+    ui_range_adaptors=(
+        RA(
+            min_in=0.03, max_in=1.5,
+            min_out=0.03, max_out=1.5,
+            format="1.2f", suffix=""
+        ),
+    )
+)
+
 pc_volume = ParamConverter(0, None, "volume", None, "VOLUME", volume_cvpa)
 pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
-_pc_gain2 = ParamConverter(2, None, "_gain2", None, "_GAIN2", default_cvpa)
-_pc_mvol = ParamConverter(3, None, "_master_volume", None, "_MASTER_VOLUME", default_cvpa)
+# _pc_gain2 = ParamConverter(2, None, "_gain2", None, "_GAIN2", default_cvpa)
+# _pc_mvol = ParamConverter(3, None, "_master_volume", None, "_MASTER_VOLUME", default_cvpa)
 pc_treble = ParamConverter(4, None, "treble", None, "TREBLE", default_cvpa)
 pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
 pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
 pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
-_pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
-
-
+# _pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
 _DEFAULT_AMP_PARAM_CONVERTERS = (
     pc_volume, pc_gain,
-    _pc_gain2, _pc_mvol,
+    # _pc_gain2, _pc_mvol,
     pc_treble, pc_mid, pc_bass,
-    pc_presence, _pc_resonance,
+    pc_presence,  # _pc_resonance,
 )
 
 pc_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
@@ -63,7 +74,6 @@ pc_decay = ParamConverter(1, None, "decay", None, "DECAY", default_cvpa)
 pc_dwell = ParamConverter(2, None, "dwell", None, "DWELL", default_cvpa)
 pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
 pc_tone = ParamConverter(4, None, "tone", None, "TONE", default_cvpa)
-
 _DEFAULT_REVERB_PARAM_CONVERTERS = (
     pc_level, pc_decay, pc_dwell,
     pc_diffusion, pc_tone,
@@ -86,23 +96,13 @@ _OVERDRIVE_PARAM_CONVERTERS = (
     pc_overdrive_low, pc_overdrive_mid, pc_overdrive_high
 )
 
-"""
-        <Param Name="Level" Name10="Level" Name8="Level" ControlIndex="0" ParamIndex="0" ParamGroup="1" ParamType="1">32382</Param>
-        <Param Name="Delay Time" Name10="Delay Time" Name8="Dly Time" ControlIndex="1" ParamIndex="1" ParamGroup="1" ParamType="6">7453</Param>
-        <Param Name="Feedback" Name10="Feedback" Name8="Fdback" ControlIndex="2" ParamIndex="2" ParamGroup="1" ParamType="1">257</Param>
-        <Param Name="Flutter" Name10="Flutter" Name8="Flutter" ControlIndex="3" ParamIndex="3" ParamGroup="1" ParamType="1">25700</Param>
-        <Param Name="Brightness" Name10="Brightness" Name8="Bright" ControlIndex="4" ParamIndex="4" ParamGroup="1" ParamType="1">33153</Param>
-        <Param Name="Stereo" Name10="Stereo" Name8="Stereo" ControlIndex="5" ParamIndex="5" ParamGroup="2" ParamType="1">257</Param>
-"""
-
-
 pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
-pc_delay_delay = ParamConverter(1, None, "time", None, "TIME", default_cvpa)
+pc_delay_time = ParamConverter(1, None, "time", None, "TIME", delay_time_cvpa)
 pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
 pc_delay_brightness3 = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
 pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
 _MONO_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_delay, pc_delay_feedback,
+    pc_delay_level, pc_delay_time, pc_delay_feedback,
     pc_delay_brightness3, pc_delay_attenuation
 )
 
@@ -110,18 +110,18 @@ pc_delay_flutter = ParamConverter(3, None, "flutter", None, "FLUTTER", default_c
 pc_delay_brightness4 = ParamConverter(4, None, "brightness", None, "BRIGHTNESS", default_cvpa)
 pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", BPA())
 _TAPE_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_delay, pc_delay_feedback,
+    pc_delay_level, pc_delay_time, pc_delay_feedback,
     pc_delay_flutter, pc_delay_brightness4,
     # pc_delay_stereo
 )
 
 pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
-pc_delay_delay = ParamConverter(1, None, "delay", None, "DELAY", default_cvpa)
+# pc_delay_time already defined
 pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
 pc_delay_brightness = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
 pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
 _MONO_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_delay,
+    pc_delay_level, pc_delay_time,
     pc_delay_feedback, pc_delay_brightness, pc_delay_attenuation
 )
 

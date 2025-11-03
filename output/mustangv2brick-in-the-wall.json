@@ -17,13 +17,13 @@
         "dspUnitParameters": {
             "volume": -18.543,
             "gain": 0.444,
-            "_gain2": -0.008,
-            "_master_volume": 1.0,
+            "__2": "256",
+            "__3": "65280",
             "treble": 0.611,
             "mid": 0.667,
             "bass": 0.306,
             "presence": -0.008,
-            "_resonance": -0.008,
+            "__8": "256",
             "__9": "65535",
             "__10": "33024",
             "__11": "256",
@@ -44,7 +44,7 @@
         "FenderId": "MonoDelay",
         "dspUnitParameters": {
             "level": 0.139,
-            "delay": 0.329,
+            "time": 0.514,
             "feedback": 0.286,
             "brightness": 0.31,
             "attenuation": 0.5
