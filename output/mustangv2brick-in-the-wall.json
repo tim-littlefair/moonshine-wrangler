@@ -1,0 +1,63 @@
+[
+    {
+        "FenderId": "Overdrive",
+        "dspUnitParameters": {
+            "level": 0.659,
+            "low": 0.655,
+            "mid": 0.425,
+            "high": 0.306
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Deluxe65",
+        "dspUnitParameters": {
+            "volume": -18.543,
+            "gain": 0.444,
+            "_gain2": -0.008,
+            "_master_volume": 1.0,
+            "treble": 0.611,
+            "mid": 0.667,
+            "bass": 0.306,
+            "presence": -0.008,
+            "_resonance": -0.008,
+            "__9": "65535",
+            "__10": "33024",
+            "__11": "256",
+            "__12": "3",
+            "__13": "3",
+            "__14": "3",
+            "__15": "0",
+            "__16": "0",
+            "__17": "3",
+            "__18": "3",
+            "__19": "1",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "MonoDelay",
+        "dspUnitParameters": {
+            "level": 0.139,
+            "delay": 0.329,
+            "feedback": 0.286,
+            "brightness": 0.31,
+            "attenuation": 0.5
+        }
+    },
+    {
+        "FenderId": "LargeHall",
+        "dspUnitParameters": {
+            "level": 0.31,
+            "decay": 0.242,
+            "dwell": 0.5,
+            "diffuse": 0.016,
+            "tone": 0.69
+        }
+    }
+]

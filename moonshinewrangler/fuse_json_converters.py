@@ -77,26 +77,64 @@ low_med_hi_max_pa = SCPA(
     ["low", "medium", "high", "super"],
     {"low": "LOW", "medium": "MID", "high": "HIGH", "super": "MAX"}
 )
-
 pc_compressor_type = ParamConverter(5, None, "type", None, "TYPE", low_med_hi_max_pa)
+
+pc_overdrive_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
+pc_overdrive_gain = ParamConverter(1, None, "level", None, "LEVEL", default_cvpa)
+pc_overdrive_low = ParamConverter(2, None, "low", None, "LOW", default_cvpa)
+pc_overdrive_mid = ParamConverter(3, None, "mid", None, "MID", default_cvpa)
+pc_overdrive_high = ParamConverter(4, None, "high", None, "HIGH", default_cvpa)
+
+_DEFAULT_OVERDRIVE_PARAM_CONVERTERS = (
+    pc_overdrive_level, pc_overdrive_gain,
+    pc_overdrive_low, pc_overdrive_mid, pc_overdrive_high
+)
+
+"""
+        <Param Name="Level" Name10="Level" Name8="Level" ControlIndex="0" ParamIndex="0" ParamGroup="1" ParamType="1">65535</Param>
+        <Param Name="Delay Time" Name10="Delay Time" Name8="Dly Time" ControlIndex="1" ParamIndex="1" ParamGroup="1" ParamType="6">33153</Param>
+        <Param Name="Feedback" Name10="Feedback" Name8="Fdback" ControlIndex="2" ParamIndex="2" ParamGroup="1" ParamType="1">33153</Param>
+        <Param Name="Brightness" Name10="Brightness" Name8="Bright" ControlIndex="3" ParamIndex="3" ParamGroup="1" ParamType="1">33153</Param>
+        <Param Name="Attenuation" Name10="Attnuation" Name8="Attnuat" ControlIndex="4" ParamIndex="4" ParamGroup="1" ParamType="1">33153</Param>
+"""
+
+pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
+pc_delay_delay = ParamConverter(1, None, "delay", None, "DELAY", default_cvpa)
+pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
+pc_delay_brightness = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
+pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
+_DELAY_PARAM_CONVERTERS = (
+    pc_delay_level, pc_delay_delay,
+    pc_delay_feedback, pc_delay_brightness, pc_delay_attenuation
+)
+
 
 ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id ui_name param_converters")
 
 _MODULE_CONVERTERS = (
+    ModuleConverter("Amplifier", 83, "Deluxe65", "DELUXE CLN",  _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Amplifier", 117, "Twin65", "TWIN CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
-    ModuleConverter("Effect", 0, "Passthru", "EMPTY", ()),
-    ModuleConverter("Effect", 58, "LargeHall", "LARGE HALL", _DEFAULT_REVERB_PARAM_CONVERTERS),
-    ModuleConverter("Effect", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,))
+    ModuleConverter(None, 0, "Passthru", "NONE", ()),
+    ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _DEFAULT_OVERDRIVE_PARAM_CONVERTERS),
+    ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,)),
+    ModuleConverter("Delay", 22, "MonoDelay", "DELAY", _DELAY_PARAM_CONVERTERS),
+    ModuleConverter("Reverb", 58, "LargeHall", "LARGE HALL", _DEFAULT_REVERB_PARAM_CONVERTERS),
 )
 
 
-def fuse_mc_lookup(fuse_module_id):
+def fuse_mc_lookup(fuse_module_type, fuse_module_id):
     matching_mcs = [
         mc
         for mc in _MODULE_CONVERTERS
-        if mc.fuse_id == fuse_module_id
+        if (
+            (mc.fuse_id == fuse_module_id) and
+            (
+                (mc.fuse_type is None) or
+                (mc.fuse_type == fuse_module_type)
+            )
+        )
     ]
-    assert len(matching_mcs) == 1, f"Converter not found for module {fuse_module_id}"
+    assert len(matching_mcs) == 1, f"Converter not found for {fuse_module_type} {fuse_module_id}"
     return matching_mcs[0]
 
 
@@ -113,17 +151,24 @@ def fuse_pc_lookup(mc, fuse_param_id):
         return None
 
 
-def convert_fuse_module(fuse_amp_element):
-    mc = fuse_mc_lookup(int(fuse_amp_element[0].attrib.get("ID")))
+def convert_fuse_module(fuse_module_type, fuse_module_element):
+    mc = fuse_mc_lookup(
+        fuse_module_type,
+        int(fuse_module_element[0].attrib.get("ID"))
+    )
     json_params = {}
     ui_params = {}
-    for fuse_param_element in fuse_amp_element[0]:
+    for fuse_param_element in fuse_module_element[0]:
         pc = fuse_pc_lookup(mc, int(fuse_param_element.attrib.get("ControlIndex")))
         if pc is not None:
             json_name = pc.json_param_name
-            json_value = pc.parameter_adaptor.fuse_to_json.adapt(
+            adapted_value_and_string = pc.parameter_adaptor.fuse_to_json.adapt(
                 int(fuse_param_element.text)
-            )[0]
+            )
+            if adapted_value_and_string is None:
+                print(f"Failed to adapt {pc} from value {fuse_param_element.text}")
+                continue
+            json_value = adapted_value_and_string[0]
             json_params[json_name] = json_value
             ui_name = pc.ui_param_name
             ui_value = pc.parameter_adaptor.json_to_ui(json_value)
@@ -137,55 +182,75 @@ def convert_fuse_module(fuse_amp_element):
     )
 
 
+def fuse_to_json(mk_stream, xml_stream=None):
+    failed_modules = []
+    json_modules = []
+    ui_modules = []
+    try:
+        preset_tree = ET.ElementTree(
+            ET.fromstring(str(mk_stream.read(), "utf-8"))
+        )
+        ET.indent(preset_tree.getroot())
+        if xml_stream is not None:
+            preset_tree.write(xml_stream, "unicode")
+
+        fuse_amp_element = preset_tree.getroot()[0]
+        assert fuse_amp_element.tag == "Amplifier"
+
+        fuse_stomp_element = preset_tree.getroot()[1][0]
+        assert fuse_stomp_element.tag == "Stompbox"
+
+        fuse_mod_element = preset_tree.getroot()[1][1]
+        assert fuse_mod_element.tag == "Modulation"
+
+        fuse_delay_element = preset_tree.getroot()[1][2]
+        assert fuse_delay_element.tag == "Delay"
+
+        fuse_reverb_element = preset_tree.getroot()[1][3]
+        assert fuse_reverb_element.tag == "Reverb"
+
+        for fuse_element in (
+            fuse_stomp_element, fuse_mod_element,
+            fuse_amp_element,
+            fuse_delay_element, fuse_reverb_element
+        ):
+            try:
+                j, u = convert_fuse_module(fuse_element.tag, fuse_element)
+                json_modules += [j]
+                ui_modules += [u]
+            except AssertionError as e:
+                failed_modules += [str(e)]
+            except Exception as e:
+                failed_modules += [str(e)]
+    except Exception as e:
+        failed_modules += [str(e)]
+
+    return failed_modules, json_modules, ui_modules
+
+
 if __name__ == "__main__":
 
     import json
-    import sys
-    import traceback
+    import os
     import xml.etree.ElementTree as ET
     import zipfile
 
     with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
-        # print("\n".join(zf.namelist()))
-        with zf.open("intheblues/mustangv2mark-knopfler.fuse") as mk_stream:
-            preset_tree = ET.ElementTree(
-                ET.fromstring(str(mk_stream.read(), "utf-8"))
-            )
-            ET.indent(preset_tree.getroot())
-            preset_tree.write(sys.stdout, "unicode")
+        for fn in [n for n in zf.namelist() if n.startswith("intheblues")]:
+            if fn not in (
+                "intheblues/mustangv2brick-in-the-wall.fuse",
+                "intheblues/mustangv2mark-knopfler.fuse",
+            ):
+                continue
+
+            os.makedirs("output", exist_ok=True)
+            output_fn = fn.replace("intheblues/", "output/")
+            failed_modules, json_modules, ui_modules = fuse_to_json(zf.open(fn), open(output_fn, "wt"))
+            if len(failed_modules) == 0:
+                output_fn = output_fn.replace(".fuse", ".json")
+                print(json.dumps(json_modules, indent=4), file=open(output_fn, "wt"))
+                print(f"UI parameters for {fn}")
+                print(json.dumps(ui_modules, indent=4))
+            else:
+                print(f"Failed to find one or more modules for {fn}\n{"\n".join(failed_modules)}")
             print()
-
-            json_preset_dict = {}
-            ui_preset_dict = {}
-
-            fuse_amp_element = preset_tree.getroot()[0]
-            assert fuse_amp_element.tag == "Amplifier"
-
-            fuse_stomp_element = preset_tree.getroot()[1][0]
-            assert fuse_stomp_element.tag == "Stompbox"
-
-            fuse_mod_element = preset_tree.getroot()[1][1]
-            assert fuse_mod_element.tag == "Modulation"
-
-            fuse_delay_element = preset_tree.getroot()[1][2]
-            assert fuse_delay_element.tag == "Delay"
-
-            fuse_reverb_element = preset_tree.getroot()[1][3]
-            assert fuse_reverb_element.tag == "Reverb"
-
-            json_modules = []
-            ui_modules = []
-            try:
-                for fuse_element in (
-                    fuse_stomp_element, fuse_mod_element,
-                    fuse_amp_element,
-                    fuse_delay_element, fuse_reverb_element
-                ):
-                    j, u = convert_fuse_module(fuse_element)
-                    json_modules += [j]
-                    ui_modules += [u]
-            except RuntimeError:
-                traceback.print_exception()
-                print("Partial results:")
-            print(json.dumps(json_modules, indent=4))
-            print(json.dumps(ui_modules, indent=4))

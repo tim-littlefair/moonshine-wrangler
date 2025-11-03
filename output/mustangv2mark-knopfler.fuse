@@ -1,0 +1,77 @@
+<Preset amplifier="Mustang V2 I/II" ProductId="13">
+  <Amplifier>
+    <Module ID="117" POS="0" BypassState="1">
+      <Param ControlIndex="0">44288</Param>
+      <Param ControlIndex="1">65280</Param>
+      <Param ControlIndex="2">33024</Param>
+      <Param ControlIndex="3">25600</Param>
+      <Param ControlIndex="4">18944</Param>
+      <Param ControlIndex="5">22528</Param>
+      <Param ControlIndex="6">29696</Param>
+      <Param ControlIndex="7">33024</Param>
+      <Param ControlIndex="8">33024</Param>
+      <Param ControlIndex="9">65535</Param>
+      <Param ControlIndex="10">33024</Param>
+      <Param ControlIndex="11">33024</Param>
+      <Param ControlIndex="12">5</Param>
+      <Param ControlIndex="13">5</Param>
+      <Param ControlIndex="14">5</Param>
+      <Param ControlIndex="15">0</Param>
+      <Param ControlIndex="16">0</Param>
+      <Param ControlIndex="17">7</Param>
+      <Param ControlIndex="18">5</Param>
+      <Param ControlIndex="19">1</Param>
+      <Param ControlIndex="20">0</Param>
+      <Param ControlIndex="21">1</Param>
+      <Param ControlIndex="22">0</Param>
+    </Module>
+  </Amplifier>
+  <FX>
+    <Stompbox ID="1">
+      <Module ID="136" POS="0" BypassState="1">
+        <Param ControlIndex="0">1</Param>
+      </Module>
+    </Stompbox>
+    <Modulation ID="2">
+      <Module ID="0" POS="5" BypassState="0" />
+    </Modulation>
+    <Delay ID="3">
+      <Module ID="0" POS="6" BypassState="0" />
+    </Delay>
+    <Reverb ID="4">
+      <Module ID="58" POS="7" BypassState="1">
+        <Param ControlIndex="0">19968</Param>
+        <Param ControlIndex="1">16384</Param>
+        <Param ControlIndex="2">33024</Param>
+        <Param ControlIndex="3">1792</Param>
+        <Param ControlIndex="4">45312</Param>
+      </Module>
+    </Reverb>
+  </FX>
+  <Band Type="0" Repeat="0">
+    <SongFile Location="6">No Band</SongFile>
+    <AudioMix>0</AudioMix>
+    <Balance>29127</Balance>
+    <Speed>100</Speed>
+    <Pitch>0</Pitch>
+    <Tempo />
+    <Transpose />
+    <DrumSolo />
+    <CountIn />
+  </Band>
+  <FUSE>
+    <Info name="Mark Knopfler" author="intheblues" rating="0" genre1="40" genre2="-1" genre3="-1" tags="Mark Knopfler, Sultans of Swing, Mustang Monday, intheblues, Signature Series, classic rock, clean" fenderid="0">This is part #5 of my Mustang Monday Signature Series Tones.
+Based on the tones of Mark Knopfler from the Sultans of Swing tone from both the album and the live clips.  
+
+http://www.YouTube.com/intheblues
+http://www.Facebook.com/intheblues</Info>
+    <PedalColors>
+      <Color ID="1">14</Color>
+      <Color ID="2">1</Color>
+      <Color ID="3">2</Color>
+      <Color ID="4">10</Color>
+    </PedalColors>
+  </FUSE>
+  <FirstExpressionPedal VolumeModeBehavior="1" ExpressionModeBehavior="6" HeelSetting="0" ToeSetting="65280" PedalMode="0" BypassEffectWhenVolumeMode="0" VolumeSwitchRevert="0" DefaultPedalState="0" PedalOverrideState="0" ParameterIndex="0" />
+  <UsbGain>0</UsbGain>
+</Preset>

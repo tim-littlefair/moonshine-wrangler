@@ -1,0 +1,54 @@
+[
+    {
+        "FenderId": "SimpleCompressor",
+        "dspUnitParameters": {
+            "__0": "1"
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "Twin65",
+        "dspUnitParameters": {
+            "volume": -19.524,
+            "gain": 1.0,
+            "_gain2": 0.5,
+            "_master_volume": 0.385,
+            "treble": 0.282,
+            "mid": 0.337,
+            "bass": 0.448,
+            "presence": 0.5,
+            "_resonance": 0.5,
+            "__9": "65535",
+            "__10": "33024",
+            "__11": "33024",
+            "__12": "5",
+            "__13": "5",
+            "__14": "5",
+            "__15": "0",
+            "__16": "0",
+            "__17": "7",
+            "__18": "5",
+            "__19": "1",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "Passthru",
+        "dspUnitParameters": {}
+    },
+    {
+        "FenderId": "LargeHall",
+        "dspUnitParameters": {
+            "level": 0.298,
+            "decay": 0.242,
+            "dwell": 0.5,
+            "diffuse": 0.016,
+            "tone": 0.69
+        }
+    }
+]

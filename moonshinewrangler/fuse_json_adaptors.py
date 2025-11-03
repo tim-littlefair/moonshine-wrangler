@@ -33,8 +33,14 @@ class RangeAdaptor:
         self.suffix = suffix
 
     def adapt(self, value_in):
-        assert value_in >= self.min_in
-        assert value_in <= self.max_in
+        """
+        if (
+            (value_in < self.min_in) or
+            (value_in > self.max_out)
+        ):
+            print(f"Out of range value: {value_in}")
+            return None
+        # """
         numerator = ((value_in - self.min_in) * (self.max_out - self.min_out))
         denominator = (self.max_in - self.min_in)
         value_out = self.min_out + (numerator / denominator)
