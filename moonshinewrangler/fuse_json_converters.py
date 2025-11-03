@@ -235,6 +235,7 @@ def fuse_to_json(mk_stream, xml_stream=None):
         assert fuse_reverb_element.tag == "Reverb"
 
         for fuse_element in (
+            fuse_amp_element,
             fuse_stomp_element, fuse_mod_element,
             fuse_amp_element,
             fuse_delay_element, fuse_reverb_element
@@ -246,9 +247,19 @@ def fuse_to_json(mk_stream, xml_stream=None):
             except AssertionError as e:
                 failed_modules += [str(e)]
             except Exception as e:
-                failed_modules += [str(e)]
+                problem = str(e)
+                if problem in failed_modules:
+                    # duplicate
+                    pass
+                else:
+                    failed_modules += [problem]
     except Exception as e:
-        failed_modules += [str(e)]
+        problem = str(e)
+        if problem in failed_modules:
+            # duplicate
+            pass
+        else:
+            failed_modules += [problem]
 
     return failed_modules, json_modules, ui_modules
 
@@ -275,10 +286,10 @@ if __name__ == "__main__":
             failed_modules, json_modules, ui_modules = fuse_to_json(zf.open(fn), open(output_fn, "wt"))
             if len(failed_modules) == 0:
                 output_fn = output_fn.replace(".fuse", ".json")
-                print(json.dumps(json_modules, indent=4), file=open(output_fn, "wt"))
+                print(json.dumps([json_modules[i] for i in range(1, 6)], indent=4), file=open(output_fn, "wt"))
                 print()
                 print(f"UI parameters for {fn}")
-                for module in ui_modules:
+                for module in [ui_modules[i] for i in [0, 1, 2, 4, 5]]:
                     assert len(module.keys()) == 3
                     if module["module_type"] is not None:
                         print(f"{module["module_type"]}: {module["module_name"]} {module["params"] or ""}")
