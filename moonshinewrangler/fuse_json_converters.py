@@ -10,6 +10,7 @@
 
 from collections import namedtuple
 
+from fuse_json_adaptors import RangeAdaptor as RA
 from fuse_json_adaptors import ContinuousValuedParameterAdaptor as CVPA
 from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 
@@ -17,7 +18,32 @@ from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 ParamConverter = namedtuple("ParamConverter", "fuse_param_id fuse_module_id json_param_name json_module_id ui_param_name parameter_adaptor")
 
 default_cvpa = CVPA()
-volume_cvpa = CVPA(json_min=-60.0, json_max=0.0)
+
+
+def set_default_cvpa(preferred_cvpa):
+    global default_cvpa
+    default_cvpa = preferred_cvpa
+
+
+volume_cvpa = CVPA(
+    # in JSON, volume is represented as a db value between -60.0 and 0.0
+    # on the UI's it is represented on the same 1.0-10.0/0%-100% range
+    # as the other parameters
+    json_min=-60.0, json_max=0.0,
+    ui_range_adaptors=(
+        RA(
+            min_in=-60.0, max_in=0.0,
+            min_out=1.0, max_out=10.0,
+            format="2.1f", suffix=""
+        ),
+        RA(
+            min_in=-60.0, max_in=0.0,
+            min_out=0.0, max_out=100.0,
+            format=".0f", suffix="%"
+        ),
+    )
+)
+
 pc_volume = ParamConverter(0, None, "volume", None, "VOLUME", volume_cvpa)
 pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
 _pc_gain2 = ParamConverter(2, None, "_gain2", None, "_GAIN2", default_cvpa)
@@ -96,13 +122,11 @@ def convert_fuse_module(fuse_amp_element):
         if pc is not None:
             json_name = pc.json_param_name
             json_value = pc.parameter_adaptor.fuse_to_json.adapt(
-                        int(fuse_param_element.text)
-                    )
+                int(fuse_param_element.text)
+            )[0]
             json_params[json_name] = json_value
             ui_name = pc.ui_param_name
-            ui_value = pc.parameter_adaptor.json_to_ui.adapt(
-                        json_value
-                    )
+            ui_value = pc.parameter_adaptor.json_to_ui(json_value)
             ui_params[ui_name] = ui_value
         else:
             fuse_ci = fuse_param_element.attrib.get("ControlIndex")

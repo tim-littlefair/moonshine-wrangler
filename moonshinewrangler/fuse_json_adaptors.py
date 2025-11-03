@@ -24,12 +24,13 @@
 
 class RangeAdaptor:
 
-    def __init__(self, min_in, max_in, min_out, max_out, format=None):
+    def __init__(self, min_in, max_in, min_out, max_out, format=None, suffix=""):
         self.min_in = min_in
         self.max_in = max_in
         self.min_out = min_out
         self.max_out = max_out
         self.format = format
+        self.suffix = suffix
 
     def adapt(self, value_in):
         assert value_in >= self.min_in
@@ -43,9 +44,20 @@ class RangeAdaptor:
         else:
             value_out_str = str(value_out)
         if isinstance(self.min_out, int):
-            return int(value_out_str)
+            return int(value_out_str), value_out_str + self.suffix
         else:
-            return float(value_out_str)
+            return float(value_out_str), value_out_str + self.suffix
+
+
+# I choose to truncate continuous/float values in JSON to 3 decimal
+# places on the grounds that:
+# a) AFAIK there are no parameters where a different value at the
+#    4th decimal place or later is likely to be perceptible to a
+#    normal human listening to the preset; and
+# b) quantizing values in this way will reduce the likelihood of
+#    near-duplicate presets returning different hashes when a control
+#    is nudged by an infinitisemal amount.
+_DEFAULT_JSON_FORMAT = ".3f"
 
 
 class ContinuousValuedParameterAdaptor:
@@ -54,17 +66,35 @@ class ContinuousValuedParameterAdaptor:
         self,
         fuse_min=0x0300, fuse_max=0xff00,
         json_min=0.0, json_max=1.0,
-        ui_min=1.0, ui_max=10.0,
-        ui_format="2.1f",
+        ui_range_adaptors=None
     ):
-        self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max)
-        self.json_to_ui = RangeAdaptor(json_min, json_max, ui_min, ui_max, ui_format)
+        self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max, _DEFAULT_JSON_FORMAT)
+        if ui_range_adaptors is not None:
+            self.ui_range_adaptors = ui_range_adaptors
+        else:
+            # Rendering of most of the continuous parameter values on FMIC's first
+            # party UIs differs between:
+            # + 1.0 to 10.0 (Fender Tone LT Desktop/LCD UI on Fender LT- series amp) or
+            # + 0% to 100% (Fender Tone Mobile for Mustang Micro Plus).
+            # The logic below is intended to display both
+            self.ui_range_adaptors = (
+                # LCD UI on LT- series and Fender Tone LT Desktop
+                # feed back value for most params on range 1.0 to 10.0
+                RangeAdaptor(min_in=0.0, max_in=1.0, min_out=1.0, max_out=10.0, format="2.1f"),
+                # Fender Tone Mobile for MMP (probably also GT-, GTX-)
+                # feed back value for most params on range 0% to 100%
+                RangeAdaptor(min_in=0.0, max_in=1.0, min_out=0.0, max_out=100.0, format=".0f", suffix="%"),
+            )
 
     def fuse_to_json(self, fuse_value):
         return self.fuse_to_json.adapt(fuse_value)
 
     def json_to_ui(self, json_value):
-        return self.json_to_ui.adapt(json_value)
+        ui_values = [
+            ui_ra.adapt(json_value)[1]
+            for ui_ra in self.ui_range_adaptors
+        ]
+        return "/".join(ui_values)
 
 
 class StringChoiceParameterAdaptor:
@@ -85,9 +115,9 @@ if __name__ == "__main__":
     # Minimal tests
 
     cvpa = ContinuousValuedParameterAdaptor()
-    expect_zero_point_zero = cvpa.fuse_to_json.adapt(0x0300)
-    expect_zero_point_five = cvpa.fuse_to_json.adapt(0x8100)  # aka decimal 33024
-    expect_one_point_zero = cvpa.fuse_to_json.adapt(0xff00)
+    expect_zero_point_zero = cvpa.fuse_to_json.adapt(0x0300)[0]
+    expect_zero_point_five = cvpa.fuse_to_json.adapt(0x8100)[0]  # aka decimal 33024
+    expect_one_point_zero = cvpa.fuse_to_json.adapt(0xff00)[0]
     assert expect_zero_point_zero == 0.0, f"Expected 0.0, got {expect_zero_point_zero}"
     assert expect_zero_point_five == 0.5, f"Expected 0.5, got {expect_zero_point_five}"
     assert expect_one_point_zero == 1.0, f"Expected 0.1, got {expect_one_point_zero}"
