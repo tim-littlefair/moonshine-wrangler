@@ -97,3 +97,15 @@ ENV/
 # The _work directory will contain artifacts we do not want in version control
 _work
 
+# We don't want to allow anything to be added to version control which was derived from 
+# + _work/reference_files/factory-presets.zip or 
+# + _work/reference_files/entire-archive.zip
+# as FMIC might regard some or all data in the first of those files and some
+# data in the second as copyright material.
+# Data derived from files in _work/reference_files/intheblues.zip can be added 
+# as these are the work of Shane@intheblues and he has explicitly put these in 
+# the public domain.
+output/factory-presets
+output/entire-archive
+
+
