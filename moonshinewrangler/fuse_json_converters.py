@@ -112,7 +112,7 @@ pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", BPA())
 _TAPE_DELAY_PARAM_CONVERTERS = (
     pc_delay_level, pc_delay_time, pc_delay_feedback,
     pc_delay_flutter, pc_delay_brightness4,
-    # pc_delay_stereo
+    pc_delay_stereo
 )
 
 pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
@@ -176,7 +176,10 @@ def fuse_pc_lookup(mc, fuse_param_id):
         return None
 
 
-def convert_fuse_module(fuse_module_type, fuse_module_element):
+def convert_fuse_module(
+    fuse_module_type, fuse_module_element,
+    unconverted_param_values
+):
     mc = fuse_mc_lookup(
         fuse_module_type,
         int(fuse_module_element[0].attrib.get("ID"))
@@ -199,16 +202,27 @@ def convert_fuse_module(fuse_module_type, fuse_module_element):
             ui_value = pc.parameter_adaptor.json_to_ui(json_value)
             ui_params[ui_name] = ui_value
         else:
-            fuse_ci = fuse_param_element.attrib.get("ControlIndex")
-            json_params["__"+fuse_ci] = fuse_param_element.text
+            param_ci = fuse_param_element.attrib.get("ControlIndex")
+            json_params["__"+param_ci] = fuse_param_element.text
+            if unconverted_param_values is not None:
+                upv_key = (mc.fuse_type, int(param_ci), int(fuse_param_element.text))
+                upv_entry = unconverted_param_values.get(upv_key, [0, {}])
+                upv_module_count = upv_entry[1].get(mc.fuse_id, 0)
+                upv_entry[1][mc.fuse_id] = upv_module_count + 1
+                upv_entry[0] = sum(upv_entry[1].values())
+                unconverted_param_values[upv_key] = upv_entry
     return (
         {"FenderId": mc.json_id, "dspUnitParameters": json_params},
         {"module_type": mc.fuse_type, "module_name": mc.ui_name, "params": ui_params}
     )
 
 
-def fuse_to_json(mk_stream, xml_stream=None):
-    failed_modules = []
+def fuse_to_json(
+    mk_stream,
+    xml_stream=None,
+    unconverted_param_values=None
+):
+    problems = []
     json_modules = []
     ui_modules = []
     try:
@@ -241,27 +255,30 @@ def fuse_to_json(mk_stream, xml_stream=None):
             fuse_delay_element, fuse_reverb_element
         ):
             try:
-                j, u = convert_fuse_module(fuse_element.tag, fuse_element)
+                j, u = convert_fuse_module(
+                    fuse_element.tag, fuse_element,
+                    unconverted_param_values
+                )
                 json_modules += [j]
                 ui_modules += [u]
             except AssertionError as e:
-                failed_modules += [str(e)]
+                problems += [str(e)]
             except Exception as e:
                 problem = str(e)
-                if problem in failed_modules:
+                if problem in problems:
                     # duplicate
                     pass
                 else:
-                    failed_modules += [problem]
+                    problems += [problem]
     except Exception as e:
         problem = str(e)
-        if problem in failed_modules:
+        if problem in problems:
             # duplicate
             pass
         else:
-            failed_modules += [problem]
+            problems += [problem]
 
-    return failed_modules, json_modules, ui_modules
+    return problems, json_modules, ui_modules
 
 
 if __name__ == "__main__":
@@ -273,17 +290,15 @@ if __name__ == "__main__":
 
     with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
         os.makedirs("output", exist_ok=True)
-        failures_stream = open("output/failures.txt", "wt")
+        failures_stream = open("output/_failures.txt", "wt")
+        unconverted_param_values = {}
 
         for fn in [n for n in zf.namelist() if n.startswith("intheblues") and n.endswith(".fuse")]:
-            if fn not in (
-                "intheblues/mustangv2brick-in-the-wall.fuse",
-                "intheblues/mustangv2mark-knopfler.fuse",
-            ):
-                pass  # continue
-
             output_fn = fn.replace("intheblues/", "output/")
-            failed_modules, json_modules, ui_modules = fuse_to_json(zf.open(fn), open(output_fn, "wt"))
+            failed_modules, json_modules, ui_modules = fuse_to_json(
+                zf.open(fn), open(output_fn, "wt"),
+                unconverted_param_values
+            )
             if len(failed_modules) == 0:
                 output_fn = output_fn.replace(".fuse", ".json")
                 print(json.dumps([json_modules[i] for i in range(1, 6)], indent=4), file=open(output_fn, "wt"))
@@ -300,3 +315,6 @@ if __name__ == "__main__":
                     file=failures_stream
                 )
                 print(file=failures_stream)
+        unconverted_params_stream = open("output/_unconverted_params.txt", "wt")
+        for k in sorted(unconverted_param_values.keys()):
+            print(k, unconverted_param_values[k], file=unconverted_params_stream)
