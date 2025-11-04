@@ -1,0 +1,70 @@
+[
+    {
+        "FenderId": "Overdrive",
+        "dspUnitParameters": {
+            "level": 0.187,
+            "low": 0.607,
+            "mid": 0.706,
+            "high": 0.643
+        }
+    },
+    {
+        "FenderId": "Vibratone",
+        "dspUnitParameters": {
+            "level": 0.964,
+            "speed": 1.0,
+            "depth": 0.151,
+            "feedback": 0.679,
+            "phase": 0.512
+        }
+    },
+    {
+        "FenderId": "SuperSonic",
+        "dspUnitParameters": {
+            "volume": -19.524,
+            "gain": 0.063,
+            "__2": "65280",
+            "__3": "22016",
+            "treble": 0.917,
+            "mid": 0.683,
+            "bass": 0.671,
+            "presence": 0.5,
+            "__8": "33024",
+            "__9": "65535",
+            "__10": "33024",
+            "__11": "33024",
+            "__12": "6",
+            "__13": "6",
+            "__14": "6",
+            "__15": "2",
+            "__16": "3",
+            "__17": "11",
+            "__18": "6",
+            "__19": "0",
+            "__20": "0",
+            "__21": "1",
+            "__22": "0"
+        }
+    },
+    {
+        "FenderId": "TapeDelayLite",
+        "dspUnitParameters": {
+            "level": 0.171,
+            "time": 0.479,
+            "feedback": 0.282,
+            "flutter": 0.401,
+            "brightness": 0.369,
+            "stereo": true
+        }
+    },
+    {
+        "FenderId": "Spring65",
+        "dspUnitParameters": {
+            "level": 0.131,
+            "decay": 0.544,
+            "dwell": 0.286,
+            "diffuse": 1.0,
+            "tone": 0.5
+        }
+    }
+]

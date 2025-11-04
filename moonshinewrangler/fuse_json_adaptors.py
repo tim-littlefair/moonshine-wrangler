@@ -33,14 +33,20 @@ class RangeAdaptor:
         self.suffix = suffix
 
     def adapt(self, value_in):
-        """
-        if (
-            (value_in < self.min_in) or
-            (value_in > self.max_out)
-        ):
-            print(f"Out of range value: {value_in}")
-            return None
-        # """
+        if self.min_in == 0x0300 and self.max_in == 0xFF00:
+            # Values 256 and 65535 fall outside the usual range
+            # for conversion of FUSE u16 values but seem to be
+            # used (perhaps as indicator values, maybe the
+            # intended meaning is 'undefined').
+            # We tolerate these out of range values and map them
+            # to the extremities of the output range, but
+            # raise an assertion of we see anything else.
+            if value_in < self.min_in:
+                assert value_in == 256
+                return self.min_out
+            if value_in > self.max_in:
+                assert value_in == 65535
+                return self.max_out
         numerator = ((value_in - self.min_in) * (self.max_out - self.min_out))
         denominator = (self.max_in - self.min_in)
         value_out = self.min_out + (numerator / denominator)

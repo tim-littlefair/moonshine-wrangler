@@ -302,6 +302,7 @@ if __name__ == "__main__":
 
     with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
         os.makedirs("output", exist_ok=True)
+        ui_params_stream = open("output/_ui_params.txt", "wt")
         failures_stream = open("output/_failures.txt", "wt")
         unconverted_param_values = {}
 
@@ -313,14 +314,16 @@ if __name__ == "__main__":
             )
             if len(failed_modules) == 0:
                 output_fn = output_fn.replace(".fuse", ".json")
-                print(json.dumps([json_modules[i] for i in range(1, 6)], indent=4), file=open(output_fn, "wt"))
-                print()
-                print(f"UI parameters for {fn}")
+                print(json.dumps([json_modules[i] for i in [1, 2, 3, 4, 5]], indent=4), file=open(output_fn, "wt"))
+                print(f"\nUI parameters for {fn}", file=ui_params_stream)
                 for module in [ui_modules[i] for i in [0, 1, 2, 4, 5]]:
                     assert len(module.keys()) == 3
                     if module["module_type"] is not None:
-                        print(f"{module["module_type"]}: {module["module_name"]} {module["params"] or ""}")
-                print()
+                        print(
+                            f"{module["module_type"]}: {module["module_name"]} {module["params"] or ""}",
+                            file=ui_params_stream
+                        )
+                print(f"Exported {output_fn}")
             else:
                 print(
                     f"Failed to find one or more modules for {fn}\n{"\n".join(failed_modules)}",
