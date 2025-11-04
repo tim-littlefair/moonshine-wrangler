@@ -55,7 +55,7 @@ class RangeAdaptor:
             return float(value_out_str), value_out_str + self.suffix
 
 
-# I choose to truncate continuous/float values in JSON to 3 decimal
+# I choose to round continuous/float values in JSON to 3 decimal
 # places on the grounds that:
 # a) AFAIK there are no parameters where a different value at the
 #    4th decimal place or later is likely to be perceptible to a
@@ -74,7 +74,7 @@ class ContinuousValuedParameterAdaptor:
         json_min=0.0, json_max=1.0,
         ui_range_adaptors=None
     ):
-        self.fuse_to_json = RangeAdaptor(fuse_min, fuse_max, json_min, json_max, _DEFAULT_JSON_FORMAT)
+        self.fuse_to_json_ra = RangeAdaptor(fuse_min, fuse_max, json_min, json_max, _DEFAULT_JSON_FORMAT)
         if ui_range_adaptors is not None:
             self.ui_range_adaptors = ui_range_adaptors
         else:
@@ -93,7 +93,7 @@ class ContinuousValuedParameterAdaptor:
             )
 
     def fuse_to_json(self, fuse_value):
-        return self.fuse_to_json.adapt(fuse_value)
+        return self.fuse_to_json_ra.adapt(fuse_value)[0]
 
     def json_to_ui(self, json_value):
         ui_values = [
@@ -121,18 +121,27 @@ class BooleanParameterAdaptor:
     def __init__(
         self
     ):
+        """
         self.fuse_to_json = lambda v: v != 0
-        self.json_to_ui = lambda v: v
+        self.json_to_ui = lambda v: str(v).upper()
+        """
+        pass
+
+    def fuse_to_json(self, v):
+        return v != 0
+
+    def json_to_ui(self, v):
+        return str(v).upper()
 
 
 if __name__ == "__main__":
 
-    # Minimal tests
+    print("Running minimal tests")
 
     cvpa = ContinuousValuedParameterAdaptor()
-    expect_zero_point_zero = cvpa.fuse_to_json.adapt(0x0300)[0]
-    expect_zero_point_five = cvpa.fuse_to_json.adapt(0x8100)[0]  # aka decimal 33024
-    expect_one_point_zero = cvpa.fuse_to_json.adapt(0xff00)[0]
+    expect_zero_point_zero = cvpa.fuse_to_json(0x0300)
+    expect_zero_point_five = cvpa.fuse_to_json(0x8100)  # aka decimal 33024
+    expect_one_point_zero = cvpa.fuse_to_json(0xff00)
     assert expect_zero_point_zero == 0.0, f"Expected 0.0, got {expect_zero_point_zero}"
     assert expect_zero_point_five == 0.5, f"Expected 0.5, got {expect_zero_point_five}"
     assert expect_one_point_zero == 1.0, f"Expected 0.1, got {expect_one_point_zero}"
@@ -145,3 +154,17 @@ if __name__ == "__main__":
     expect_GREEN = scpa.json_to_ui("green")
     assert expect_red == "red", f"Expected 'red' got {expect_red}"
     assert expect_GREEN == "GREEN", f"Expected 'GREEN' got {expect_GREEN}"
+
+    bpa = BooleanParameterAdaptor()
+    expect_false = bpa.fuse_to_json(0)
+    expect_true_1 = bpa.fuse_to_json(256)
+    expect_true_2 = bpa.fuse_to_json(257)
+    expect_FALSE = bpa.json_to_ui(False)
+    expect_TRUE = bpa.json_to_ui(True)
+    assert expect_false is False, f"Expected False got {expect_false}"
+    assert expect_true_1 is True, f"Expected True got {expect_true_1}"
+    assert expect_true_2 is True, f"Expected True got {expect_true_2}"
+    assert expect_FALSE == "FALSE", f"Expected FALSE got {expect_FALSE}"
+    assert expect_TRUE == "TRUE", f"Expected TRUE got {expect_TRUE}"
+
+    print("Minimal tests passed")

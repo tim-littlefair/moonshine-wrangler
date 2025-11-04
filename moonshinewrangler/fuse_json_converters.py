@@ -20,6 +20,7 @@ ParamConverter = namedtuple("ParamConverter", "fuse_param_id fuse_module_id json
 
 default_cvpa = CVPA()
 
+default_bpa = BPA()
 
 volume_cvpa = CVPA(
     # in JSON, volume is represented as a db value between -60.0 and 0.0
@@ -108,7 +109,7 @@ _MONO_DELAY_PARAM_CONVERTERS = (
 
 pc_delay_flutter = ParamConverter(3, None, "flutter", None, "FLUTTER", default_cvpa)
 pc_delay_brightness4 = ParamConverter(4, None, "brightness", None, "BRIGHTNESS", default_cvpa)
-pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", BPA())
+pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", default_bpa)
 _TAPE_DELAY_PARAM_CONVERTERS = (
     pc_delay_level, pc_delay_time, pc_delay_feedback,
     pc_delay_flutter, pc_delay_brightness4,
@@ -190,16 +191,15 @@ def convert_fuse_module(
         pc = fuse_pc_lookup(mc, int(fuse_param_element.attrib.get("ControlIndex")))
         if pc is not None:
             json_name = pc.json_param_name
-            adapted_value_and_string = pc.parameter_adaptor.fuse_to_json.adapt(
+            adapted_value = pc.parameter_adaptor.fuse_to_json(
                 int(fuse_param_element.text)
             )
-            if adapted_value_and_string is None:
+            if adapted_value is None:
                 print(f"Failed to adapt {pc} from value {fuse_param_element.text}")
                 continue
-            json_value = adapted_value_and_string[0]
-            json_params[json_name] = json_value
+            json_params[json_name] = adapted_value
             ui_name = pc.ui_param_name
-            ui_value = pc.parameter_adaptor.json_to_ui(json_value)
+            ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
             ui_params[ui_name] = ui_value
         else:
             param_ci = fuse_param_element.attrib.get("ControlIndex")

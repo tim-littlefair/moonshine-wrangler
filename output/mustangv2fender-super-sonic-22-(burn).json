@@ -48,7 +48,7 @@
             "feedback": 0.206,
             "flutter": 0.385,
             "brightness": 0.5,
-            "__5": "256"
+            "stereo": true
         }
     },
     {
