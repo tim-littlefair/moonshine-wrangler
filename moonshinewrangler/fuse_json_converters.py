@@ -86,15 +86,25 @@ low_med_hi_max_pa = SCPA(
 )
 pc_compressor_type = ParamConverter(5, None, "type", None, "TYPE", low_med_hi_max_pa)
 
-pc_overdrive_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
+# pc_level at param 0 already defined
 pc_overdrive_gain = ParamConverter(1, None, "level", None, "LEVEL", default_cvpa)
 pc_overdrive_low = ParamConverter(2, None, "low", None, "LOW", default_cvpa)
 pc_overdrive_mid = ParamConverter(3, None, "mid", None, "MID", default_cvpa)
 pc_overdrive_high = ParamConverter(4, None, "high", None, "HIGH", default_cvpa)
 
 _OVERDRIVE_PARAM_CONVERTERS = (
-    pc_overdrive_level, pc_overdrive_gain,
+    pc_level, pc_overdrive_gain,
     pc_overdrive_low, pc_overdrive_mid, pc_overdrive_high
+)
+
+# pc_level at param 0 already defined
+pc_vibratone_speed = ParamConverter(1, None, "speed", None, "SPEED", default_cvpa)
+pc_vibratone_depth = ParamConverter(2, None, "depth", None, "DEPTH", default_cvpa)
+pc_vibratone_feedback = ParamConverter(3, None, "feedback", None, "FEEDBACK", default_cvpa)
+pc_vibratone_phase = ParamConverter(4, None, "phase", None, "PHASE", default_cvpa)
+_VIBRATONE_PARAM_CONVERTERS = (
+    pc_level, pc_vibratone_speed, pc_vibratone_depth,
+    pc_vibratone_feedback, pc_vibratone_phase
 )
 
 pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
@@ -139,6 +149,8 @@ _MODULE_CONVERTERS = (
 
     ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _OVERDRIVE_PARAM_CONVERTERS),
     ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,)),
+
+    ModuleConverter("Modulation", 45, "Vibratone", "VIBRATONE", _VIBRATONE_PARAM_CONVERTERS),
 
     ModuleConverter("Delay", 22, "MonoDelay", "DELAY", _MONO_DELAY_PARAM_CONVERTERS),
     ModuleConverter("Delay", 43, "TapeDelayLite", "ECHO", _TAPE_DELAY_PARAM_CONVERTERS),
