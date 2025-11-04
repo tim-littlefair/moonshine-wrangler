@@ -42,14 +42,14 @@ volume_cvpa = CVPA(
 )
 
 delay_time_cvpa = CVPA(
-    # in JSON, volume is represented as a db value between 0.03 and 1.5 seconds
-    # on the UI's it is represented on the same scale as in JSON
+    # in JSON, volume is represented as a value between 0.03 and 1.5 seconds
+    # on the UI's it is represented in milliseconds
     json_min=0.03, json_max=1.5,
     ui_range_adaptors=(
         RA(
             min_in=0.03, max_in=1.5,
-            min_out=0.03, max_out=1.5,
-            format="1.2f", suffix=""
+            min_out=30, max_out=1500,
+            format=".0f", suffix=" ms"
         ),
     )
 )
@@ -61,23 +61,24 @@ pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
 pc_treble = ParamConverter(4, None, "treble", None, "TREBLE", default_cvpa)
 pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
 pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
-pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
+# _pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
 # _pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
 _DEFAULT_AMP_PARAM_CONVERTERS = (
     pc_volume, pc_gain,
     # _pc_gain2, _pc_mvol,
     pc_treble, pc_mid, pc_bass,
-    pc_presence,  # _pc_resonance,
+    # _pc_presence,  # _pc_resonance,
 )
 
 pc_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
 pc_decay = ParamConverter(1, None, "decay", None, "DECAY", default_cvpa)
 pc_dwell = ParamConverter(2, None, "dwell", None, "DWELL", default_cvpa)
-pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
+# pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
 pc_tone = ParamConverter(4, None, "tone", None, "TONE", default_cvpa)
 _DEFAULT_REVERB_PARAM_CONVERTERS = (
     pc_level, pc_decay, pc_dwell,
-    pc_diffusion, pc_tone,
+    # pc_diffusion,
+    pc_tone,
 )
 
 low_med_hi_max_pa = SCPA(
@@ -200,29 +201,35 @@ def convert_fuse_module(
     json_params = {}
     ui_params = {}
     for fuse_param_element in fuse_module_element[0]:
-        pc = fuse_pc_lookup(mc, int(fuse_param_element.attrib.get("ControlIndex")))
-        if pc is not None:
-            json_name = pc.json_param_name
-            adapted_value = pc.parameter_adaptor.fuse_to_json(
-                int(fuse_param_element.text)
+        fuse_param_id = int(fuse_param_element.attrib.get("ControlIndex"))
+        try:
+            pc = fuse_pc_lookup(mc, fuse_param_id)
+            if pc is not None:
+                json_name = pc.json_param_name
+                adapted_value = pc.parameter_adaptor.fuse_to_json(
+                    int(fuse_param_element.text)
+                )
+                if adapted_value is None:
+                    print(f"Failed to adapt {pc} from value {fuse_param_element.text}")
+                    continue
+                json_params[json_name] = adapted_value
+                ui_name = pc.ui_param_name
+                ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
+                ui_params[ui_name] = ui_value
+            else:
+                json_params["__"+str(fuse_param_id)] = fuse_param_element.text
+                if unconverted_param_values is not None:
+                    upv_key = (mc.fuse_type, fuse_param_id, int(fuse_param_element.text))
+                    upv_entry = unconverted_param_values.get(upv_key, [0, {}])
+                    upv_module_count = upv_entry[1].get(mc.fuse_id, 0)
+                    upv_entry[1][mc.fuse_id] = upv_module_count + 1
+                    upv_entry[0] = sum(upv_entry[1].values())
+                    unconverted_param_values[upv_key] = upv_entry
+        except Exception as e:
+            raise RuntimeError(
+                f"Attempting to process {mc.fuse_type} {mc.fuse_id} param {fuse_param_id}: {str(e)}"
             )
-            if adapted_value is None:
-                print(f"Failed to adapt {pc} from value {fuse_param_element.text}")
-                continue
-            json_params[json_name] = adapted_value
-            ui_name = pc.ui_param_name
-            ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
-            ui_params[ui_name] = ui_value
-        else:
-            param_ci = fuse_param_element.attrib.get("ControlIndex")
-            json_params["__"+param_ci] = fuse_param_element.text
-            if unconverted_param_values is not None:
-                upv_key = (mc.fuse_type, int(param_ci), int(fuse_param_element.text))
-                upv_entry = unconverted_param_values.get(upv_key, [0, {}])
-                upv_module_count = upv_entry[1].get(mc.fuse_id, 0)
-                upv_entry[1][mc.fuse_id] = upv_module_count + 1
-                upv_entry[0] = sum(upv_entry[1].values())
-                unconverted_param_values[upv_key] = upv_entry
+
     return (
         {"FenderId": mc.json_id, "dspUnitParameters": json_params},
         {"module_type": mc.fuse_type, "module_name": mc.ui_name, "params": ui_params}
