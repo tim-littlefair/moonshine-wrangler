@@ -9,6 +9,7 @@
 # but I don't have access to any of those at present).
 
 from collections import namedtuple
+import traceback
 
 from fuse_json_adaptors import RangeAdaptor as RA
 from fuse_json_adaptors import ContinuousValuedParameterAdaptor as CVPA
@@ -61,23 +62,23 @@ pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
 pc_treble = ParamConverter(4, None, "treble", None, "TREBLE", default_cvpa)
 pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
 pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
-# _pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
-# _pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
+_pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
+_pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
 _DEFAULT_AMP_PARAM_CONVERTERS = (
     pc_volume, pc_gain,
     # _pc_gain2, _pc_mvol,
     pc_treble, pc_mid, pc_bass,
-    # _pc_presence,  # _pc_resonance,
+    _pc_presence, _pc_resonance,
 )
 
 pc_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
 pc_decay = ParamConverter(1, None, "decay", None, "DECAY", default_cvpa)
 pc_dwell = ParamConverter(2, None, "dwell", None, "DWELL", default_cvpa)
-# pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
+pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
 pc_tone = ParamConverter(4, None, "tone", None, "TONE", default_cvpa)
 _DEFAULT_REVERB_PARAM_CONVERTERS = (
     pc_level, pc_decay, pc_dwell,
-    # pc_diffusion,
+    pc_diffusion,
     pc_tone,
 )
 
@@ -85,7 +86,10 @@ low_med_hi_max_pa = SCPA(
     ["low", "medium", "high", "super"],
     {"low": "LOW", "medium": "MID", "high": "HIGH", "super": "MAX"}
 )
-pc_compressor_type = ParamConverter(5, None, "type", None, "TYPE", low_med_hi_max_pa)
+pc_compressor_type = ParamConverter(0, None, "type", None, "TYPE", low_med_hi_max_pa)
+_COMPRESSOR_PARAM_CONVERTERS = (
+    pc_compressor_type,
+)
 
 # pc_level at param 0 already defined
 pc_overdrive_gain = ParamConverter(1, None, "level", None, "LEVEL", default_cvpa)
@@ -149,7 +153,7 @@ _MODULE_CONVERTERS = (
     ModuleConverter(None, 0, "Passthru", "NONE", ()),
 
     ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _OVERDRIVE_PARAM_CONVERTERS),
-    ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", (pc_compressor_type,)),
+    ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", _COMPRESSOR_PARAM_CONVERTERS),
 
     ModuleConverter("Modulation", 45, "Vibratone", "VIBRATONE", _VIBRATONE_PARAM_CONVERTERS),
 
@@ -226,9 +230,10 @@ def convert_fuse_module(
                     upv_entry[0] = sum(upv_entry[1].values())
                     unconverted_param_values[upv_key] = upv_entry
         except Exception as e:
-            raise RuntimeError(
-                f"Attempting to process {mc.fuse_type} {mc.fuse_id} param {fuse_param_id}: {str(e)}"
-            )
+            message = f"Attempting to process {mc.fuse_type} {mc.fuse_id} param {fuse_param_id}"
+            traceback.print_exception(e)
+            print(message)
+            raise RuntimeError(message)
 
     return (
         {"FenderId": mc.json_id, "dspUnitParameters": json_params},

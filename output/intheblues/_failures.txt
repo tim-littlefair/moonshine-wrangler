@@ -55,7 +55,6 @@ Converter not found for Amplifier 103
 Failed to find one or more modules for intheblues/mustangv2fender-65-super-reverb-amplifier.fuse
 Converter not found for Stompbox 186
 Converter not found for Modulation 64
-Attempting to process Delay 43 param 3: 
 
 Failed to find one or more modules for intheblues/mustangv2keith-richards.fuse
 Converter not found for Amplifier 124

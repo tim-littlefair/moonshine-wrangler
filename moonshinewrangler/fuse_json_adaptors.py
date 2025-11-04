@@ -33,8 +33,9 @@ class RangeAdaptor:
         self.suffix = suffix
 
     def adapt(self, value_in):
+        value_out = None
         if self.min_in == 0x0300 and self.max_in == 0xFF00:
-            # Values 256 and 65535 fall outside the usual range
+            # Values 0, 256 and 65535 fall outside the usual range
             # for conversion of FUSE u16 values but seem to be
             # used (perhaps as indicator values, maybe the
             # intended meaning is 'undefined').
@@ -42,14 +43,15 @@ class RangeAdaptor:
             # to the extremities of the output range, but
             # raise an assertion of we see anything else.
             if value_in < self.min_in:
-                assert value_in == 256
-                return self.min_out
+                assert value_in in (0, 256)
+                value_out = self.min_out
             if value_in > self.max_in:
                 assert value_in == 65535
-                return self.max_out
-        numerator = ((value_in - self.min_in) * (self.max_out - self.min_out))
-        denominator = (self.max_in - self.min_in)
-        value_out = self.min_out + (numerator / denominator)
+                value_out = self.max_out
+        if value_out is None:
+            numerator = ((value_in - self.min_in) * (self.max_out - self.min_out))
+            denominator = (self.max_in - self.min_in)
+            value_out = self.min_out + (numerator / denominator)
         value_out_str = None
         if self.format is not None:
             value_out_str = format(value_out, self.format)
@@ -127,10 +129,6 @@ class BooleanParameterAdaptor:
     def __init__(
         self
     ):
-        """
-        self.fuse_to_json = lambda v: v != 0
-        self.json_to_ui = lambda v: str(v).upper()
-        """
         pass
 
     def fuse_to_json(self, v):
