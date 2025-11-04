@@ -307,14 +307,20 @@ if __name__ == "__main__":
     import xml.etree.ElementTree as ET
     import zipfile
 
-    with zipfile.ZipFile("./_work/reference_files/intheblues.zip") as zf:
-        os.makedirs("output", exist_ok=True)
-        ui_params_stream = open("output/_ui_params.txt", "wt")
-        failures_stream = open("output/_failures.txt", "wt")
+    which_zf = "intheblues"
+    with zipfile.ZipFile(f"./_work/reference_files/{which_zf}.zip") as zf:
+        outdir = f"output/{which_zf}"
+        os.makedirs(outdir, exist_ok=True)
+        ui_params_stream = open(f"{outdir}/_ui_params.txt", "wt")
+        failures_stream = open(f"{outdir}/_failures.txt", "wt")
         unconverted_param_values = {}
 
-        for fn in [n for n in zf.namelist() if n.startswith("intheblues") and n.endswith(".fuse")]:
-            output_fn = fn.replace("intheblues/", "output/")
+        for fn in [
+            n
+            for n in zf.namelist()
+            if not n.startswith("__MACOSX") and n.endswith(".fuse")
+        ]:
+            output_fn = f"{outdir}/{os.path.basename(fn)}"
             failed_modules, json_modules, ui_modules = fuse_to_json(
                 zf.open(fn), open(output_fn, "wt"),
                 unconverted_param_values
@@ -337,6 +343,6 @@ if __name__ == "__main__":
                     file=failures_stream
                 )
                 print(file=failures_stream)
-        unconverted_params_stream = open("output/_unconverted_params.txt", "wt")
+        unconverted_params_stream = open(f"{outdir}/_unconverted_params.txt", "wt")
         for k in sorted(unconverted_param_values.keys()):
             print(k, unconverted_param_values[k], file=unconverted_params_stream)
