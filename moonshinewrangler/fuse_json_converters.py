@@ -17,7 +17,7 @@ from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 from fuse_json_adaptors import BooleanParameterAdaptor as BPA
 
 
-ParamConverter = namedtuple("ParamConverter", "Xfuse_param_id json_param_name ui_param_name parameter_adaptor")
+ParamConverter = namedtuple("ParamConverter", "json_param_name ui_param_name parameter_adaptor")
 
 
 def addNewParamConverter(pc_map, fuse_param_id, json_param_name, ui_param_name, ui_param_adaptors):
@@ -82,15 +82,15 @@ _MODULE_CONVERTERS = []
 
 # Start of converters for stomp amps
 
-pc_volume = ParamConverter(0, "volume", "VOLUME", volume_cvpa)
-pc_gain = ParamConverter(1, "gain", "GAIN", default_cvpa)
-# _pc_gain2 = ParamConverter(2, "_gain2", "_GAIN2", default_cvpa)
-# _pc_mvol = ParamConverter(3, "_master_volume", "_MASTER_VOLUME", default_cvpa)
-pc_treble = ParamConverter(4, "treble", "TREBLE", default_cvpa)
-pc_middle = ParamConverter(5, "mid", "MIDDLE", default_cvpa)
-pc_bass = ParamConverter(6, "bass", "BASS", default_cvpa)
-_pc_presence = ParamConverter(7, "presence", "PRESENCE", default_cvpa)
-_pc_resonance = ParamConverter(8, "_resonance", "_RESONANCE", default_cvpa)
+pc_volume = ParamConverter("volume", "VOLUME", volume_cvpa)
+pc_gain = ParamConverter("gain", "GAIN", default_cvpa)
+# _pc_gain2 = ParamConverter("_gain2", "_GAIN2", default_cvpa)
+# _pc_mvol = ParamConverter("_master_volume", "_MASTER_VOLUME", default_cvpa)
+pc_treble = ParamConverter("treble", "TREBLE", default_cvpa)
+pc_middle = ParamConverter("mid", "MIDDLE", default_cvpa)
+pc_bass = ParamConverter("bass", "BASS", default_cvpa)
+_pc_presence = ParamConverter("presence", "PRESENCE", default_cvpa)
+_pc_resonance = ParamConverter("_resonance", "_RESONANCE", default_cvpa)
 
 _DEFAULT_AMP_PARAM_CONVERTERS = {
     0: pc_volume,
@@ -113,12 +113,12 @@ _MODULE_CONVERTERS += [
 
 # Start of converters for stomp effects
 
-pc_level = ParamConverter(0, "level", "LEVEL", default_cvpa)
+pc_level = ParamConverter("level", "LEVEL", default_cvpa)
 # pc_gain already defined in parameter section for amps
-pc_low = ParamConverter(2, "low", "LOW", default_cvpa)
-pc_mid = ParamConverter(3, "mid", "MID", default_cvpa)
-pc_high = ParamConverter(3, "high", "HIGH", default_cvpa)
-pc_compressor_type = ParamConverter(5, "type", "TYPE", low_med_hi_max_scpa)
+pc_low = ParamConverter("low", "LOW", default_cvpa)
+pc_mid = ParamConverter("mid", "MID", default_cvpa)
+pc_high = ParamConverter("high", "HIGH", default_cvpa)
+pc_compressor_type = ParamConverter("type", "TYPE", low_med_hi_max_scpa)
 
 _OVERDRIVE_PARAM_CONVERTERS = {
     0: pc_level,
@@ -142,10 +142,10 @@ _MODULE_CONVERTERS += [
 # Start of converters for modulation effects
 
 # pc_level already defined in parameter section for stomp effects
-pc_speed = ParamConverter(1, "speed", "SPEED", default_cvpa)
-pc_depth = ParamConverter(2, "depth", "DEPTH", default_cvpa)
-pc_feedback = ParamConverter(3, "feedback", "FEEDBACK", default_cvpa)
-pc_phase = ParamConverter(4, "phase", "PHASE", default_cvpa)
+pc_speed = ParamConverter("speed", "SPEED", default_cvpa)
+pc_depth = ParamConverter("depth", "DEPTH", default_cvpa)
+pc_feedback = ParamConverter("feedback", "FEEDBACK", default_cvpa)
+pc_phase = ParamConverter("phase", "PHASE", default_cvpa)
 _VIBRATONE_PARAM_CONVERTERS = {
     0: pc_level,
     1: pc_speed,
@@ -163,13 +163,13 @@ _MODULE_CONVERTERS += [
 # Start of converters for delay effects
 
 # pc_level already defined in section for stomp effects
-pc_delay_time = ParamConverter(1, "time", "TIME", delay_time_cvpa)
-pc_feedback2 = ParamConverter(2, "feedback", "FEEDBACK", default_cvpa)
-pc_brightness3 = ParamConverter(3, "brightness", "BRIGHTNESS", default_cvpa)
-pc_attenuation = ParamConverter(4, "attenuation", "ATTENUATION", default_cvpa)
-pc_flutter = ParamConverter(3, "flutter", "FLUTTER", default_cvpa)
-pc_brightness4 = ParamConverter(4, "brightness", "BRIGHTNESS", default_cvpa)
-pc_stereo = ParamConverter(5, "stereo", "STEREO", default_bpa)
+pc_delay_time = ParamConverter("time", "TIME", delay_time_cvpa)
+pc_feedback2 = ParamConverter("feedback", "FEEDBACK", default_cvpa)
+pc_brightness3 = ParamConverter("brightness", "BRIGHTNESS", default_cvpa)
+pc_attenuation = ParamConverter("attenuation", "ATTENUATION", default_cvpa)
+pc_flutter = ParamConverter("flutter", "FLUTTER", default_cvpa)
+pc_brightness4 = ParamConverter("brightness", "BRIGHTNESS", default_cvpa)
+pc_stereo = ParamConverter("stereo", "STEREO", default_bpa)
 
 _MONO_DELAY_PARAM_CONVERTERS = {
     0: pc_level,
@@ -198,10 +198,10 @@ _MODULE_CONVERTERS += [
 # Start of converters for reverb effects
 
 # pc_level already defined in section for stomp effects
-pc_decay = ParamConverter(1, "decay", "DECAY", default_cvpa)
-pc_dwell = ParamConverter(2, "dwell", "DWELL", default_cvpa)
-pc_diffusion = ParamConverter(3, "diffuse", "DIFFUSE", default_cvpa)
-pc_tone = ParamConverter(4, "tone", "TONE", default_cvpa)
+pc_decay = ParamConverter("decay", "DECAY", default_cvpa)
+pc_dwell = ParamConverter("dwell", "DWELL", default_cvpa)
+pc_diffusion = ParamConverter("diffuse", "DIFFUSE", default_cvpa)
+pc_tone = ParamConverter("tone", "TONE", default_cvpa)
 
 _DEFAULT_REVERB_PARAM_CONVERTERS = {
     0: pc_level,
