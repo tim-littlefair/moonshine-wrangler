@@ -240,16 +240,8 @@ def fuse_mc_lookup(fuse_module_type, fuse_module_id):
 
 
 def fuse_pc_lookup(mc, fuse_param_id):
-    if isinstance(mc.param_converters, dict):
+    if mc.param_converters is not None:
         return mc.param_converters.get(fuse_param_id, None)
-    matching_pcs = [
-        pc
-        for pc in mc.param_converters
-        if pc.Xfuse_param_id == fuse_param_id
-    ]
-    assert len(matching_pcs) <= 1
-    if len(matching_pcs) == 1:
-        return matching_pcs[0]
     else:
         return None
 
