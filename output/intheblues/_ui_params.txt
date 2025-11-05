@@ -1,68 +1,68 @@
 
 UI parameters for intheblues/mustangv2les-paul.fuse
-Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.5/16%', 'TREBLE': '6.2/57%', 'MIDDLE': '6.9/65%', 'BASS': '5.0/44%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.5/16%', 'TREBLE': '6.2/57%', 'MIDDLE': '6.9/65%', 'BASS': '5.0/44%'}
 Stompbox: OVERDRIVE {'LEVEL': '5.7/52%', 'LOW': '4.5/39%', 'MID': '6.1/56%', 'HIGH': '5.3/48%'}
 Modulation: VIBRATONE {'LEVEL': '9.7/96%', 'SPEED': '10.0/100%', 'DEPTH': '2.5/16%', 'FEEDBACK': '6.1/56%', 'PHASE': '5.6/51%'}
-Delay: ECHO {'LEVEL': '3.5/28%', 'TIME': '619 ms', 'FEEDBACK': '3.6/29%', 'FLUTTER': '1.1/1%', 'BRIGHTNESS': '2.9/21%', 'STEREO': 'FALSE'}
+Delay: ECHO {'LEVEL': '3.5/28%', 'DELAY': '619 ms', 'FEEDBACK': '3.6/29%', 'WOW': '1.1/1%'}
 Reverb: SPRING 65 {'LEVEL': '2.9/21%', 'DECAY': '2.9/21%', 'DWELL': '3.8/31%', 'DIFFUSE': '4.4/37%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2stratocaster.fuse
-Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.6/18%', 'TREBLE': '5.2/47%', 'MIDDLE': '8.0/78%', 'BASS': '6.9/65%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.6/18%', 'TREBLE': '5.2/47%', 'MIDDLE': '8.0/78%', 'BASS': '6.9/65%'}
 Stompbox: OVERDRIVE {'LEVEL': '5.7/52%', 'LOW': '4.5/39%', 'MID': '6.1/56%', 'HIGH': '5.3/48%'}
 Modulation: VIBRATONE {'LEVEL': '9.7/96%', 'SPEED': '10.0/100%', 'DEPTH': '2.5/16%', 'FEEDBACK': '6.1/56%', 'PHASE': '5.6/51%'}
-Delay: ECHO {'LEVEL': '3.5/28%', 'TIME': '619 ms', 'FEEDBACK': '3.6/29%', 'FLUTTER': '1.1/1%', 'BRIGHTNESS': '2.9/21%', 'STEREO': 'FALSE'}
+Delay: ECHO {'LEVEL': '3.5/28%', 'DELAY': '619 ms', 'FEEDBACK': '3.6/29%', 'WOW': '1.1/1%'}
 Reverb: SPRING 65 {'LEVEL': '2.9/21%', 'DECAY': '2.9/21%', 'DWELL': '3.8/31%', 'DIFFUSE': '4.4/37%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2335.fuse
-Amplifier: BURN {'VOLUME': '8.3/82%', 'GAIN': '1.8/9%', 'TREBLE': '7.1/68%', 'MIDDLE': '7.1/68%', 'BASS': '5.5/50%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '8.3/82%', 'GAIN': '1.8/9%', 'TREBLE': '7.1/68%', 'MIDDLE': '7.1/68%', 'BASS': '5.5/50%'}
 Stompbox: OVERDRIVE {'LEVEL': '3.6/29%', 'LOW': '5.8/54%', 'MID': '7.3/70%', 'HIGH': '7.1/68%'}
 Modulation: VIBRATONE {'LEVEL': '9.7/96%', 'SPEED': '10.0/100%', 'DEPTH': '2.5/16%', 'FEEDBACK': '6.1/56%', 'PHASE': '5.6/51%'}
-Delay: ECHO {'LEVEL': '2.4/16%', 'TIME': '631 ms', 'FEEDBACK': '2.9/21%', 'FLUTTER': '1.1/1%', 'BRIGHTNESS': '2.9/21%', 'STEREO': 'FALSE'}
+Delay: ECHO {'LEVEL': '2.4/16%', 'DELAY': '631 ms', 'FEEDBACK': '2.9/21%', 'WOW': '1.1/1%'}
 Reverb: SPRING 65 {'LEVEL': '2.9/21%', 'DECAY': '2.9/21%', 'DWELL': '3.8/31%', 'DIFFUSE': '4.4/37%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2srv-little-wing.fuse
-Amplifier: DELUXE CLN {'VOLUME': '7.3/70%', 'GAIN': '7.8/75%', 'TREBLE': '6.1/57%', 'MIDDLE': '8.4/82%', 'BASS': '5.4/49%', 'PRESENCE': '1.0/0%', '_RESONANCE': '1.0/0%'}
+Amplifier: DELUXE CLN {'VOLUME': '7.3/70%', 'GAIN': '7.8/75%', 'TREBLE': '6.1/57%', 'MIDDLE': '8.4/82%', 'BASS': '5.4/49%'}
 Stompbox: OVERDRIVE {'LEVEL': '4.0/34%', 'LOW': '5.5/50%', 'MID': '4.3/37%', 'HIGH': '10.0/100%'}
 Reverb: SPRING 65 {'LEVEL': '2.1/13%', 'DECAY': '5.9/54%', 'DWELL': '3.6/29%', 'DIFFUSE': '10.0/100%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2telecaster.fuse
-Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.6/18%', 'TREBLE': '4.3/36%', 'MIDDLE': '8.0/78%', 'BASS': '6.9/65%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '8.2/80%', 'GAIN': '2.6/18%', 'TREBLE': '4.3/36%', 'MIDDLE': '8.0/78%', 'BASS': '6.9/65%'}
 Stompbox: OVERDRIVE {'LEVEL': '5.7/52%', 'LOW': '4.5/39%', 'MID': '6.1/56%', 'HIGH': '5.3/48%'}
 Modulation: VIBRATONE {'LEVEL': '9.7/96%', 'SPEED': '10.0/100%', 'DEPTH': '2.5/16%', 'FEEDBACK': '6.1/56%', 'PHASE': '5.6/51%'}
-Delay: ECHO {'LEVEL': '3.5/28%', 'TIME': '619 ms', 'FEEDBACK': '3.6/29%', 'FLUTTER': '1.1/1%', 'BRIGHTNESS': '2.9/21%', 'STEREO': 'FALSE'}
+Delay: ECHO {'LEVEL': '3.5/28%', 'DELAY': '619 ms', 'FEEDBACK': '3.6/29%', 'WOW': '1.1/1%'}
 Reverb: SPRING 65 {'LEVEL': '2.9/21%', 'DECAY': '2.9/21%', 'DWELL': '3.8/31%', 'DIFFUSE': '4.4/37%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2fender-super-sonic-22-(burn).fuse
-Amplifier: BURN {'VOLUME': '10.0/100%', 'GAIN': '2.3/14%', 'TREBLE': '5.5/50%', 'MIDDLE': '3.6/29%', 'BASS': '7.0/66%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '10.0/100%', 'GAIN': '2.3/14%', 'TREBLE': '5.5/50%', 'MIDDLE': '3.6/29%', 'BASS': '7.0/66%'}
 Stompbox: OVERDRIVE {'LEVEL': '3.6/29%', 'LOW': '7.7/75%', 'MID': '6.5/61%', 'HIGH': '7.3/70%'}
-Delay: ECHO {'LEVEL': '2.2/14%', 'TIME': '543 ms', 'FEEDBACK': '2.9/21%', 'FLUTTER': '4.5/38%', 'BRIGHTNESS': '5.5/50%', 'STEREO': 'TRUE'}
+Delay: ECHO {'LEVEL': '2.2/14%', 'DELAY': '543 ms', 'FEEDBACK': '2.9/21%', 'WOW': '4.5/38%'}
 Reverb: SPRING 65 {'LEVEL': '2.0/11%', 'DECAY': '8.0/78%', 'DWELL': '8.0/78%', 'DIFFUSE': '7.4/71%', 'TONE': '5.4/49%'}
 
 UI parameters for intheblues/mustangv2otis-rush.fuse
-Amplifier: 60S UK CLEAN {'VOLUME': '7.2/68%', 'GAIN': '8.4/82%', 'TREBLE': '7.6/74%', 'MIDDLE': '3.9/32%', 'BASS': '6.6/62%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: 60S UK CLEAN {'VOLUME': '7.2/68%', 'GAIN': '8.4/82%', 'TREBLE': '7.6/74%', 'MIDDLE': '3.9/32%', 'BASS': '6.6/62%'}
 
 UI parameters for intheblues/mustangv2joe-bonamassa.fuse
-Amplifier: BURN {'VOLUME': '5.8/54%', 'GAIN': '3.0/22%', 'TREBLE': '7.0/67%', 'MIDDLE': '5.9/54%', 'BASS': '7.0/67%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
-Delay: ECHO {'LEVEL': '2.2/13%', 'TIME': '555 ms', 'FEEDBACK': '2.5/17%', 'FLUTTER': '4.4/38%', 'BRIGHTNESS': '4.9/43%', 'STEREO': 'FALSE'}
+Amplifier: BURN {'VOLUME': '5.8/54%', 'GAIN': '3.0/22%', 'TREBLE': '7.0/67%', 'MIDDLE': '5.9/54%', 'BASS': '7.0/67%'}
+Delay: ECHO {'LEVEL': '2.2/13%', 'DELAY': '555 ms', 'FEEDBACK': '2.5/17%', 'WOW': '4.4/38%'}
 Reverb: LARGE HALL {'LEVEL': '2.6/18%', 'DECAY': '5.5/50%', 'DWELL': '5.5/50%', 'DIFFUSE': '5.5/50%', 'TONE': '8.1/79%'}
 
 UI parameters for intheblues/mustangv2fender-super-sonic-60.fuse
-Amplifier: BURN {'VOLUME': '7.1/67%', 'GAIN': '1.6/6%', 'TREBLE': '9.3/92%', 'MIDDLE': '7.1/68%', 'BASS': '7.0/67%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: BURN {'VOLUME': '7.1/67%', 'GAIN': '1.6/6%', 'TREBLE': '9.3/92%', 'MIDDLE': '7.1/68%', 'BASS': '7.0/67%'}
 Stompbox: OVERDRIVE {'LEVEL': '2.7/19%', 'LOW': '6.5/61%', 'MID': '7.4/71%', 'HIGH': '6.8/64%'}
 Modulation: VIBRATONE {'LEVEL': '9.7/96%', 'SPEED': '10.0/100%', 'DEPTH': '2.4/15%', 'FEEDBACK': '7.1/68%', 'PHASE': '5.6/51%'}
-Delay: ECHO {'LEVEL': '2.5/17%', 'TIME': '479 ms', 'FEEDBACK': '3.5/28%', 'FLUTTER': '4.6/40%', 'BRIGHTNESS': '4.3/37%', 'STEREO': 'TRUE'}
+Delay: ECHO {'LEVEL': '2.5/17%', 'DELAY': '479 ms', 'FEEDBACK': '3.5/28%', 'WOW': '4.6/40%'}
 Reverb: SPRING 65 {'LEVEL': '2.2/13%', 'DECAY': '5.9/54%', 'DWELL': '3.6/29%', 'DIFFUSE': '10.0/100%', 'TONE': '5.5/50%'}
 
 UI parameters for intheblues/mustangv2brick-in-the-wall.fuse
-Amplifier: DELUXE CLN {'VOLUME': '7.2/69%', 'GAIN': '5.0/44%', 'TREBLE': '6.5/61%', 'MIDDLE': '7.0/67%', 'BASS': '3.8/31%', 'PRESENCE': '1.0/0%', '_RESONANCE': '1.0/0%'}
+Amplifier: DELUXE CLN {'VOLUME': '7.2/69%', 'GAIN': '5.0/44%', 'TREBLE': '6.5/61%', 'MIDDLE': '7.0/67%', 'BASS': '3.8/31%'}
 Stompbox: OVERDRIVE {'LEVEL': '6.9/66%', 'LOW': '6.9/66%', 'MID': '4.8/42%', 'HIGH': '3.8/31%'}
-Delay: DELAY {'LEVEL': '2.3/14%', 'TIME': '514 ms', 'FEEDBACK': '3.6/29%', 'BRIGHTNESS': '3.8/31%', 'ATTENUATION': '5.5/50%'}
+Delay: DELAY {'LEVEL': '2.3/14%', 'TIME': '514 ms', 'FEEDBACK': '3.6/29%'}
 Reverb: LARGE HALL {'LEVEL': '3.8/31%', 'DECAY': '3.2/24%', 'DWELL': '5.5/50%', 'DIFFUSE': '1.1/2%', 'TONE': '7.2/69%'}
 
 UI parameters for intheblues/mustangv2mark-knopfler.fuse
-Amplifier: TWIN CLEAN {'VOLUME': '7.1/67%', 'GAIN': '10.0/100%', 'TREBLE': '3.5/28%', 'MIDDLE': '4.0/34%', 'BASS': '5.0/45%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: TWIN CLEAN {'VOLUME': '7.1/67%', 'GAIN': '10.0/100%', 'TREBLE': '3.5/28%', 'MIDDLE': '4.0/34%', 'BASS': '5.0/45%'}
 Stompbox: COMPRESSOR {'TYPE': 'MID'}
 Reverb: LARGE HALL {'LEVEL': '3.7/30%', 'DECAY': '3.2/24%', 'DWELL': '5.5/50%', 'DIFFUSE': '1.1/2%', 'TONE': '7.2/69%'}
 
 UI parameters for intheblues/mustangv2freddy-king.fuse
-Amplifier: 60S UK CLEAN {'VOLUME': '7.0/67%', 'GAIN': '6.6/62%', 'TREBLE': '6.9/66%', 'MIDDLE': '5.7/52%', 'BASS': '6.6/62%', 'PRESENCE': '5.5/50%', '_RESONANCE': '5.5/50%'}
+Amplifier: 60S UK CLEAN {'VOLUME': '7.0/67%', 'GAIN': '6.6/62%', 'TREBLE': '6.9/66%', 'MIDDLE': '5.7/52%', 'BASS': '6.6/62%'}
