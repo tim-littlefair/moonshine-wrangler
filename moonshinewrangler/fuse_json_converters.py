@@ -84,13 +84,14 @@ _MODULE_CONVERTERS = []
 
 pc_volume = EditableParamConverter("volume", "VOLUME", volume_cvpa)
 pc_gain = EditableParamConverter("gain", "GAIN", default_cvpa)
-# _pc_gain2 = ParamConverter("_gain2", "_GAIN2", default_cvpa)
-# _pc_mvol = ParamConverter("_master_volume", "_MASTER_VOLUME", default_cvpa)
 pc_treble = EditableParamConverter("treble", "TREBLE", default_cvpa)
 pc_middle = EditableParamConverter("mid", "MIDDLE", default_cvpa)
 pc_bass = EditableParamConverter("bass", "BASS", default_cvpa)
-_pc_presence = HiddenParamConverter("presence", default_cvpa)
-_pc_resonance = HiddenParamConverter("_resonance", default_cvpa)
+
+# _pc_gain2 = ParamConverter("_gain2", "_GAIN2", default_cvpa)
+# _pc_mvol = ParamConverter("_master_volume", "_MASTER_VOLUME", default_cvpa)
+pc_presence = HiddenParamConverter("presence", default_cvpa)
+pc_resonance = HiddenParamConverter("resonance", default_cvpa)
 
 _DEFAULT_AMP_PARAM_CONVERTERS = {
     1: pc_gain,
@@ -98,8 +99,8 @@ _DEFAULT_AMP_PARAM_CONVERTERS = {
     4: pc_treble,
     5: pc_middle,
     6: pc_bass,
-    7: _pc_presence,
-    8: _pc_resonance
+    7: pc_presence,
+    8: pc_resonance
 }
 
 _MODULE_CONVERTERS += [
@@ -163,10 +164,12 @@ _MODULE_CONVERTERS += [
 # Start of converters for delay effects
 
 # pc_level, pc_feedback, already defined
+
 pc_wet_level = EditableParamConverter("wetLvl", "LEVEL", default_cvpa)
 pc_time = EditableParamConverter("time", "TIME", delay_time_cvpa)
 pc_delay_time = EditableParamConverter("dlyTime", "DELAY", delay_time_cvpa)
 pc_wow_and_flutter = EditableParamConverter("wowLevel", "WOW", default_cvpa)  # Corresponding V2 param is called 'FLUTTER'
+
 pc_stereo = HiddenParamConverter("stereo", default_bpa)
 pc_brightness = HiddenParamConverter("brightness", default_cvpa)
 pc_attenuation = HiddenParamConverter("attenuation", default_cvpa)
@@ -270,6 +273,7 @@ def convert_fuse_module(
                     continue
                 json_params[json_name] = adapted_value
                 if isinstance(pc, EditableParamConverter) is True:
+                    assert len(pc.ui_param_name) > 0
                     ui_name = pc.ui_param_name
                     ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
                     ui_params[ui_name] = ui_value
