@@ -17,7 +17,21 @@ from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 from fuse_json_adaptors import BooleanParameterAdaptor as BPA
 
 
-ParamConverter = namedtuple("ParamConverter", "fuse_param_id fuse_module_id json_param_name json_module_id ui_param_name parameter_adaptor")
+ParamConverter = namedtuple("ParamConverter", "Xfuse_param_id json_param_name ui_param_name parameter_adaptor")
+
+
+def addNewParamConverter(pc_map, fuse_param_id, json_param_name, ui_param_name, ui_param_adaptors):
+    new_param_converter = ParamConverter(fuse_param_id, json_param_name, ui_param_name, ui_param_adaptors)
+    if pc_map is not None:
+        pc_map[fuse_param_id] = new_param_converter
+    return new_param_converter
+
+
+def addParamConverter(pc_map, fuse_param_id, param_converter):
+    if pc_map is not None:
+        pc_map[fuse_param_id] = param_converter
+    return param_converter
+
 
 default_cvpa = CVPA()
 
@@ -55,114 +69,158 @@ delay_time_cvpa = CVPA(
     )
 )
 
-pc_volume = ParamConverter(0, None, "volume", None, "VOLUME", volume_cvpa)
-pc_gain = ParamConverter(1, None, "gain", None, "GAIN", default_cvpa)
-# _pc_gain2 = ParamConverter(2, None, "_gain2", None, "_GAIN2", default_cvpa)
-# _pc_mvol = ParamConverter(3, None, "_master_volume", None, "_MASTER_VOLUME", default_cvpa)
-pc_treble = ParamConverter(4, None, "treble", None, "TREBLE", default_cvpa)
-pc_mid = ParamConverter(5, None, "mid", None, "MIDDLE", default_cvpa)
-pc_bass = ParamConverter(6, None, "bass", None, "BASS", default_cvpa)
-_pc_presence = ParamConverter(7, None, "presence", None, "PRESENCE", default_cvpa)
-_pc_resonance = ParamConverter(8, None, "_resonance", None, "_RESONANCE", default_cvpa)
-_DEFAULT_AMP_PARAM_CONVERTERS = (
-    pc_volume, pc_gain,
-    # _pc_gain2, _pc_mvol,
-    pc_treble, pc_mid, pc_bass,
-    _pc_presence, _pc_resonance,
-)
-
-pc_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
-pc_decay = ParamConverter(1, None, "decay", None, "DECAY", default_cvpa)
-pc_dwell = ParamConverter(2, None, "dwell", None, "DWELL", default_cvpa)
-pc_diffusion = ParamConverter(3, None, "diffuse", None, "DIFFUSE", default_cvpa)
-pc_tone = ParamConverter(4, None, "tone", None, "TONE", default_cvpa)
-_DEFAULT_REVERB_PARAM_CONVERTERS = (
-    pc_level, pc_decay, pc_dwell,
-    pc_diffusion,
-    pc_tone,
-)
-
-low_med_hi_max_pa = SCPA(
+low_med_hi_max_scpa = SCPA(
     ["low", "medium", "high", "super"],
     {"low": "LOW", "medium": "MID", "high": "HIGH", "super": "MAX"}
-)
-pc_compressor_type = ParamConverter(0, None, "type", None, "TYPE", low_med_hi_max_pa)
-_COMPRESSOR_PARAM_CONVERTERS = (
-    pc_compressor_type,
-)
-
-# pc_level at param 0 already defined
-pc_overdrive_gain = ParamConverter(1, None, "level", None, "LEVEL", default_cvpa)
-pc_overdrive_low = ParamConverter(2, None, "low", None, "LOW", default_cvpa)
-pc_overdrive_mid = ParamConverter(3, None, "mid", None, "MID", default_cvpa)
-pc_overdrive_high = ParamConverter(4, None, "high", None, "HIGH", default_cvpa)
-
-_OVERDRIVE_PARAM_CONVERTERS = (
-    pc_level, pc_overdrive_gain,
-    pc_overdrive_low, pc_overdrive_mid, pc_overdrive_high
-)
-
-# pc_level at param 0 already defined
-pc_vibratone_speed = ParamConverter(1, None, "speed", None, "SPEED", default_cvpa)
-pc_vibratone_depth = ParamConverter(2, None, "depth", None, "DEPTH", default_cvpa)
-pc_vibratone_feedback = ParamConverter(3, None, "feedback", None, "FEEDBACK", default_cvpa)
-pc_vibratone_phase = ParamConverter(4, None, "phase", None, "PHASE", default_cvpa)
-_VIBRATONE_PARAM_CONVERTERS = (
-    pc_level, pc_vibratone_speed, pc_vibratone_depth,
-    pc_vibratone_feedback, pc_vibratone_phase
-)
-
-pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
-pc_delay_time = ParamConverter(1, None, "time", None, "TIME", delay_time_cvpa)
-pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
-pc_delay_brightness3 = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
-pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
-_MONO_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_time, pc_delay_feedback,
-    pc_delay_brightness3, pc_delay_attenuation
-)
-
-pc_delay_flutter = ParamConverter(3, None, "flutter", None, "FLUTTER", default_cvpa)
-pc_delay_brightness4 = ParamConverter(4, None, "brightness", None, "BRIGHTNESS", default_cvpa)
-pc_delay_stereo = ParamConverter(5, None, "stereo", None, "STEREO", default_bpa)
-_TAPE_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_time, pc_delay_feedback,
-    pc_delay_flutter, pc_delay_brightness4,
-    pc_delay_stereo
-)
-
-pc_delay_level = ParamConverter(0, None, "level", None, "LEVEL", default_cvpa)
-# pc_delay_time already defined
-pc_delay_feedback = ParamConverter(2, None, "feedback", None, "FEEDBACK", default_cvpa)
-pc_delay_brightness = ParamConverter(3, None, "brightness", None, "BRIGHTNESS", default_cvpa)
-pc_delay_attenuation = ParamConverter(4, None, "attenuation", None, "ATTENUATION", default_cvpa)
-_MONO_DELAY_PARAM_CONVERTERS = (
-    pc_delay_level, pc_delay_time,
-    pc_delay_feedback, pc_delay_brightness, pc_delay_attenuation
 )
 
 
 ModuleConverter = namedtuple("ModuleConverter", "fuse_type fuse_id json_id ui_name param_converters")
 
-_MODULE_CONVERTERS = (
+
+_MODULE_CONVERTERS = []
+
+# Start of converters for stomp amps
+
+pc_volume = ParamConverter(0, "volume", "VOLUME", volume_cvpa)
+pc_gain = ParamConverter(1, "gain", "GAIN", default_cvpa)
+# _pc_gain2 = ParamConverter(2, "_gain2", "_GAIN2", default_cvpa)
+# _pc_mvol = ParamConverter(3, "_master_volume", "_MASTER_VOLUME", default_cvpa)
+pc_treble = ParamConverter(4, "treble", "TREBLE", default_cvpa)
+pc_middle = ParamConverter(5, "mid", "MIDDLE", default_cvpa)
+pc_bass = ParamConverter(6, "bass", "BASS", default_cvpa)
+_pc_presence = ParamConverter(7, "presence", "PRESENCE", default_cvpa)
+_pc_resonance = ParamConverter(8, "_resonance", "_RESONANCE", default_cvpa)
+
+_DEFAULT_AMP_PARAM_CONVERTERS = {
+    0: pc_volume,
+    1: pc_gain,
+    4: pc_treble,
+    5: pc_middle,
+    6: pc_bass,
+    7: _pc_presence,
+    8: _pc_resonance
+}
+
+_MODULE_CONVERTERS += [
     ModuleConverter("Amplifier", 83, "Deluxe65", "DELUXE CLN",  _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Amplifier", 114, "SuperSonic", "BURN", _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Amplifier", 117, "Twin65", "TWIN CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
     ModuleConverter("Amplifier", 249, "Ac30Tb", "60S UK CLEAN", _DEFAULT_AMP_PARAM_CONVERTERS),
+]
 
-    ModuleConverter(None, 0, "Passthru", "NONE", ()),
+# End of converters for amps
 
+# Start of converters for stomp effects
+
+pc_level = ParamConverter(0, "level", "LEVEL", default_cvpa)
+# pc_gain already defined in parameter section for amps
+pc_low = ParamConverter(2, "low", "LOW", default_cvpa)
+pc_mid = ParamConverter(3, "mid", "MID", default_cvpa)
+pc_high = ParamConverter(3, "high", "HIGH", default_cvpa)
+pc_compressor_type = ParamConverter(5, "type", "TYPE", low_med_hi_max_scpa)
+
+_OVERDRIVE_PARAM_CONVERTERS = {
+    0: pc_level,
+    1: pc_level,  # TODO: Fix after refactor complete
+    2: pc_low,
+    3: pc_mid,   # TODO?: MaybeFix after refactor complete
+    4: pc_high
+}
+
+_COMPRESSOR_PARAM_CONVERTERS = {
+    0: pc_compressor_type
+}
+
+_MODULE_CONVERTERS += [
     ModuleConverter("Stompbox", 60, "Overdrive", "OVERDRIVE", _OVERDRIVE_PARAM_CONVERTERS),
     ModuleConverter("Stompbox", 136, "SimpleCompressor", "COMPRESSOR", _COMPRESSOR_PARAM_CONVERTERS),
+]
 
+# End of converters for stomp effects
+
+# Start of converters for modulation effects
+
+# pc_level already defined in parameter section for stomp effects
+pc_speed = ParamConverter(1, "speed", "SPEED", default_cvpa)
+pc_depth = ParamConverter(2, "depth", "DEPTH", default_cvpa)
+pc_feedback = ParamConverter(3, "feedback", "FEEDBACK", default_cvpa)
+pc_phase = ParamConverter(4, "phase", "PHASE", default_cvpa)
+_VIBRATONE_PARAM_CONVERTERS = {
+    0: pc_level,
+    1: pc_speed,
+    2: pc_depth,
+    3: pc_feedback,
+    4: pc_phase
+}
+
+_MODULE_CONVERTERS += [
     ModuleConverter("Modulation", 45, "Vibratone", "VIBRATONE", _VIBRATONE_PARAM_CONVERTERS),
+]
 
+# End of converters for modulation effects
+
+# Start of converters for delay effects
+
+# pc_level already defined in section for stomp effects
+pc_delay_time = ParamConverter(1, "time", "TIME", delay_time_cvpa)
+pc_feedback2 = ParamConverter(2, "feedback", "FEEDBACK", default_cvpa)
+pc_brightness3 = ParamConverter(3, "brightness", "BRIGHTNESS", default_cvpa)
+pc_attenuation = ParamConverter(4, "attenuation", "ATTENUATION", default_cvpa)
+pc_flutter = ParamConverter(3, "flutter", "FLUTTER", default_cvpa)
+pc_brightness4 = ParamConverter(4, "brightness", "BRIGHTNESS", default_cvpa)
+pc_stereo = ParamConverter(5, "stereo", "STEREO", default_bpa)
+
+_MONO_DELAY_PARAM_CONVERTERS = {
+    0: pc_level,
+    1: pc_delay_time,
+    2: pc_feedback2,
+    3: pc_brightness3,
+    4: pc_attenuation
+}
+
+_TAPE_DELAY_PARAM_CONVERTERS = {
+    0: pc_level,
+    1: pc_delay_time,
+    2: pc_feedback2,
+    3: pc_flutter,
+    4: pc_brightness4,
+    5: pc_stereo
+}
+
+_MODULE_CONVERTERS += [
     ModuleConverter("Delay", 22, "MonoDelay", "DELAY", _MONO_DELAY_PARAM_CONVERTERS),
     ModuleConverter("Delay", 43, "TapeDelayLite", "ECHO", _TAPE_DELAY_PARAM_CONVERTERS),
+]
 
+# End of converters for delay effects
+
+# Start of converters for reverb effects
+
+# pc_level already defined in section for stomp effects
+pc_decay = ParamConverter(1, "decay", "DECAY", default_cvpa)
+pc_dwell = ParamConverter(2, "dwell", "DWELL", default_cvpa)
+pc_diffusion = ParamConverter(3, "diffuse", "DIFFUSE", default_cvpa)
+pc_tone = ParamConverter(4, "tone", "TONE", default_cvpa)
+
+_DEFAULT_REVERB_PARAM_CONVERTERS = {
+    0: pc_level,
+    1: pc_decay,
+    2: pc_dwell,
+    3: pc_diffusion,
+    4: pc_tone,
+}
+
+_MODULE_CONVERTERS += [
     ModuleConverter("Reverb", 11, "Spring65", "SPRING 65", _DEFAULT_REVERB_PARAM_CONVERTERS),
     ModuleConverter("Reverb", 58, "LargeHall", "LARGE HALL", _DEFAULT_REVERB_PARAM_CONVERTERS),
-)
+]
+
+# End of converters for reverb effects
+
+_MODULE_CONVERTERS += [
+    ModuleConverter(None, 0, "Passthru", "NONE", ()),
+]
 
 
 def fuse_mc_lookup(fuse_module_type, fuse_module_id):
@@ -182,10 +240,12 @@ def fuse_mc_lookup(fuse_module_type, fuse_module_id):
 
 
 def fuse_pc_lookup(mc, fuse_param_id):
+    if isinstance(mc.param_converters, dict):
+        return mc.param_converters.get(fuse_param_id, None)
     matching_pcs = [
         pc
         for pc in mc.param_converters
-        if pc.fuse_param_id == fuse_param_id
+        if pc.Xfuse_param_id == fuse_param_id
     ]
     assert len(matching_pcs) <= 1
     if len(matching_pcs) == 1:
