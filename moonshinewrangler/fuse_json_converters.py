@@ -16,23 +16,23 @@ from fuse_json_adaptors import ContinuousValuedParameterAdaptor as CVPA
 from fuse_json_adaptors import StringChoiceParameterAdaptor as SCPA
 from fuse_json_adaptors import BooleanParameterAdaptor as BPA
 
+EditableParamConverter = namedtuple("EditableParamConverter", "json_param_name ui_param_name parameter_adaptor")
+HiddenParamConverter = namedtuple("HiddenParamConverter", "json_param_name parameter_adaptor")
 
-ParamConverter = namedtuple("ParamConverter", "json_param_name ui_param_name parameter_adaptor")
-
-
-def addNewParamConverter(pc_map, fuse_param_id, json_param_name, ui_param_name, ui_param_adaptors):
-    new_param_converter = ParamConverter(fuse_param_id, json_param_name, ui_param_name, ui_param_adaptors)
-    if pc_map is not None:
-        pc_map[fuse_param_id] = new_param_converter
-    return new_param_converter
-
-
-def addParamConverter(pc_map, fuse_param_id, param_converter):
-    if pc_map is not None:
-        pc_map[fuse_param_id] = param_converter
-    return param_converter
-
-
+# The majority of parameters are continuous values
+# represented as a u16 in FUSE files, and as a float
+# in the range 0.0 to 1.0 in JSON.
+# When values are presented for editing on the
+# Mustang LT40S device and its companion application
+# Fender Tone LT Desktop, the value of the parameter
+# is represented by a knob position in the range 1.0
+# to 10.0.
+# For the Mustang Micro Plus device, the value of the
+# parameter is edited via the Fender Tone mobile
+# application is represented by a knob position
+# represented as a percentage.
+# The following adaptor object is suited to rendering
+# parameters with these behaviours.
 default_cvpa = CVPA()
 
 default_bpa = BPA()
@@ -82,19 +82,19 @@ _MODULE_CONVERTERS = []
 
 # Start of converters for stomp amps
 
-pc_volume = ParamConverter("volume", "VOLUME", volume_cvpa)
-pc_gain = ParamConverter("gain", "GAIN", default_cvpa)
+pc_volume = EditableParamConverter("volume", "VOLUME", volume_cvpa)
+pc_gain = EditableParamConverter("gain", "GAIN", default_cvpa)
 # _pc_gain2 = ParamConverter("_gain2", "_GAIN2", default_cvpa)
 # _pc_mvol = ParamConverter("_master_volume", "_MASTER_VOLUME", default_cvpa)
-pc_treble = ParamConverter("treble", "TREBLE", default_cvpa)
-pc_middle = ParamConverter("mid", "MIDDLE", default_cvpa)
-pc_bass = ParamConverter("bass", "BASS", default_cvpa)
-_pc_presence = ParamConverter("presence", "PRESENCE", default_cvpa)
-_pc_resonance = ParamConverter("_resonance", "_RESONANCE", default_cvpa)
+pc_treble = EditableParamConverter("treble", "TREBLE", default_cvpa)
+pc_middle = EditableParamConverter("mid", "MIDDLE", default_cvpa)
+pc_bass = EditableParamConverter("bass", "BASS", default_cvpa)
+_pc_presence = HiddenParamConverter("presence", default_cvpa)
+_pc_resonance = HiddenParamConverter("_resonance", default_cvpa)
 
 _DEFAULT_AMP_PARAM_CONVERTERS = {
-    0: pc_volume,
     1: pc_gain,
+    0: pc_volume,
     4: pc_treble,
     5: pc_middle,
     6: pc_bass,
@@ -113,12 +113,12 @@ _MODULE_CONVERTERS += [
 
 # Start of converters for stomp effects
 
-pc_level = ParamConverter("level", "LEVEL", default_cvpa)
+pc_level = EditableParamConverter("level", "LEVEL", default_cvpa)
 # pc_gain already defined in parameter section for amps
-pc_low = ParamConverter("low", "LOW", default_cvpa)
-pc_mid = ParamConverter("mid", "MID", default_cvpa)
-pc_high = ParamConverter("high", "HIGH", default_cvpa)
-pc_compressor_type = ParamConverter("type", "TYPE", low_med_hi_max_scpa)
+pc_low = EditableParamConverter("low", "LOW", default_cvpa)
+pc_mid = EditableParamConverter("mid", "MID", default_cvpa)
+pc_high = EditableParamConverter("high", "HIGH", default_cvpa)
+pc_compressor_type = EditableParamConverter("type", "TYPE", low_med_hi_max_scpa)
 
 _OVERDRIVE_PARAM_CONVERTERS = {
     0: pc_level,
@@ -142,10 +142,10 @@ _MODULE_CONVERTERS += [
 # Start of converters for modulation effects
 
 # pc_level already defined in parameter section for stomp effects
-pc_speed = ParamConverter("speed", "SPEED", default_cvpa)
-pc_depth = ParamConverter("depth", "DEPTH", default_cvpa)
-pc_feedback = ParamConverter("feedback", "FEEDBACK", default_cvpa)
-pc_phase = ParamConverter("phase", "PHASE", default_cvpa)
+pc_speed = EditableParamConverter("speed", "SPEED", default_cvpa)
+pc_depth = EditableParamConverter("depth", "DEPTH", default_cvpa)
+pc_feedback = EditableParamConverter("feedback", "FEEDBACK", default_cvpa)
+pc_phase = EditableParamConverter("phase", "PHASE", default_cvpa)
 _VIBRATONE_PARAM_CONVERTERS = {
     0: pc_level,
     1: pc_speed,
@@ -162,29 +162,29 @@ _MODULE_CONVERTERS += [
 
 # Start of converters for delay effects
 
-# pc_level already defined in section for stomp effects
-pc_delay_time = ParamConverter("time", "TIME", delay_time_cvpa)
-pc_feedback2 = ParamConverter("feedback", "FEEDBACK", default_cvpa)
-pc_brightness3 = ParamConverter("brightness", "BRIGHTNESS", default_cvpa)
-pc_attenuation = ParamConverter("attenuation", "ATTENUATION", default_cvpa)
-pc_flutter = ParamConverter("flutter", "FLUTTER", default_cvpa)
-pc_brightness4 = ParamConverter("brightness", "BRIGHTNESS", default_cvpa)
-pc_stereo = ParamConverter("stereo", "STEREO", default_bpa)
+# pc_level, pc_feedback, already defined
+pc_wet_level = EditableParamConverter("wetLvl", "LEVEL", default_cvpa)
+pc_time = EditableParamConverter("time", "TIME", delay_time_cvpa)
+pc_delay_time = EditableParamConverter("dlyTime", "DELAY", delay_time_cvpa)
+pc_wow_and_flutter = EditableParamConverter("wowLevel", "WOW", default_cvpa)  # Corresponding V2 param is called 'FLUTTER'
+pc_stereo = HiddenParamConverter("stereo", default_bpa)
+pc_brightness = HiddenParamConverter("brightness", default_cvpa)
+pc_attenuation = HiddenParamConverter("attenuation", default_cvpa)
 
 _MONO_DELAY_PARAM_CONVERTERS = {
     0: pc_level,
-    1: pc_delay_time,
-    2: pc_feedback2,
-    3: pc_brightness3,
-    4: pc_attenuation
+    1: pc_time,
+    2: pc_feedback,
+    3: pc_brightness,
+    4: pc_attenuation,
 }
 
 _TAPE_DELAY_PARAM_CONVERTERS = {
-    0: pc_level,
+    0: pc_wet_level,
     1: pc_delay_time,
-    2: pc_feedback2,
-    3: pc_flutter,
-    4: pc_brightness4,
+    2: pc_feedback,
+    3: pc_wow_and_flutter,
+    4: pc_brightness,
     5: pc_stereo
 }
 
@@ -198,10 +198,10 @@ _MODULE_CONVERTERS += [
 # Start of converters for reverb effects
 
 # pc_level already defined in section for stomp effects
-pc_decay = ParamConverter("decay", "DECAY", default_cvpa)
-pc_dwell = ParamConverter("dwell", "DWELL", default_cvpa)
-pc_diffusion = ParamConverter("diffuse", "DIFFUSE", default_cvpa)
-pc_tone = ParamConverter("tone", "TONE", default_cvpa)
+pc_decay = EditableParamConverter("decay", "DECAY", default_cvpa)
+pc_dwell = EditableParamConverter("dwell", "DWELL", default_cvpa)
+pc_diffusion = EditableParamConverter("diffuse", "DIFFUSE", default_cvpa)
+pc_tone = EditableParamConverter("tone", "TONE", default_cvpa)
 
 _DEFAULT_REVERB_PARAM_CONVERTERS = {
     0: pc_level,
@@ -269,9 +269,10 @@ def convert_fuse_module(
                     print(f"Failed to adapt {pc} from value {fuse_param_element.text}")
                     continue
                 json_params[json_name] = adapted_value
-                ui_name = pc.ui_param_name
-                ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
-                ui_params[ui_name] = ui_value
+                if isinstance(pc, EditableParamConverter) is True:
+                    ui_name = pc.ui_param_name
+                    ui_value = pc.parameter_adaptor.json_to_ui(adapted_value)
+                    ui_params[ui_name] = ui_value
             else:
                 json_params["__"+str(fuse_param_id)] = fuse_param_element.text
                 if unconverted_param_values is not None:

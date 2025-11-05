@@ -49,10 +49,10 @@
     {
         "FenderId": "TapeDelayLite",
         "dspUnitParameters": {
-            "level": 0.282,
-            "time": 0.619,
+            "wetLvl": 0.282,
+            "dlyTime": 0.619,
             "feedback": 0.29,
-            "flutter": 0.012,
+            "wowLevel": 0.012,
             "brightness": 0.206,
             "stereo": false
         }
