@@ -81,10 +81,9 @@ class ClassicPreset(dict):
     def effect_id(self,slot):
         return byte_stream[44+(slot*18)]
     
-
 if __name__ == "__main__":
     m1v2_upd_bytes = get_upd_stream("_work/reference_files/V2_Mustang1_2.2.zip")
-    print(len(m1v2_upd_bytes))
+
     presets = find_strings_in_byte_stream(
         m1v2_upd_bytes, [
             "Brutal Metal II", 
@@ -97,6 +96,13 @@ if __name__ == "__main__":
     )
     for k in presets.keys():
         print(presets[k])
-    
+
+    amp_names = find_strings_in_byte_stream(
+        m1v2_upd_bytes, [
+            "Studio Preamp",
+            "'57 Champ",
+            "'57 Deluxe"
+        ], 16, 0x78
+    )    
 
 
