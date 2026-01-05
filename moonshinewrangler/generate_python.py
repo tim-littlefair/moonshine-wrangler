@@ -31,16 +31,17 @@ except FileNotFoundError:
 _DSP_MODULE_TYPES = "ASMDR"
                             
 def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
-    py_file = open("moonshinewrangler/generated/classic_modules.py", "wt")
     product_node = fuse_db.getroot()
+    dsp_ids_to_types_and_names = {}
     amplifier_dsp_ids_to_types_and_names = {}
     effect_dsp_ids_to_types_and_names = {}
     for dsp_collection_index in range(0,5):
         dsp_collection = product_node[dsp_collection_index]
         assert int(dsp_collection.attrib["ID"])==dsp_collection_index, f"{dsp_collection}"
         dsp_item_type = _DSP_MODULE_TYPES[dsp_collection_index]
-        dsp_ids_to_types_and_names = None
-        if dsp_collection_index==0:
+        if True:
+            pass
+        elif dsp_collection_index==0:
             dsp_ids_to_types_and_names=amplifier_dsp_ids_to_types_and_names
         else:
             dsp_ids_to_types_and_names=effect_dsp_ids_to_types_and_names
@@ -53,20 +54,28 @@ def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
             dsp_ids_to_types_and_names[dsp_item_id]=(
                 dsp_item_type, dsp_item_name
             )
-    # Children of this node represent DSP units which simulate specific amplifier models
+
+    py_file = open("moonshinewrangler/generated/classic_modules.py", "wt")
     py_file.writelines([
-        "MODULE_NAMES = {\n",
-        "    # Amplifiers\n",
-    ])
-    for k in sorted(amplifier_dsp_ids_to_types_and_names):
-        v = amplifier_dsp_ids_to_types_and_names[k]
-        py_file.writelines([f"    {k:3d}: {v},\n"])
-    py_file.writelines(["    # Effects\n"])
-    for k in sorted(effect_dsp_ids_to_types_and_names):
-        v = effect_dsp_ids_to_types_and_names[k]
+        "FUSE_DSP_MODULES = {\n",])
+    for k in sorted(dsp_ids_to_types_and_names):
+        v = dsp_ids_to_types_and_names[k]
         py_file.writelines([f"    {k:3d}: {v},\n"])
     py_file.writelines(["}\n"])
 
+    try:
+        java_file= open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_DSP_Module.java.RSN", "wt")
+        java_file.writelines([
+            "package net.maneline.lib.generated;\n"
+            "import net.maneline.lib.fuse.FUSE_DSP_Module;\n"
+            "FUSE_DSP_MODULES = {\n",
+        ])
+        for k in sorted(dsp_ids_to_types_and_names):
+            v = dsp_ids_to_types_and_names[k]
+            java_file.writelines([f'    {k:3d}: new FUSE_DSP_Module({k},{v[0]},"{v[1]}"),\n'])
+        java_file.writelines(["}\n"])        
+    except FileNotFoundError:
+        pass
 
 if __name__ == "__main__":
     generate_classic_module_db()
