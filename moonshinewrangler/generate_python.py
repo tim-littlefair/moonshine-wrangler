@@ -75,8 +75,17 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 try:
                     param_value = int(param_item.text)
                     type_value_list = param_types_to_values.get(param_type,[])
-                    if param_value not in type_value_list:
-                        param_types_to_values[param_type] = sorted(type_value_list + [param_value])
+                    if param_value not in type_value_list[0]:
+                        param_types_to_values[param_type] = (
+                            sorted(type_value_list[0] + [param_value]), 
+                            type_value_list[1]
+                        )
+                    if param_name not in type_value_list[1]:
+                        param_types_to_values[param_type] = (
+                            type_value_list[0], 
+                            sorted(type_value_list[1]+[param_name])
+                        )
+                            
                 except IndexError:
                     pass
 
@@ -84,7 +93,7 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
         param_names_to_types,
         "classic_param_types",
         "FUSE_PARAM_TYPES",
-        lambda k,v: f'    "{k}": {v},\n'
+        lambda k,v: f'    "{k}": (\n        {v[0]},\n        {v1},\n    ),\n'
     )
 
     generate_py_file(
