@@ -56,6 +56,7 @@ def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
 def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
     product_node = fuse_db.getroot()
     param_names_to_types = {}
+    param_types_to_values = {}
     for dsp_collection_index in range(0,5):
         dsp_collection = product_node[dsp_collection_index]
         for dsp_node in dsp_collection:
@@ -71,12 +72,28 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 param_type_list = param_names_to_types.get(param_name,[])
                 if param_type not in param_type_list:
                     param_names_to_types[param_name] = sorted(param_type_list + [param_type])
+                try:
+                    param_value = int(param_item.text)
+                    type_value_list = param_types_to_values.get(param_type,[])
+                    if param_value not in type_value_list:
+                        param_types_to_values[param_type] = sorted(type_value_list + [param_value])
+                except IndexError:
+                    pass
+
     generate_py_file(
         param_names_to_types,
         "classic_param_types",
         "FUSE_PARAM_TYPES",
         lambda k,v: f'    "{k}": {v},\n'
     )
+
+    generate_py_file(
+        param_types_to_values,
+        "classic_types_values",
+        "FUSE_TYPE_VALUES",
+        lambda k,v: f'    "{k}": {v},\n'
+    )
+
 
 
 def generate_py_file(
