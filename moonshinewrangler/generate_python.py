@@ -56,7 +56,7 @@ def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
 def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
     product_node = fuse_db.getroot()
     param_names_to_types = {}
-    param_types_to_values = {}
+    param_types_to_names_and_values = {}
     for dsp_collection_index in range(0,5):
         dsp_collection = product_node[dsp_collection_index]
         for dsp_node in dsp_collection:
@@ -73,14 +73,14 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 if param_type not in param_type_list:
                     param_names_to_types[param_name] = sorted(param_type_list + [param_type])
                 param_value = int(param_item.text)
-                type_values_and_names = param_types_to_values.get(param_type,[[],[]])
-                if param_name not in type_values_and_names[0]:
-                    type_values_and_names[0] += [param_name]
-                    type_values_and_names[0].sort()
-                if param_value not in type_values_and_names[1]:
-                    type_values_and_names[1] += [param_value]
-                    type_values_and_names[1].sort()
-                param_types_to_values[param_type] = type_values_and_names 
+                type_names_and_values = param_types_to_names_and_values.get(param_type,[[],[]])
+                if param_name not in type_names_and_values[0]:
+                    type_names_and_values[0] += [param_name]
+                    type_names_and_values[0].sort()
+                if param_value not in type_names_and_values[1]:
+                    type_names_and_values[1] += [param_value]
+                    type_names_and_values[1].sort()
+                param_types_to_names_and_values[param_type] = type_names_and_values 
 
     generate_py_file(
         param_names_to_types,
@@ -90,7 +90,7 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
     )
 
     generate_py_file(
-        param_types_to_values,
+        param_types_to_names_and_values,
         "classic_types_values",
         "FUSE_TYPE_VALUES",
         lambda k,v: f'    "{k}": (\n        {v[0]},\n        {v[1]},\n    ),\n'
@@ -110,8 +110,13 @@ def generate_py_file(
 
 
 if __name__ == "__main__":
-    generate_classic_module_db()
-    generate_classic_param_db()
+    if len(sys.argv) > 1:
+        fuse_db = ET.parse(sys.argv[1])
+        generate_classic_module_db(fuse_db)
+        generate_classic_param_db(fuse_db)
+    else:
+        generate_classic_module_db()
+        generate_classic_param_db()
 
 """    try:
         java_file= open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_DSP_Module.java.RSN", "wt")
