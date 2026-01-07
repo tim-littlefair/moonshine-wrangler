@@ -33,18 +33,10 @@ _DSP_MODULE_TYPES = "ASMDR"
 def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
     product_node = fuse_db.getroot()
     dsp_ids_to_types_and_names = {}
-    amplifier_dsp_ids_to_types_and_names = {}
-    effect_dsp_ids_to_types_and_names = {}
     for dsp_collection_index in range(0,5):
         dsp_collection = product_node[dsp_collection_index]
         assert int(dsp_collection.attrib["ID"])==dsp_collection_index, f"{dsp_collection}"
         dsp_item_type = _DSP_MODULE_TYPES[dsp_collection_index]
-        if True:
-            pass
-        elif dsp_collection_index==0:
-            dsp_ids_to_types_and_names=amplifier_dsp_ids_to_types_and_names
-        else:
-            dsp_ids_to_types_and_names=effect_dsp_ids_to_types_and_names
         for dsp_item in dsp_collection:
             dsp_item_id = int(dsp_item.attrib["ID"])
             if dsp_item_id == 0:
@@ -54,16 +46,56 @@ def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
             dsp_ids_to_types_and_names[dsp_item_id]=(
                 dsp_item_type, dsp_item_name
             )
+    generate_py_file(
+        dsp_ids_to_types_and_names,
+        "classic_modules",
+        "FUSE_DSP_MODULES",
+        lambda k,v: f"    {k:3d}: {v},\n"
+    )
 
-    py_file = open("moonshinewrangler/generated/classic_modules.py", "wt")
-    py_file.writelines([
-        "FUSE_DSP_MODULES = {\n",])
+def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
+    product_node = fuse_db.getroot()
+    param_names_to_types = {}
+    for dsp_collection_index in range(0,5):
+        dsp_collection = product_node[dsp_collection_index]
+        for dsp_node in dsp_collection:
+            dsp_node_id = int(dsp_node.attrib["ID"])
+            for param_item in dsp_node:
+                param_name = param_item.attrib["Name"]
+                param_type = int(param_item.attrib["ParamType"])
+                if param_name == "NULL":
+                    param_pi = int(param_item.attrib["ParamIndex"])
+                    param_ci = int(param_item.attrib["ControlIndex"])
+                    assert param_pi==param_ci
+                    param_name = f"Other_{param_pi:02d}"
+                param_type_list = param_names_to_types.get(param_name,[])
+                if param_type not in param_type_list:
+                    param_names_to_types[param_name] = sorted(param_type_list + [param_type])
+    generate_py_file(
+        param_names_to_types,
+        "classic_param_types",
+        "FUSE_PARAM_TYPES",
+        lambda k,v: f'    "{k}": {v},\n'
+    )
+
+
+def generate_py_file(
+        dsp_ids_to_types_and_names, 
+        file_bn, dict_name, k_v_lambda
+        ):
+    py_file = open(f"moonshinewrangler/generated/{file_bn}.py", "wt")
+    py_file.writelines([dict_name + " = {\n",])
     for k in sorted(dsp_ids_to_types_and_names):
         v = dsp_ids_to_types_and_names[k]
-        py_file.writelines([f"    {k:3d}: {v},\n"])
+        py_file.writelines([k_v_lambda(k,v)])
     py_file.writelines(["}\n"])
 
-    try:
+
+if __name__ == "__main__":
+    generate_classic_module_db()
+    generate_classic_param_db()
+
+"""    try:
         java_file= open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_DSP_Module.java.RSN", "wt")
         java_file.writelines([
             "package net.maneline.lib.generated;\n"
@@ -72,10 +104,8 @@ def generate_classic_module_db(fuse_db=_DEFAULT_FUSE_DB):
         ])
         for k in sorted(dsp_ids_to_types_and_names):
             v = dsp_ids_to_types_and_names[k]
-            java_file.writelines([f'    {k:3d}: new FUSE_DSP_Module({k},{v[0]},"{v[1]}"),\n'])
+            java_file.writelines([f'    {k:3d}: new FUSE_DSP_Module({k},"{v[0]}","{v[1]}"),\n'])
         java_file.writelines(["}\n"])        
     except FileNotFoundError:
         pass
-
-if __name__ == "__main__":
-    generate_classic_module_db()
+"""
