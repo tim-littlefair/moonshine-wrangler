@@ -72,37 +72,29 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 param_type_list = param_names_to_types.get(param_name,[])
                 if param_type not in param_type_list:
                     param_names_to_types[param_name] = sorted(param_type_list + [param_type])
-                try:
-                    param_value = int(param_item.text)
-                    type_value_list = param_types_to_values.get(param_type,[])
-                    if param_value not in type_value_list[0]:
-                        param_types_to_values[param_type] = (
-                            sorted(type_value_list[0] + [param_value]), 
-                            type_value_list[1]
-                        )
-                    if param_name not in type_value_list[1]:
-                        param_types_to_values[param_type] = (
-                            type_value_list[0], 
-                            sorted(type_value_list[1]+[param_name])
-                        )
-                            
-                except IndexError:
-                    pass
+                param_value = int(param_item.text)
+                type_values_and_names = param_types_to_values.get(param_type,[[],[]])
+                if param_name not in type_values_and_names[0]:
+                    type_values_and_names[0] += [param_name]
+                    type_values_and_names[0].sort()
+                if param_value not in type_values_and_names[1]:
+                    type_values_and_names[1] += [param_value]
+                    type_values_and_names[1].sort()
+                param_types_to_values[param_type] = type_values_and_names 
 
     generate_py_file(
         param_names_to_types,
         "classic_param_types",
         "FUSE_PARAM_TYPES",
-        lambda k,v: f'    "{k}": (\n        {v[0]},\n        {v1},\n    ),\n'
+        lambda k,v: f'    "{k}": {v},\n'
     )
 
     generate_py_file(
         param_types_to_values,
         "classic_types_values",
         "FUSE_TYPE_VALUES",
-        lambda k,v: f'    "{k}": {v},\n'
+        lambda k,v: f'    "{k}": (\n        {v[0]},\n        {v[1]},\n    ),\n'
     )
-
 
 
 def generate_py_file(
