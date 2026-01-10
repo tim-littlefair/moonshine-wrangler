@@ -57,16 +57,17 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
     product_node = fuse_db.getroot()
     param_names_to_types = {}
     param_types_to_names_and_values = {}
+    module_params = {}
     for dsp_collection_index in range(0,5):
         dsp_collection = product_node[dsp_collection_index]
         for dsp_node in dsp_collection:
             dsp_node_id = int(dsp_node.attrib["ID"])
             for param_item in dsp_node:
+                param_pi = int(param_item.attrib["ParamIndex"])
+                param_ci = int(param_item.attrib["ControlIndex"])
                 param_name = param_item.attrib["Name"]
                 param_type = int(param_item.attrib["ParamType"])
                 if param_name == "NULL":
-                    param_pi = int(param_item.attrib["ParamIndex"])
-                    param_ci = int(param_item.attrib["ControlIndex"])
                     assert param_pi==param_ci
                     param_name = f"Other_{param_pi:02d}"
                 param_type_list = param_names_to_types.get(param_name,[])
@@ -80,7 +81,11 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 if param_value not in type_names_and_values[1]:
                     type_names_and_values[1] += [param_value]
                     type_names_and_values[1].sort()
-                param_types_to_names_and_values[param_type] = type_names_and_values 
+                param_types_to_names_and_values[param_type] = type_names_and_values
+                mp_key = ( param_pi, param_name, param_type, )
+                mp_module_list = module_params.get(mp_key, [])
+                module_params[mp_key] = sorted(mp_module_list + [ dsp_node_id ])
+                
 
     generate_py_file(
         param_names_to_types,
@@ -95,7 +100,13 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
         "FUSE_TYPE_VALUES",
         lambda k,v: f'    "{k}": (\n        {v[0]},\n        {v[1]},\n    ),\n'
     )
-
+    
+    generate_py_file(
+        module_params,
+        "classic_module_params",
+        "FUSE_MODULE_PARAMS",
+        lambda k,v: f'    {k}: {v},\n'
+    )
 
 def generate_py_file(
         dsp_ids_to_types_and_names, 
