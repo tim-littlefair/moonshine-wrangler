@@ -2,12 +2,44 @@ from generated import classic_modules
 
 _FDM = classic_modules.FUSE_DSP_MODULES
 
+class SourceFilePatcher:
+
+    def __init__(self, target_path):
+        self.target_path = target_path
+        self.target_lines = open(target_path, "rt").readlines()
+
+    def patch(self, region_label, item_list, item_line_lambda):
+          ( region_start_line, ) = [
+                line_no 
+                for line_no in range(0,len(self.target_lines))
+                if f"{region_label} generated entries begin" in self.target_lines[line_no]
+          ]
+          ( region_end_line, ) = [
+                line_no 
+                for line_no in range(0,len(self.target_lines))
+                if f"{region_label} generated entries end" in self.target_lines[line_no]
+          ]
+          lines_before_insertion = self.target_lines[0:region_start_line+1]
+          insertion_lines = [ item_line_lambda(item) for item in item_list ]
+          lines_after_insertion = self.target_lines[region_end_line:]
+          print([
+                len(lines)
+                for lines in (
+                     lines_before_insertion, insertion_lines, lines_after_insertion,  
+                )
+            ])
+          self.target_lines = lines_before_insertion + insertion_lines + lines_after_insertion
+
+    def write(self):
+          open(self.target_path,"wt").writelines(self.target_lines)
+          
 if __name__ == "__main__":
-        template_file = open("moonshinewrangler/templates/FUSE_Classic_Preset.java.template","rt")
-        template_text = template_file.read()
-        # TODO mungle template_text
-        java_file=open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_Classic_Preset.java", "wt")
-        print(template_text,file=java_file);
+        
+        patcher1 = SourceFilePatcher('../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_Constants.java')
+        items1 = sorted(_FDM.keys())
+        lambda1 = lambda id: f'        registerModule({id}, "{_FDM[id][1]}", "{_FDM[id][0]}");\n'
+        patcher1.patch('registerModule',items1,lambda1)
+        patcher1.write();
 
 
 
