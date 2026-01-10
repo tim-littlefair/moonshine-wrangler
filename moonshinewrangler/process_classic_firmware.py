@@ -78,6 +78,9 @@ def nul_terminated_string(byte_string):
         byte_string = byte_string[0:first_nul_pos]
     return str(byte_string,"utf-8")
 
+def le_uint16(byte_array,start):
+    return 256*(0xff&byte_array[start+1])+(0xFF&byte_array[start])
+
 """Based on the observations documented in function _preset_table_investigation(...)
 I believe that the representation of presets in classic firmware is as follows:
 + bytes 0-19 preset name (all names in factory firmware are 7-bit ASCII, I don't 
@@ -95,8 +98,9 @@ class ClassicPreset(dict):
     def __init__(self, byte_stream, offset):
         self.byte_stream = byte_stream[offset:offset+0x78]
         self["name"]=nul_terminated_string(self.byte_stream[0:20])
-        self["amp_id"]=self.byte_stream[20]
-        self["fx"] = [ self.byte_stream[44+(slot*18)] for slot in range(0,4)]
+        self["amp_id"]= le_uint16(self.byte_stream, 20)
+        self["fx"] = [ le_uint16(self.byte_stream, 44+(slot*18)) for slot in range(0,4)]
+
 
     def effect_id(self,slot):
         return self.byte_stream[44+(slot*18)]
