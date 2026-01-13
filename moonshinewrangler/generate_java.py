@@ -1,6 +1,8 @@
 from generated import classic_modules
+from generated import classic_module_params
 
 _FDM = classic_modules.FUSE_DSP_MODULES
+_FMP = classic_module_params.FUSE_MODULE_PARAMS
 
 class SourceFilePatcher:
 
@@ -35,11 +37,20 @@ class SourceFilePatcher:
           
 if __name__ == "__main__":
         
-        patcher1 = SourceFilePatcher('../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_Constants.java')
+        patcher = SourceFilePatcher('../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_Constants.java')
+        
         items1 = sorted(_FDM.keys())
-        lambda1 = lambda id: f'        registerModule({id}, "{_FDM[id][1]}", "{_FDM[id][0]}");\n'
-        patcher1.patch('registerModule',items1,lambda1)
-        patcher1.write();
+        lambda1 = lambda id: f'''        registerModule({id}, "{_FDM[id][1]}", "{_FDM[id][0]}");\n'''
+        patcher.patch('registerModule',items1,lambda1)
+
+        items2 = sorted(_FMP.keys())
+        lambda2 = lambda id_name_type: f'''        registerModuleParam(
+            {id_name_type[0]}, "{id_name_type[1]}", {id_name_type[2]}, 
+            Arrays.asList({str(_FMP[id_name_type])[1:-1]})
+        );\n'''
+        patcher.patch('registerModuleParam',items2,lambda2)
+
+        patcher.write();
 
 
 
