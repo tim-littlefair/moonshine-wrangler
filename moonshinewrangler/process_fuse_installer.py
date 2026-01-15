@@ -82,5 +82,11 @@ def extract_fender_fuse_db_xml(fuse_xml_path):
                 print(line,file=stream)
         line_array_index += 1
 
+def extract_option_menus():
+    fuse_exe_strings = extract_fender_fuse_exe_strings()
+    for l in fuse_exe_strings:
+        print(l)
+
 if __name__ == "__main__":
     extract_fender_fuse_db_xml("_work/fuse_data")
+    extract_option_menus()

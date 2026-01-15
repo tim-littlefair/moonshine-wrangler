@@ -5,11 +5,16 @@
 # See the file LICENSE in the base directory of the distribution for 
 # full terms of this license.
 
+import json
+import os
 import sys
 import xml.etree.ElementTree as ET
 
 _DEFAULT_FUSE_DB=None
 _default_fuse_db_filename="./_work/fuse_data/product13-Mustang_V2_I+II.xml"
+
+_DEFAULT_TONE_LT_DIR="./_work/tone_mustang_lt_data"
+
 try:
     _DEFAULT_FUSE_DB = ET.parse(_default_fuse_db_filename)
 except FileNotFoundError:
@@ -85,8 +90,6 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
                 mp_key = ( param_pi, param_name, param_type, )
                 mp_module_list = module_params.get(mp_key, [])
                 module_params[mp_key] = sorted(mp_module_list + [ dsp_node_id ])
-                
-
     generate_py_file(
         param_names_to_types,
         "classic_param_types",
@@ -108,6 +111,66 @@ def generate_classic_param_db(fuse_db=_DEFAULT_FUSE_DB):
         lambda k,v: f'    {k}: {v},\n'
     )
 
+def generate_tone_lt_param_db(data_dir=_DEFAULT_TONE_LT_DIR, module_types=None):
+    if module_types is None:
+        module_types = ( 
+            "amp", "stomp", "mod", "delay", "reverb", 
+            "filter", "dynamics", "utility"
+        )
+        tone_lt_module_params = {}
+        for f in os.listdir(data_dir):
+            if f.endswith(".json")==False:
+                continue
+            module = json.load(open(os.path.join(data_dir,f)))
+            try :
+                if module["info"]["subcategory"] not in module_types:
+                    continue
+            except KeyError:
+                continue
+            module_id = module["FenderId"]
+            for param_entry in module["ui"]["uiParameters"]:
+                param_id = param_entry["controlId"]
+                control_type = param_entry["controlType"]
+                param_details = tone_lt_module_params.get(param_id,None)
+                this_entry_values = [ control_type ]
+                try:
+                    if control_type == "continuous":
+                        this_entry_values += [
+                            param_entry["max"],
+                            param_entry["min"],
+                            param_entry["numTicks"],
+                        ]
+                        if "remap" in param_entry:
+                            this_entry_values += [
+                                # param_entry["taper"],
+                                param_entry["remap"]["max"],
+                                param_entry["remap"]["min"],
+                            ]
+                    else:
+                        this_entry_values += [ param_entry["listItems"] ]
+                    if param_details is None:
+                        tone_lt_module_params[param_id] = [ this_entry_values, [ module_id] ]
+                    else:
+                        try:
+                            assert param_details[0] == this_entry_values, (
+                                f"{param_details[0]} does not match {this_entry_values}"
+                            )
+                        except AssertionError:
+                            print(f"AssertionError raised while processing: {f}")
+                            print("Entry: " + str(param_entry))
+                            print("Message: " + str(sys.exc_info()[1]))
+                        param_details[1] += [ module_id ]
+                except KeyError:
+                    print(f"KeyError raised while processing: {f}")
+                    print("Entry: " + str(param_entry))
+    generate_py_file(
+        tone_lt_module_params,
+        "tone_lt_module_params",
+        "TONE_LT_MODULE_PARAMS",
+        lambda k,v: f'    {k}: {v},\n'
+    )
+
+
 def generate_py_file(
         dsp_ids_to_types_and_names, 
         file_bn, dict_name, k_v_lambda
@@ -121,13 +184,9 @@ def generate_py_file(
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        fuse_db = ET.parse(sys.argv[1])
-        generate_classic_module_db(fuse_db)
-        generate_classic_param_db(fuse_db)
-    else:
-        generate_classic_module_db()
-        generate_classic_param_db()
+    generate_classic_module_db()
+    generate_classic_param_db()
+    generate_tone_lt_param_db()
 
 """    try:
         java_file= open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_DSP_Module.java.RSN", "wt")
