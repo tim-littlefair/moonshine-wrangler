@@ -130,8 +130,9 @@ def generate_tone_lt_param_db(data_dir=_DEFAULT_TONE_LT_DIR, module_types=None):
             module_id = module["FenderId"]
             for param_entry in module["ui"]["uiParameters"]:
                 param_id = param_entry["controlId"]
+                param_key = ( module_id, param_id )
                 control_type = param_entry["controlType"]
-                param_details = tone_lt_module_params.get(param_id,None)
+                param_details = tone_lt_module_params.get(param_key, None)
                 this_entry_values = [ control_type ]
                 try:
                     if control_type == "continuous":
@@ -142,27 +143,23 @@ def generate_tone_lt_param_db(data_dir=_DEFAULT_TONE_LT_DIR, module_types=None):
                         ]
                         if "remap" in param_entry:
                             this_entry_values += [
-                                # param_entry["taper"],
                                 param_entry["remap"]["max"],
                                 param_entry["remap"]["min"],
                             ]
+                        if "taper" in param_entry:
+                            this_entry_values += [ param_entry["taper"] ]
                     else:
                         this_entry_values += [ param_entry["listItems"] ]
-                    if param_details is None:
-                        tone_lt_module_params[param_id] = [ this_entry_values, [ module_id] ]
-                    else:
-                        try:
-                            assert param_details[0] == this_entry_values, (
-                                f"{param_details[0]} does not match {this_entry_values}"
-                            )
-                        except AssertionError:
-                            print(f"AssertionError raised while processing: {f}")
-                            print("Entry: " + str(param_entry))
-                            print("Message: " + str(sys.exc_info()[1]))
-                        param_details[1] += [ module_id ]
+                    assert param_details is None or param_details==this_entry_values
+                    tone_lt_module_params[param_key] = this_entry_values
                 except KeyError:
                     print(f"KeyError raised while processing: {f}")
                     print("Entry: " + str(param_entry))
+                except AssertionError:
+                    print(f"AssertionError raised while processing: {f}")
+                    print("Entry: " + str(param_entry))  
+                    print("New params: " + str(this_entry_values)) 
+                    print("Previous: " + str(param_details))                 
     generate_py_file(
         tone_lt_module_params,
         "tone_lt_module_params",

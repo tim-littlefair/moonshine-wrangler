@@ -251,10 +251,16 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
             continue
     # All snippets have been processed - dump the valid ones
     os.makedirs(tone_lt_dir, exist_ok=True)
+    lines_to_fnames = {}
     for fname, text, lines in sorted(json_dict_objects.values()):
         line_list = ", ".join(lines)
         open(os.path.join(tone_lt_dir, fname), "wt").write(text)
         print(f"{fname} found at line(s): {line_list}")
+        for lineno in lines:
+            lines_to_fnames[int(lineno)]=fname
+    lines_to_fnames_csv = open(os.path.join(tone_lt_dir, "lines_to_fnames.csv"), "wt")
+    for lineno in sorted(lines_to_fnames.keys()):
+        print(f"{lineno},{lines_to_fnames[lineno]}",file=lines_to_fnames_csv)
 
 
 if __name__ == "__main__":
