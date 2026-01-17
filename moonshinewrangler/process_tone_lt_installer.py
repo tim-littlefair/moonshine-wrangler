@@ -259,10 +259,33 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
         for lineno in lines:
             lines_to_fnames[int(lineno)]=fname
     lines_to_fnames_csv = open(os.path.join(tone_lt_dir, "lines_to_fnames.csv"), "wt")
+    # For most or all of the DSP module definitions there are multiple JSON files
+    # I am presuming that this reflects (hopefully small) differences in the definitions
+    # between FMIC device models supported by the Fender TONE LT Desktop software.
+    # I am going to make the assumption that the definitions are grouped by target model
+    # in the source code, and that I can use the order of occurrence of the JSON strings
+    # as a grouping mechanism to select a single coherent set of definitions.
+    _MIN_GAP_BETWEEN_GROUPS=1000
+    first_line_of_group = 0
+    last_line_of_group = -1 * _MIN_GAP_BETWEEN_GROUPS
     for lineno in sorted(lines_to_fnames.keys()):
-        print(f"{lineno},{lines_to_fnames[lineno]}",file=lines_to_fnames_csv)
+        if lineno-last_line_of_group<=_MIN_GAP_BETWEEN_GROUPS:
+            last_line_of_group = lineno
+        else:
+            # a new group (might be the first one)
+            group_csv_basename = f"{first_line_of_group}-{last_line_of_group}_dsp_modules.json"
+            group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
+            for group_lineno in sorted(lines_to_fnames.keys()):
+                if (
+                    group_lineno >= first_line_of_group and 
+                    group_lineno <= last_line_of_group
+                ):
+                    print(lines_to_fnames[group_lineno], file=group_csv)
+            group_csv.close()
+            first_line_of_group=lineno
+            last_line_of_group=lineno
 
 
 if __name__ == "__main__":
     find_fender_lt_json_snippets("_work/tone_mustang_lt_data", "mustang")
-    find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")
+    # find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")
