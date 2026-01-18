@@ -58,6 +58,7 @@ def _make_preset_canonical(candidate_dict):
     # fail and we want to restore the initial state before exiting.
     original_dict = copy.deepcopy(candidate_dict)
 
+    """
     # The audioGraph.connections array models a set of cables connecting
     # input, through effect and amp modules, through to output, but is
     # very verbose, and redundant if we make the assumption described
@@ -106,6 +107,7 @@ def _make_preset_canonical(candidate_dict):
             candidate_dict = original_dict
             return None
     candidate_dict["audioGraph"]["nodes"] = reordered_nodes
+    """
     return candidate_dict
 
 
@@ -156,7 +158,7 @@ def _get_node_type_and_name(candidate_dict):
     return node_type, node_name
 
 
-def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
+def find_fender_lt_json_snippets(tone_lt_dir):
     fender_tone_macos_executable_bytes = _GWR.extract_file_bytes_from_dmg(
         "_work/reference_files/Fender%20Tone.dmg",
         "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
@@ -167,7 +169,6 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
 
     json_dict_objects = {}
     candidate_lineno = 0
-    product_module_json_text = None
     while candidate_lineno < len(fender_tone_macos_executable_strings):
         try:
             # Note that we choose for candidate_lineno to match the 1-based index
@@ -193,8 +194,8 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
             node_type, node_name = node_type_and_name
             # print(f"{node_type}:{node_name}@{candidate_lineno}")
 
-            if node_name == product_family_name:
-                assert node_type == "module_list"
+            """
+            if node_type == "module_list"
                 if product_module_json_text is None:
                     # This line contains a lists of the amp and effect modules
                     # available on the selected family
@@ -215,6 +216,7 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
                 # Ignore for now, this line will be processed again after
                 # the module list is seen and the line number is reset.
                 continue
+            """
 
             candidate_pretty_json = json.dumps(candidate_dict, indent=4, sort_keys=True)
             candidate_pretty_hash = hashlib.sha256(candidate_pretty_json.encode("utf-8")).hexdigest()[0:7]
@@ -228,18 +230,17 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
                 # We use the product_family_name parameter to restrict the data
                 # captured to one family or the other so that we have
                 # less data to plough through.
-                if node_type == "preset" and product_family_name in candidate_text:
+                if node_type == "preset":
                     pass
-                elif node_type == "preset":
-                    continue
-                elif product_module_json_text is not None:
+                else:
                     candidate_fenderid = candidate_dict.get("FenderId", "")
+                    """
                     if candidate_fenderid not in product_module_json_text:
                         # print(f"Filtering candidate of type {node_type} with FenderId {candidate_fenderid}")
                         continue
                     else:
                         pass
-
+                    """
                 candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
                 json_dict_objects[candidate_pretty_hash] = [
                     candidate_fname, candidate_pretty_json, [str(candidate_lineno),]
@@ -266,10 +267,14 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
     # in the source code, and that I can use the order of occurrence of the JSON strings
     # as a grouping mechanism to select a single coherent set of definitions.
     _MIN_GAP_BETWEEN_GROUPS=1000
-    first_line_of_group = 0
-    last_line_of_group = -1 * _MIN_GAP_BETWEEN_GROUPS
+    first_line_of_group = min(lines_to_fnames.keys())
+    last_line_of_group = first_line_of_group
+    last_line_in_file = max(lines_to_fnames.keys())
     for lineno in sorted(lines_to_fnames.keys()):
-        if lineno-last_line_of_group<=_MIN_GAP_BETWEEN_GROUPS:
+        if (
+            lineno < last_line_in_file and 
+            lineno-last_line_of_group<=_MIN_GAP_BETWEEN_GROUPS
+        ):
             last_line_of_group = lineno
         else:
             # a new group (might be the first one)
@@ -287,5 +292,4 @@ def find_fender_lt_json_snippets(tone_lt_dir, product_family_name):
 
 
 if __name__ == "__main__":
-    find_fender_lt_json_snippets("_work/tone_mustang_lt_data", "mustang")
-    # find_fender_lt_json_snippets("_work/tone_rumble_lt_data", "rumble")
+    find_fender_lt_json_snippets("_work/tone_lt_data")
