@@ -279,13 +279,16 @@ def find_fender_lt_json_snippets(tone_lt_dir):
         else:
             # a new group (might be the first one)
             group_csv_basename = f"{first_line_of_group}-{last_line_of_group}_dsp_modules.json"
-            group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
+            group_fnames = []
             for group_lineno in sorted(lines_to_fnames.keys()):
                 if (
                     group_lineno >= first_line_of_group and 
                     group_lineno <= last_line_of_group
                 ):
-                    print(lines_to_fnames[group_lineno], file=group_csv)
+                    group_fnames += [ lines_to_fnames[group_lineno] ]
+            group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
+            for fname in sorted(group_fnames):
+                print(fname,file=group_csv)
             group_csv.close()
             first_line_of_group=lineno
             last_line_of_group=lineno
