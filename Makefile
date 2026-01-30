@@ -29,4 +29,4 @@ check:
 	pycodestyle moonshinewrangler
 
 .venv_reminder:
-	echo Please run 'source .venv3/bin/activate' before attempting to run 'make'
+	# Please run \'source .venv3/bin/activate\' before attempting to run \'make\'
