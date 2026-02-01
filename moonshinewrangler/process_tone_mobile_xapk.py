@@ -30,8 +30,10 @@ def find_json_strings(mustang_so_stream, tone_mobile_dir):
             fname = f"{tone_mobile_dir}/{match.group(1)}-{match.group(2)}.json"
             print(f"Dumping to {fname}")
             open(fname,"wt").write(candidate_string)
+        elif "\n" not in candidate_string:
+            continue
         else:
-            other_strings += [candidate_string]
+            other_strings += [ candidate_string ]
         other_strings_stream = open(f"{tone_mobile_dir}/other_strings.txt","wt")
         other_strings_stream.write("\n^^^^^^^^^^^\n".join(other_strings))
 
