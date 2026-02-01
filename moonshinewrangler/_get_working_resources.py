@@ -34,10 +34,7 @@ _REFERENCE_FILE_DIRECT_URLS = (
     ('https://web.archive.org/web/20241223024259/https://download.fender.com/tone/windows/Fender%20Tone.msi',),
     ('https://web.archive.org/web/20241223024259/https://download.fender.com/tone/macos/Fender%20Tone.dmg',),
     # + Fender Tone Mobile (interoperating with GT-, GTX-, LTX- series and Mustang Micro Plus)
-    (
-        'https://web.archive.org/web/20260201033554/https://en.softonic.com/download/fender-tone/android/post-download/v/5.0.1.108230?dt=internalDownload',
-        'com.fender.tone_5.0.1.108230.xapk',
-    ),
+    # TBD find a permalink for this
 
     # The Fender Tone Mobile version in the last item above was published in October 2025.  
     # As at February 2026 there is a later version published on the play store, but it is not yet
@@ -110,6 +107,7 @@ _REFERENCE_FILE_MANUAL_URLS = {
 }
 
 _REFERENCE_FILE_EXPECTED_CHECKSUMS = {
+    "Fender Tone_5.0.2.108713_APKPure.xapk": "6dfac9cbd119ba54e8f53236fcaa1b9e994ad75006c96220c01e0261f1746430",
     "Fender%20Tone.dmg": "be78cbb8528af3c702d0e9b41d6002ea3ff5f1ffab253b2f4f5407ab881041fb",
     "Fender%20Tone.msi": "52884540ceae1f7dc507e5a387dbb31c6083c1747f6e2a83c53b8e1dff69fb29",
     "FenderFUSE_FULL_2.7.1.dmg": "e68de1a1c1068d34dda354e2678ddac4a796b2ccdface95b034a438455442919",
@@ -131,7 +129,6 @@ _REFERENCE_FILE_EXPECTED_CHECKSUMS = {
     "MustangIII-V_1.10.zip": "d0b9b865d91f3bfe38744309e894fe3ff5ef1e8d5cd75a09b8afcb2bd1fd741d",
     "V2_Mustang1_2.2.zip": "b8542354fd396cc37da615a2abf07c85c706186f8d9325b588ba03de7918d962",
     "V2_Mustang3_2.2.zip": "80a23011bfafa738cef78e8a10ac15df58320217d0e0af323cf5566093079492",
-    "com.fender.tone_5.0.1.108230.xapk": "69049d6b621b3141416b52488a40c2f18d1da512458c72a0217660efca89b863",
     "entire-archive.zip": "562301403fa77b4e9ea09eb21f0a043be0aff7a2278a517151c7aef1c3ebd785",
     "factory-presets.zip": "6579c4ab6ecc3af6245d43b6ec075ff81da649e8c57b5fd6d5514fa9a430b6a0",
     "intheblues.zip": "87def677aedaee5e4dc5dfcd6a7767916696802c56fb1eba8778f634429b30f9"    
@@ -150,20 +147,21 @@ def get_reference_files(target_dir):
     files_present_but_incorrect = []
     for f in required_files:
         expected_checksum = _REFERENCE_FILE_EXPECTED_CHECKSUMS[f]
+        actual_checksum = checksum(target_dir,f)
         if not os.path.exists(os.path.join(target_dir, f)):
             files_to_download += [ f ]
-        elif checksum(target_dir,f) == expected_checksum:
+        elif actual_checksum == expected_checksum:
             files_present_and_correct += [ f ]
         else:
-            files_present_but_incorrect += [ f ]
+            files_present_but_incorrect += [ f"{f} (actual_checksum={actual_checksum})" ]
     if len(files_present_and_correct)>0:
         print("\n + ".join(
-            [ "The following file(s) are already present and have expected checksum(s):" ] +
+            [ "The following file(s) are present and have expected checksum(s):" ] +
             files_present_and_correct
         ))
     if len(files_present_but_incorrect)>0:
         print("\n + ".join(
-            [ "The following file(s) are already present but have unexpected checksums:" ] +
+            [ "The following file(s) are present but have unexpected checksums:" ] +
             files_present_but_incorrect
         ))
         print("Remove or rename the existing files to re-attempt download")
