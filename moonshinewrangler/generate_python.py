@@ -6,14 +6,16 @@
 # full terms of this license.
 
 import json
+import pprint
 import os
+import re
 import sys
 import xml.etree.ElementTree as ET
 
 _DEFAULT_FUSE_DB=None
 _default_fuse_db_filename="./_work/fuse_data/product13-Mustang_V2_I+II.xml"
 
-_DEFAULT_TONE_LT_DIR="./_work/tone_mustang_lt_data"
+_DEFAULT_TONE_LT_DIR="./_work/tone_lt_data"
 
 try:
     _DEFAULT_FUSE_DB = ET.parse(_default_fuse_db_filename)
@@ -180,10 +182,63 @@ def generate_py_file(
     py_file.writelines(["}\n"])
 
 
+def generate_generic_module_names(tone_mobile_dir='_work/tone_mobile_data'):
+    # Different generations of FMIC devices seem to use similar names
+    # for most modules but with different prefixes and suffixes
+    replacement_regexes = [ 
+        re.compile(s)
+        for s in [
+            "^DUBS_Mustang", "^DUBS_Fender", "^DUBS_", 
+            "^ACD_Mustang", "^ACD_Fender", "^ACD_",
+            "GT$", "Reverb$", "PitchShifter$"
+        ]
+    ]
+    module_data = {}
+    for pff in os.listdir(tone_mobile_dir):
+        if not pff.startswith("productFamily"):
+            continue
+        pff_dict = json.load(open(os.path.join(tone_mobile_dir,pff)))
+        name_of_family = pff_dict["productFamily"]
+        # Align family_name with the values used in presets
+        if name_of_family == "gtx":
+            name_of_family = "mustang-gtx"
+        elif name_of_family == "mustang":
+            name_of_family = "mustang-lt"
+        elif name_of_family == "rumble":
+            name_of_family = "rumble-lt"
+        # print("Getting names for modules under family " + name_of_family)
+        all_dsp_units = []
+        for category in pff_dict["effectCategories"]:
+            all_dsp_units += category["dspUnits"]
+        all_dsp_units += pff_dict["amp"]["dspUnits"]
+        for module in all_dsp_units:
+            name_for_family = module["FenderId"]
+            generic_name = name_for_family
+            for regex in replacement_regexes:
+                generic_name = re.sub(regex,"",generic_name)
+            family_names = module_data.get(generic_name, {})
+            family_names[name_of_family]=name_for_family
+            module_data[generic_name]=family_names
+            # print(generic_name, name_of_family, name_for_family)
+    generate_py_file(
+        module_data,
+        "tone_module_names",
+        "TONE_MODULE_NAMES",
+        lambda k,v: f"""    "{k}": {{
+        "rumble-lt":   "{v.get("rumble-lt","")}",
+        "mustang-lt":  "{v.get("mustang-lt","")}",
+        "mustang-ltx": "{v.get("mustang-ltx","")}",
+        "mustang-gtx": "{v.get("mustang-gtx","")}",
+    }},\n"""
+    )
+
+        
+
 if __name__ == "__main__":
     generate_classic_module_db()
     generate_classic_param_db()
-    generate_tone_lt_param_db()
+    # generate_tone_lt_param_db()
+    generate_generic_module_names()
 
 """    try:
         java_file= open("../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/FUSE_DSP_Module.java.RSN", "wt")
