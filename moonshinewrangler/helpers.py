@@ -7,19 +7,60 @@ import zipfile
 _log_level_prefix = ""
 _LOG_PER_LEVEL_INDENT = "    "
 
+# extract_streams_and_paths accepts a parameter which can be a simple string
+# for archives directly in the filesystem, or tuple of order 3 for 
+# nested archives (which may be nested to any depth).
+# The nested archive tuple consists of:
+# + the name of the item to be extracted relative to the innermost archive
+# + the extracted byte stream for the item
+# + a list of paths to nesting archives, beginning with filesystem path to 
+#   the outermost archive, ending with the innermost archive (outermost
+#   and innermost may be the same item)
 
-def extract_streams_and_paths(xapk_path, config_apk_path):
-    retval = []
-    xapk_zf = zipfile.ZipFile(xapk_path)
-    config_apk_zf = zipfile.ZipFile(xapk_zf.open(config_apk_path))
+def _fn(archive_path):
+    if isinstance(archive_path,str):
+        return archive_path
+    else:
+        _check_archive_tuple(archive_path)
+        return archive_path[0]
+
+def _check_archive_tuple(archive_path):
+    assert isinstance(archive_path, tuple)
+    assert len(archive_path)==3
+
+def _stream(archive_path):
+    _check_archive_tuple(archive_path)
+    return archive_path[1]
+
+def _nesting_archives(archive_path):
+    _check_archive_tuple(archive_path)
+    return ":".join(archive_path[2])
+
+
+def extract_streams_and_paths(archive_path, extension_list = [ ".xapk", ".apk", ".zip"]):
     global _log_level_prefix
-    print(f"{_log_level_prefix}Processing streams extracted from {xapk_path}")
-    old_log_level_prefix = _log_level_prefix
-    _log_level_prefix += _LOG_PER_LEVEL_INDENT
-    for zi in config_apk_zf.filelist:
-        stream = config_apk_zf.open(zi.filename)
-        retval += [ (stream, zi.filename), ]
-    _log_level_prefix += old_log_level_prefix
+    print(f"{_log_level_prefix}Processing streams extracted from {_fn(archive_path)}")
+    archive_zf = None
+    if isinstance(archive_path,str):
+        archive_zf = zipfile.ZipFile(archive_path)
+    else: 
+        archive_zf = zipfile.ZipFile(_stream(archive_path))
+    retval = []
+    for zi in archive_zf.filelist:
+        #print(zi.filename)
+        for ext in extension_list:
+            if zi.filename.endswith(ext):
+                #print(zi.filename+ " is an archive with extension " + ext)
+                old_log_level_prefix = _log_level_prefix
+                _log_level_prefix += _LOG_PER_LEVEL_INDENT
+                next_level_archive_path = (zi.filename, archive_zf.open(zi.filename), None)
+                retval += extract_streams_and_paths(next_level_archive_path,extension_list)
+                _log_level_prefix = old_log_level_prefix
+                continue
+        # If none of the archive extensions matched, process as a simple stream
+        #print(zi.filename+ " is not an archive")
+        stream = archive_zf.open(zi.filename)
+        retval += [ (stream, zi.filename, None), ]
     return retval
 
 

@@ -10,15 +10,15 @@ from helpers import find_strings
 
 if __name__ == "__main__":
     _TONE_MOBILE_XAPK_PATH = "./_work/reference_files/Fender Tone_5.0.2.108713_APKPure.xapk"
-    _CONFIG_APK_PATH = "config.arm64_v8a.apk"
     _TONE_MOBILE_DATA = "./_work/tone_mobile_data"
 
     shutil.rmtree(_TONE_MOBILE_DATA,ignore_errors=True)
 
     streams_and_paths = extract_streams_and_paths(
         _TONE_MOBILE_XAPK_PATH,
-        _CONFIG_APK_PATH
+        extension_list = [ ".xapk", ".apk", ".zip" ]
     )
-    for s,p in streams_and_paths:
+    print("\n".join([str(s_and_p) for s_and_p in streams_and_paths]))
+    for s,p,_ in streams_and_paths:
         find_strings(s, p, _TONE_MOBILE_DATA)
 
