@@ -55,10 +55,13 @@ if __name__ == "__main__":
 
         tone_patcher = SourceFilePatcher('../maneline/maneline-lib/src/main/java/net/heretical_camelid/maneline/lib/generated/TONE_Constants.java')
         items3 = sorted(_TMN.keys())
-        lambda3 = lambda id_name_type: f'''        registerModule(
-            "{id_name_type}", 
-            Arrays.asList({str(_TMN[id_name_type])[1:-1]})
-        );\n'''
+        lambda3 = lambda id_name_type: f'''        register_TONE_DspModule("{id_name_type}") 
+            {('\n            ').join([
+                '.addNameVariant("' + s[0] +'","' + s[1] + '")'
+                for s in [ ('a','b'), ('c', 'd')
+                ]
+            ])}
+        ;\n'''
         tone_patcher.patch('registerModule',items3,lambda3)
         tone_patcher.write()
 
