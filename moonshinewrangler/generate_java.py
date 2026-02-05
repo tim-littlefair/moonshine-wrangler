@@ -58,9 +58,10 @@ if __name__ == "__main__":
         lambda3 = lambda id_name_type: f'''        register_TONE_DspModule(
             new TONE_DspModule("{id_name_type}") 
                 {('\n                ').join([
-                    '.addNameVariant("' + s[1] +'","' + s[-1] + '")'
+                    '.addNameVariant("' + s[0] + '","' + s[1] + '")'
                     for s in [ 
-                          _TMN[id_name_type]
+                        ( k, _TMN[id_name_type][k] )
+                        for k in _TMN[id_name_type].keys() 
                     ]
             ])}
         );\n'''
