@@ -147,13 +147,14 @@ def get_reference_files(target_dir):
     files_present_but_incorrect = []
     for f in required_files:
         expected_checksum = _REFERENCE_FILE_EXPECTED_CHECKSUMS[f]
-        actual_checksum = checksum(target_dir,f)
         if not os.path.exists(os.path.join(target_dir, f)):
             files_to_download += [ f ]
-        elif actual_checksum == expected_checksum:
-            files_present_and_correct += [ f ]
         else:
-            files_present_but_incorrect += [ f"{f} (actual_checksum={actual_checksum})" ]
+            actual_checksum = checksum(target_dir,f)
+            if actual_checksum == expected_checksum:
+                files_present_and_correct += [ f ]
+            else:
+                files_present_but_incorrect += [ f"{f} (actual_checksum={actual_checksum})" ]
     if len(files_present_and_correct)>0:
         print("\n + ".join(
             [ "The following file(s) are present and have expected checksum(s):" ] +
