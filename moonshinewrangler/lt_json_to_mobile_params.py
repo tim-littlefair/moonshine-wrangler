@@ -6,11 +6,22 @@
 import io
 import json
 import os
+import sys
+import traceback
 
 
 _DATA_DIR = "_work/tone_lt_data"
-_DSP_UNIT_TYPES = [ "stomp", "mod", "amp", "delay", "reverb" ]
+_DSP_UNIT_TYPES = ( "stomp", "mod", "amp", "delay", "reverb", )
+_PARAMS_TO_IGNORE = (
+    "bypass", "bypassType",
+    "noteDivision", "tapTimeBPM",
+    "gateDetectorPosition", "cabsimType"
+)
 
+_debug = False
+def _dprint(*args):
+    if(_debug):
+        print(*args)
 
 class Preset:
 
@@ -33,8 +44,12 @@ class Preset:
                 print(f"{which_node_id}: None")
             else:
                 stripped_fid = strip_prefixes_and_suffixes(fid)
-                dsp_unit = dspunit_for_name(which_node_id, stripped_fid)
-                print(f"{which_node_id}: {dsp_unit.displayName()} {dsp_unit.render_params(node["dspUnitParameters"])}")
+                preset_params = node["dspUnitParameters"]
+                dsp_unit = dspunit_for_name(which_node_id, stripped_fid, preset_params)
+                if dsp_unit is None:
+                    print(f"DSP unit {stripped_fid} not found", file=sys.stderr)
+                    continue
+                print(f"{which_node_id}: {dsp_unit.displayName()} {dsp_unit.render_params(preset_params)}")
 
 
 class DspUnit:
@@ -54,7 +69,7 @@ class DspUnit:
     def render_params(self, preset_param_dict):
         param_items = []
         for k in sorted(preset_param_dict.keys()):
-            if k in ("bypass", "bypassType", "noteDivision", "tapTimeBPM"):
+            if k in _PARAMS_TO_IGNORE:
                 continue
             ui_metadata = self.get_ui_metadata(k)
             display_key = ui_metadata["paramGuiObjectNameMaximized"]
@@ -71,25 +86,54 @@ def preset_for_name(preset_name):
                 # probably a Rumble LT25 preset - presently not supported
                 continue
             else:
+                _dprint(f"Loaded preset {preset_name} from {candidate_basename}")
                 return preset
 
-def dspunit_for_name(dsp_unit_type, dsp_unit_name):
+def dspunit_for_name(dsp_unit_type, dsp_unit_name, preset_params):
     dsp_unit = None
     for candidate_basename in reversed(sorted(os.listdir(_DATA_DIR))):
-        if dsp_unit_name in candidate_basename:
+        if dsp_unit_name + "." in candidate_basename:
             dsp_unit = DspUnit(os.path.join(_DATA_DIR, candidate_basename))
+            _dprint(f"Loaded DSP unit {dsp_unit_name} from {candidate_basename}")
+            preset_param_keys = [
+                k
+                for k in preset_params.keys()
+                if k not in _PARAMS_TO_IGNORE
+            ]
+            dspunit_param_keys = [
+                k
+                for k in dsp_unit.dspunit_dict["defaultDspUnitParameters"].keys()
+                if k not in _PARAMS_TO_IGNORE
+            ]
+            _dprint(f"preset_params: {preset_param_keys}")
+            _dprint(f"candidate_params: {dspunit_param_keys}")
+            if preset_param_keys != dspunit_param_keys:
+                continue
             return dsp_unit
 
 def strip_prefixes_and_suffixes(fender_id):
     retval = fender_id
-    for p_or_s in ( "DUBS_", "ACD_", "GT" ):
+    for p_or_s in ( "DUBS_", "ACD_", "GT", "Reverb", "Lite" ):
         retval = retval.replace(p_or_s,"")
     return retval
 
 
 if __name__ == "__main__":
-    preset = preset_for_name("VINTAGE")
-    preset.uiparams()
+    for name in (
+        "VINTAGE",
+        # "THRASH",
+        "CHICAGO",
+        "60S_____FUZZ"
+    ):
+        try:
+            preset = preset_for_name(name)
+            if preset is None:
+                continue
+            preset.uiparams()
+        except:
+            print(f"Unable to process {name}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+        print()
 
 
 
