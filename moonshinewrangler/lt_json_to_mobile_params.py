@@ -127,12 +127,17 @@ def strip_prefixes_and_suffixes(fender_id):
 
 if __name__ == "__main__":
     for name in (
-        "VINTAGE_TREMOLO",
-        "CHICAGO_BLUES",
-        "60S_____FUZZ",
-        "ACOUSTIC",
-        "SKATE___PUNK",
-        "THRASH__OVERKILL",
+        "CHICAGO_BLUES", #3, #91
+        "SKATE___PUNK", #7, #92
+        "JAZZ____", #9, #93
+        "VINTAGE_TREMOLO", #12, #94
+        "60S_____FUZZ",#19, #95
+        "MYTHIC__CRUNCH",#20,#96
+        "NICE____FLANGER",
+        "ACOUSTICSIM",
+        # missing modules on MMP
+        "METAL___LEAD", #11, MG90sAmerican =~ 90sAmerican?
+        "THRASH__OVERKILL", #14
     ):
         try:
             preset = preset_for_name(name)
