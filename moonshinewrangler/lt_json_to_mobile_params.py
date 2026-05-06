@@ -64,16 +64,23 @@ class DspUnit:
         return self.dspunit_dict["info"]["audioGuiObjectNameMaximized"]
 
     def get_ui_metadata(self, param_id):
-        return self.param_dict.get(param_id, { "paramGuiObjectNameMinimized": param_id})
+        if param_id in self.param_dict:
+            return self.param_dict[param_id]
+        else:
+            _dprint(f"Parameter {param_id} not found in {self.param_dict}")
+            return {}
 
     def render_params(self, preset_param_dict):
         param_items = []
         for k in sorted(preset_param_dict.keys()):
             if k in _PARAMS_TO_IGNORE:
                 continue
-            ui_metadata = self.get_ui_metadata(k)
-            display_key = ui_metadata["paramGuiObjectNameMaximized"]
-            param_items += [ f"{display_key}:{preset_param_dict[k]}"]
+            param_ui_metadata = self.get_ui_metadata(k)
+            try:
+                param_display_key = param_ui_metadata["paramGuiObjectNameMaximized"]
+                param_items += [ f"{param_display_key}:{preset_param_dict[k]}"]
+            except KeyError:
+                _dprint(f"No display name for parameter {k}")
         return "(" + ", ".join(param_items) + ")"
 
 
@@ -120,10 +127,12 @@ def strip_prefixes_and_suffixes(fender_id):
 
 if __name__ == "__main__":
     for name in (
-        "VINTAGE",
-        # "THRASH",
-        "CHICAGO",
-        "60S_____FUZZ"
+        "VINTAGE_TREMOLO",
+        "CHICAGO_BLUES",
+        "60S_____FUZZ",
+        "ACOUSTIC",
+        "SKATE___PUNK",
+        "THRASH__OVERKILL",
     ):
         try:
             preset = preset_for_name(name)
