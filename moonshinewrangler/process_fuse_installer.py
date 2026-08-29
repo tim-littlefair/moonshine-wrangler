@@ -13,7 +13,7 @@ import urllib.parse
 
 
 def _extract_file_bytes_from_dmg(dmg_path, file_entry_path):
-    extract_cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}'"
+    extract_cmd = f"7z x {dmg_path} -so '{file_entry_path}'"
     sp_result = subprocess.run(extract_cmd, shell=True, capture_output=True)
     assert sp_result.returncode == 0
     return sp_result.stdout
@@ -34,7 +34,7 @@ def extract_fender_fuse_exe_strings():
         input=pax_archive_bytes
     )
     assert sp_result.returncode == 0
-    return str(sp_result.stdout, "utf-8").split("\n")
+    return str(sp_result.stdout, "latin-1").split("\n")
 
 
 def extract_fender_fuse_db_xml(fuse_xml_path):

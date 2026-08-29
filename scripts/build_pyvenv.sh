@@ -46,7 +46,7 @@ then
         echo If X!=21, please update the expected version in build_pyvenv.sh
         exit 53
     else
-        sudo port install py310-pyaudio 
+        sudo port install py310-pyaudio 7zip
         export CPPFLAGS="-I/opt/local/include"
         export LDFLAGS="-L/opt/local/lib"
     fi

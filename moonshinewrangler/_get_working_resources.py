@@ -9,6 +9,7 @@
 import hashlib
 import os
 import requests
+import shutil
 import time
 import subprocess
 
@@ -138,6 +139,7 @@ def checksum(dirname, filename):
     ).hexdigest()
 
 def get_reference_files(target_dir):
+    _DOWNLOADS_DIR = os.path.expanduser("~/Downloads")
     os.makedirs(target_dir, exist_ok=True)
     required_files = sorted(_REFERENCE_FILE_EXPECTED_CHECKSUMS.keys())
     files_to_download = []
@@ -145,14 +147,22 @@ def get_reference_files(target_dir):
     files_present_but_incorrect = []
     for f in required_files:
         expected_checksum = _REFERENCE_FILE_EXPECTED_CHECKSUMS[f]
-        if not os.path.exists(os.path.join(target_dir, f)):
-            files_to_download += [ f ]
+        if os.path.exists(os.path.join(target_dir, f)):
+            pass
+        elif os.path.exists(os.path.join(_DOWNLOADS_DIR, f)):
+            shutil.copyfile(
+                os.path.join(_DOWNLOADS_DIR, f),
+                os.path.join(target_dir, f)
+            )
         else:
-            actual_checksum = checksum(target_dir,f)
-            if actual_checksum == expected_checksum:
-                files_present_and_correct += [ f ]
-            else:
-                files_present_but_incorrect += [ f"{f} (actual_checksum={actual_checksum})" ]
+            files_to_download += [ f ]
+            continue
+        actual_checksum = checksum(target_dir,f)
+        if actual_checksum == expected_checksum:
+            files_present_and_correct += [ f ]
+        else:
+            files_present_but_incorrect += [ f"{f} (actual_checksum={actual_checksum})" ]
+
     if len(files_present_and_correct)>0:
         print("\n + ".join(
             [ "The following file(s) are present and have expected checksum(s):" ] +
