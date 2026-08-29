@@ -99,14 +99,25 @@ def populate_metadata(cxn):
 def populate_fuse_product_metadata(cxn, xml_filename):
     _FUSE_MODULE_TYPES = ( "Amplifier", "Distortion", "Modulation", "Delay", "Reverb")
     ( _FUSE_APP_ID, ) = [ k for k in APPS.keys() if APPS[k][0] == 'fender-fuse' ]
-    document = minidom.parse(xml_filename)
-    for product_node in document.getElementsByTagName("Product"):
-        product_name = product_node.getAttribute("Name")
-        product_id = product_node.getAttribute("ID")
-        # The schema allows modules to be tracked per product 
-        # (i.e. supported physical amplifier model range), 
-        # but only worrying about Mustang I/II/III/IV/V at the moment
-        if product_name != "Mustang I/II":
+    # The schema allows modules to be tracked per product 
+    # (i.e. supported physical amplifier model range), 
+    # but only worrying about Mustang I/II/III/IV/V at the moment
+    _PRODUCT_NAME_FILTER = "Mustang I/II"
+    _get_root_node = lambda xml_filename: minidom.parse(xml_filename)
+    _get_product_nodes = lambda root_node: root_node.getElementsByTagName("Product")
+    _get_node_name_and_id = lambda module_node: (
+        module_node.getAttribute("Name"),
+        module_node.getAttribute("ID"),
+    )
+    _get_module_nodes = lambda product_node: product_node.getElementsByTagName("Module") 
+    _get_node_name = lambda module_node: module_node.getAttribute("Name")
+    root_node = _get_root_node(xml_filename)
+    for product_node in _get_product_nodes(root_node):
+        product_name, product_id = _get_node_name_and_id(product_node)
+        if (
+            _PRODUCT_NAME_FILTER is not None and 
+            product_name not in _PRODUCT_NAME_FILTER
+        ):
             continue
         cxn.execute(
             "INSERT INTO app_products values ( ?, ?, ? )",
@@ -119,8 +130,8 @@ def populate_fuse_product_metadata(cxn, xml_filename):
                 WHERE aliases LIKE ?
                 OR module_type_name = ?;
             """, (f"%{module_type}%", module_type,))
-            for module_node in product_node.getElementsByTagName("Module"):
-                module_name = module_node.getAttribute("Name")
+            for module_node in _get_module_nodes(product_node):
+                module_name = _get_node_name(module_node)
                 cxn.execute("""                    
                     INSERT INTO app_modules (
                         app_module_name, app_id, module_type_id
