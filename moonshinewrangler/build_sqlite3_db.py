@@ -90,7 +90,7 @@ def populate_fuse_product_metadata(cxn, xml_filename):
                 FROM MODULE_TYPES
                 WHERE aliases LIKE ?
                 OR module_type_name = ?;
-            """, (module_type, module_type,))
+            """, (f"%{module_type}%", module_type,))
             print(mtid)
             (product_module_type_node,) = product_node.getElementsByTagName(module_type)
             print(product_module_type_node,)
@@ -100,7 +100,6 @@ def populate_fuse_product_metadata(cxn, xml_filename):
                     INSERT INTO app_modules (
                         app_module_name, app_id, module_type_id
                     ) VALUES (
-                        -- (SELECT seq+1 FROM sqlite_sequence WHERE NAME='app_modules'),
                         ?, ?, ?
                     );
                 """, (module_name, _FUSE_APP_ID, mtid,))
