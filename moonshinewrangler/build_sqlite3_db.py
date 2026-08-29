@@ -2,7 +2,6 @@
 
 import os
 import traceback
-from xml.dom import minidom
 
 from db_schema_and_constants import APPS, create_db_schema, populate_constant_tables, _DB_DIR
 from db_populate_from_fuse_data import populate_fuse_product_metadata
