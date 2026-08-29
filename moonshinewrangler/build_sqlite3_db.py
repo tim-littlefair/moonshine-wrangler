@@ -119,7 +119,6 @@ def populate_fuse_product_metadata(cxn, xml_filename):
                 WHERE aliases LIKE ?
                 OR module_type_name = ?;
             """, (f"%{module_type}%", module_type,))
-            (product_module_type_node,) = product_node.getElementsByTagName(module_type)
             for module_node in product_node.getElementsByTagName("Module"):
                 module_name = module_node.getAttribute("Name")
                 cxn.execute("""                    
