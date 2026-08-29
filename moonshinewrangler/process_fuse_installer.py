@@ -89,4 +89,4 @@ def extract_option_menus():
 
 if __name__ == "__main__":
     extract_fender_fuse_db_xml("_work/fuse_data")
-    extract_option_menus()
+    # extract_option_menus()

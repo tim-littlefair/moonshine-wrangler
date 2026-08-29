@@ -2,16 +2,23 @@
 
 # process_tone_mobile_xapk.py
 
+import os
 import shutil
+import sys
+
 
 from helpers import extract_streams_and_paths
 from helpers import find_strings
 
 
 if __name__ == "__main__":
-    _TONE_MOBILE_XAPK_PATH = "./_work/reference_files/Fender Tone_5.0.2.108713_APKPure.xapk"
-    _TONE_MOBILE_DATA = "./_work/tone_mobile_data"
+    _TONE_MOBILE_XAPK_PATH = "./_work/reference_files/Fender+Tone_5.1.3.112680_APKPure.xapk"
 
+    if os.path.exists(_TONE_MOBILE_XAPK_PATH) is False:
+        print(f"{_TONE_MOBILE_XAPK_PATH} not found",file=sys.stderr)
+        sys.exit(1)
+
+    _TONE_MOBILE_DATA = "./_work/tone_mobile_data"
     shutil.rmtree(_TONE_MOBILE_DATA,ignore_errors=True)
 
     streams_and_paths = extract_streams_and_paths(

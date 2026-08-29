@@ -25,26 +25,19 @@ _REFERENCE_FILE_DIRECT_URLS = (
     ###   a second element which is the save filename (which is also passed through
     ###   os.path.basename(), which does not change its value)
 
-    ## The following URLs are for Wayback Machine/archive.org saves of installers published by FMIC for 
-    ## the following companion apps:
-    # + Fender FUSE (interoperating with classic v1/v2 Mustangs)
-    ('https://web.archive.org/web/20170403031521/http://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/pc/FenderFUSE_FULL_2.7.1.exe',),
-    ('https://web.archive.org/web/20170403031521/http://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/mac/FenderFUSE_FULL_2.7.1.dmg',),
-    # + Fender Tone LT Desktop (interoperating with LT- series Mustangs - but not LTX- series)
-    ('https://web.archive.org/web/20241223024259/https://download.fender.com/tone/windows/Fender%20Tone.msi',),
-    ('https://web.archive.org/web/20241223024259/https://download.fender.com/tone/macos/Fender%20Tone.dmg',),
+    # + Fender FUSE (interoperating with 'classic' v1/v2 Mustang I/II/III/IV/V)
+    ('https://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/pc/FenderFUSE_FULL_2.7.1.exe',),
+    ('https://www.fmicassets.com/fender/support/software/fender_software/fender_fuse/mac/FenderFUSE_FULL_2.7.1.dmg',),
+
+    # + Fender Tone LT Desktop (interoperating with Mustang LT25, LT50, LT40S and Rumble LT25)
+    ('https://download.fender.com/tone/windows/Fender Tone.msi',),
+    ('https://download.fender.com/tone/windows/Fender Tone.dmg',),
+
+
     # + Fender Tone Mobile (interoperating with GT-, GTX-, LTX- series and Mustang Micro Plus)
-    # TBD find a permalink for this
+    # See manual download items dictionary
 
-    # The Fender Tone Mobile version in the last item above was published in October 2025.  
-    # As at February 2026 there is a later version published on the play store, but it is not yet
-    # visible for download on either the APKPure or Softonic mirrors (although both report the 
-    # version number of the new version as the latest version).
-    # If/when the later version does become visible it is likely to be accessible via the following link,
-    # which should be fed through archive.org to get a reliable permalink
-    # 'https://en.softonic.com/download/fender-tone/android/post-download/v/5.1.1.110279?dt=internalDownload',
-
-    ## The following file is the macOS version of a firmware updater for the Mustang Micro Plus
+    # The following file is the macOS version of a firmware updater for the Mustang Micro Plus
     ('https://web.archive.org/web/20260131065631/https://www.fmicassets.com/Damroot/Original/10132/Fender-Device-Manager_v1_1.dmg',),
 
     # Manuals for classic, LT40S, GTX- and MMP devices
@@ -89,27 +82,32 @@ _REFERENCE_FILE_MANUAL_URLS = {
         "MustangFloor_1.4.zip",  # ) form factor device introduced in 2012
     ),
 
-    # As at 1/2/2023, page accessible via the following URL 
-    # provides a click through download links for various versions
+    # As at 29/8/2026, page accessible via the following URL 
+    # provides click through download links for various versions
     # pf the FenderTone Android app for Mustang GT-, GTX-, LTX- series 
     # and the Mustang Micro Plus.
-    # The second version listed below is now accessed via an 
-    # archive.org permalink based on a the softonic.com repository.
-    # softonic.com does not appear to offer old versions, so these
-    # are retained here for reference in case they become useful.
     "https://apkpure.com/fender-tone/com.fender.tone" : (
+        "Fender+Tone_5.1.3.112680_APKPure.xapk",
+        # Older versions - we might look at these if we
+        # want to check for module/attribute naming changes
+        # over time
         "Fender Tone_5.0.2.108713_APKPure.xapk",
         "Fender Tone_5.0.1.108230_APKPure.xapk",
         "Fender Tone_4.0.8.105337_APKPure.xapk",
         "Fender Tone_5.0.0.107865_APKPure.xapk",
         "Fender Tone_3.1.0_APKPure.apk",
     ),
+
+    "https://au.fender.com/products/mustang-lt40s" : (
+        "Fender Tone.dmg",
+        "Fender Tone.msi"
+    )
 }
 
 _REFERENCE_FILE_EXPECTED_CHECKSUMS = {
-    "Fender Tone_5.0.2.108713_APKPure.xapk": "6dfac9cbd119ba54e8f53236fcaa1b9e994ad75006c96220c01e0261f1746430",
-    "Fender%20Tone.dmg": "be78cbb8528af3c702d0e9b41d6002ea3ff5f1ffab253b2f4f5407ab881041fb",
-    "Fender%20Tone.msi": "52884540ceae1f7dc507e5a387dbb31c6083c1747f6e2a83c53b8e1dff69fb29",
+    "Fender+Tone_5.1.3.112680_APKPure.xapk": "5c1c412db85f61d936968898726fcd11743f38c6724487e8c19c874a0f5a0f2b",
+    "Fender Tone.dmg": "be78cbb8528af3c702d0e9b41d6002ea3ff5f1ffab253b2f4f5407ab881041fb",
+    "Fender Tone.msi": "52884540ceae1f7dc507e5a387dbb31c6083c1747f6e2a83c53b8e1dff69fb29",
     "FenderFUSE_FULL_2.7.1.dmg": "e68de1a1c1068d34dda354e2678ddac4a796b2ccdface95b034a438455442919",
     "FenderFUSE_FULL_2.7.1.exe": "38bb32a2dff5549067efb99aa1d4caf70331a1b67b2882cf97fcea97c4d09f26",
     "Fender_FUSE_2.0_manual_for__Mustang_1-2_Rev-G_English.pdf": "59edf9b8eb50d36ad880bd4d12b52a36c43946bd3b643c085dd95a738ae53d99",
@@ -207,20 +205,18 @@ def get_reference_files(target_dir):
             urls_to_download
         ))
     for url in urls_to_download:
-        response = requests.get(url, stream=True)
-        response.raise_for_status()
         ( save_basename, ) = [
             os.path.basename(url_entry[-1])
             for url_entry in _REFERENCE_FILE_DIRECT_URLS
             if url_entry[0]==url
         ]
         save_path = os.path.join(target_dir, save_basename)
-        request_headers={}
         if os.path.exists(save_path):
             print(f"{save_path} already found (not checked)")
             continue
+        print(f"requesting {save_basename} from {url}", flush=True)
         start_time = time.time()
-        print(f"Requesting {save_path} ... ",end="", flush=True)
+        request_headers={}
         response = requests.get(url, stream=True,headers=request_headers)
         response.raise_for_status()
         with open(save_path, "wb") as f:
@@ -231,7 +227,7 @@ def get_reference_files(target_dir):
 
 
 def extract_file_bytes_from_dmg(dmg_path, file_entry_path):
-    extract_cmd = f"/usr/bin/7z x {dmg_path} -so '{file_entry_path}'"
+    extract_cmd = f"/usr/bin/7z x '{dmg_path}' -so '{file_entry_path}'"
     sp_result = subprocess.run(extract_cmd, shell=True, capture_output=True)
     assert sp_result.returncode == 0
     return sp_result.stdout
@@ -273,4 +269,4 @@ if __name__ == "__main__":
         for f in os.listdir(_REFERENCE_FILE_PATH):
             actual_checksums[f]=checksum(_REFERENCE_FILE_PATH,f)
         json.dump(actual_checksums, sys.stdout, indent=4, sort_keys=True)
-    
+

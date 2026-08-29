@@ -160,7 +160,7 @@ def _get_node_type_and_name(candidate_dict):
 
 def find_fender_lt_json_snippets(tone_lt_dir):
     fender_tone_macos_executable_bytes = _GWR.extract_file_bytes_from_dmg(
-        "_work/reference_files/Fender%20Tone.dmg",
+        "_work/reference_files/Fender Tone.dmg",
         "Fender Tone LT Desktop.app/Contents/MacOS/Fender Tone LT Desktop"
     )
     fender_tone_macos_executable_strings = _GWR.extract_strings_from_file_bytes(

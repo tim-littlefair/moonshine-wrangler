@@ -120,7 +120,7 @@ def dspunit_for_name(dsp_unit_type, dsp_unit_name, preset_params):
 
 def strip_prefixes_and_suffixes(fender_id):
     retval = fender_id
-    for p_or_s in ( "DUBS_", "ACD_", "GT", "Reverb", "Lite" ):
+    for p_or_s in ( "DUBS_", "ACD_", "Mustang", "GT", "Reverb", "Lite" ):
         retval = retval.replace(p_or_s,"")
     return retval
 
@@ -133,11 +133,11 @@ if __name__ == "__main__":
         "VINTAGE_TREMOLO", #12, #94
         "60S_____FUZZ",#19, #95
         "MYTHIC__CRUNCH",#20,#96
-        "NICE____FLANGER",
+        "NICE____FLANGER",#23,#97
         "ACOUSTICSIM",
         # missing modules on MMP
-        "METAL___LEAD", #11, MG90sAmerican =~ 90sAmerican?
-        "THRASH__OVERKILL", #14
+        "METAL___LEAD", #11, #99 - MG90sAmerican =~ 90sAmerican?
+        "THRASH__OVERKILL", #14, #100 - METAL GATE stomp not available - using GATE=max on amp
     ):
         try:
             preset = preset_for_name(name)
