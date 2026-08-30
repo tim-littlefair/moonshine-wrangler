@@ -286,13 +286,13 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                     if group_lineno in lines_to_fnames.keys():
                         group_fnames += [ lines_to_fnames[group_lineno] ]
                 group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
-                print(group_fnames,file=group_csv)
+                print(fname_at_line,file=group_csv)
                 for fname in sorted(set(group_fnames)):
                     print(fname,file=group_csv)
                 group_csv.close()
-                print("Modules:",group_csv_basename)
-            group_start_lineno = lineno + 1
-            group_index += 1
+                print("Modules:",group_csv_basename,group_start_lineno,lineno)
+                group_start_lineno = lineno + 1
+                group_index += 1
         continue
         if (
             lineno < last_line_in_file and 
