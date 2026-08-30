@@ -254,28 +254,42 @@ def find_fender_lt_json_snippets(tone_lt_dir):
     # All snippets have been processed - dump the valid ones
     os.makedirs(tone_lt_dir, exist_ok=True)
     lines_to_fnames = {}
+    fnames_to_lines_csv = open(os.path.join(tone_lt_dir, "_fnames_to_lines.csv"), "wt")
     for fname, text, lines in sorted(json_dict_objects.values()):
-        line_list = ", ".join(lines)
+        line_list = ", ".join(sorted(lines))
         open(os.path.join(tone_lt_dir, fname), "wt").write(text)
         print(f"{fname} found at line(s): {line_list}")
         for lineno in lines:
             lines_to_fnames[int(lineno)]=fname
-    lines_to_fnames_csv = open(os.path.join(tone_lt_dir, "lines_to_fnames.csv"), "wt")
+        print(f'{fname},"{line_list}"',file=fnames_to_lines_csv)
+    fnames_to_lines_csv.close()
+    lines_to_fnames_csv = open(os.path.join(tone_lt_dir, "_lines_to_fnames.csv"), "wt")
+    for lineno in sorted(lines_to_fnames.keys()):
+        print(f'{lineno},{lines_to_fnames[lineno]}',file=lines_to_fnames_csv)
+    lines_to_fnames_csv.close()
+
     # For most or all of the DSP module definitions there are multiple JSON files
     # I am presuming that this reflects (hopefully small) differences in the definitions
     # between FMIC device models supported by the Fender TONE LT Desktop software.
     # I am going to make the assumption that the definitions are grouped by target model
     # in the source code, and that I can use the order of occurrence of the JSON strings
     # as a grouping mechanism to select a single coherent set of definitions.
-    _MIN_GAP_BETWEEN_GROUPS=1000
+    """
     first_line_of_group = min(lines_to_fnames.keys())
     last_line_of_group = first_line_of_group
-    last_line_in_file = max(lines_to_fnames.keys())
+    """
     group_start_lineno = None
     group_index = 0
+    last_line_in_file = max(lines_to_fnames.keys())
+    last_line_processed = 0
+    _MIN_GAP_BETWEEN_GROUPS=1000
     for lineno in sorted(lines_to_fnames.keys()):
         fname_at_line = lines_to_fnames[lineno]
-        if fname_at_line.startswith("module_list"):
+        if (
+            fname_at_line.startswith("module_list") or 
+            lineno==last_line_in_file or 
+            lineno > last_line_processed + _MIN_GAP_BETWEEN_GROUPS
+        ):
             ##if group_start_lineno is None:
             ##    print(f"No files found for {fname_at_line}",file=sys.stderr)
             ##    continue
@@ -290,9 +304,14 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                 for fname in sorted(set(group_fnames)):
                     print(fname,file=group_csv)
                 group_csv.close()
-                print("Modules:",group_csv_basename,group_start_lineno,lineno)
+                print(
+                    f"{group_csv_basename} contains modules from lines {group_start_lineno} to {lineno}"
+                )
                 group_start_lineno = lineno + 1
                 group_index += 1
+            elif group_start_lineno is None:
+                group_start_lineno = lineno
+            last_line_processed = lineno
         continue
         if (
             lineno < last_line_in_file and 
