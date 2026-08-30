@@ -127,8 +127,14 @@ def _get_node_type_and_name(candidate_dict):
             node_type = info["subcategory"]
             node_name = _GWR.filter_fender_id(candidate_dict["FenderId"])
             param_count = len(candidate_dict["ui"]["uiParameters"])
-            if param_count > 0:
-                node_name += f".{param_count:02}params"
+            if param_count == 0:
+                pass
+            elif "orderBMT" in candidate_dict["ui"]:
+                # The parameters support parameter rendering on the desktop app
+                node_name += f".{param_count:02}appparams"
+            else:
+                # The parameters support parameter rendering on the device LED
+                node_name += f".{param_count:02}dvcparams"
             return node_type, node_name
         elif node_type == "preset":
             node_name = _GWR.filter_name_chars(candidate_dict["info"]["displayName"])
@@ -312,29 +318,6 @@ def find_fender_lt_json_snippets(tone_lt_dir):
             elif group_start_lineno is None:
                 group_start_lineno = lineno
             last_line_processed = lineno
-        continue
-        if (
-            lineno < last_line_in_file and 
-            lineno-last_line_of_group<=_MIN_GAP_BETWEEN_GROUPS
-        ):
-            last_line_of_group = lineno
-        else:
-            # a new group (might be the first one)
-            group_csv_basename = f"{first_line_of_group}-{last_line_of_group}_dsp_modules.csv"
-            group_fnames = []
-            for group_lineno in sorted(lines_to_fnames.keys()):
-                if (
-                    group_lineno >= first_line_of_group and 
-                    group_lineno <= last_line_of_group
-                ):
-                    group_fnames += [ lines_to_fnames[group_lineno] ]
-            group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
-            for fname in sorted(group_fnames):
-                print(fname,file=group_csv)
-            group_csv.close()
-            first_line_of_group=lineno
-            last_line_of_group=lineno
-
 
 if __name__ == "__main__":
     find_fender_lt_json_snippets("_work/tone_lt_data")
