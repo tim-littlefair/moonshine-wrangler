@@ -53,17 +53,44 @@ def _make_preset_canonical(candidate_dict):
 
     if len(candidate_dict["audioGraph"]["nodes"]) != 5:
         return None
+    elif "connections" in candidate_dict["audioGraph"]:
+        pass
+    elif candidate_dict["info"]["product_id"] == "rumble-lt":
+        # ignoring these for now
+        return candidate_dict
+    else:
+        print(f"No connection map in preset:",file=sys.stderr)
+        print(f"name: {candidate_dict["info"]["displayName"]}",file=sys.stderr)
+        print(f"product: {candidate_dict["info"]["product_id"]}",file=sys.stderr)
+        return candidate_dict
 
     # We retain a deep copy of the original dict in case assertions here
     # fail and we want to restore the initial state before exiting.
     original_dict = copy.deepcopy(candidate_dict)
 
-    """
+    # """
     # The audioGraph.connections array models a set of cables connecting
     # input, through effect and amp modules, through to output, but is
     # very verbose, and redundant if we make the assumption described
-    # in the comment above, so we remove it.
-    del candidate_dict["audioGraph"]["connections"]
+    # in the comment above, so we would like to remove it.
+    # del candidate_dict["audioGraph"]["connections"]
+    # For now we keep it, but forced it to canonical order for the
+    # target product
+    required_order = None
+    if candidate_dict["info"]["product_id"] == "rumble-lt":
+        required_order = ("stomp", "mod", "amp", "eq", "delay")
+    else:
+        required_order = ("stomp", "mod", "amp", "delay", "reverb")
+    cxns_list = candidate_dict["audioGraph"]["connections"]
+    assert len(cxns_list) == 12, "Unexpected connection count"
+    required_order_dict = dict(zip(range(0,5), required_order))
+    for cxn_unit_index in range(0,6):
+        dsptype_in = required_order_dict.get(cxn_unit_index-1,"preset")
+        dsptype_out = required_order_dict.get(cxn_unit_index,"preset")
+        for channel_index in (0,1):
+            cxns_list[2*cxn_unit_index+channel_index]["input"]["nodeId"] = dsptype_in
+            cxns_list[2*cxn_unit_index+channel_index]["output"]["nodeId"] = dsptype_out
+    candidate_dict["audioGraph"]["connections"] = cxns_list # might be redundant
 
     # The audioGraph.nodes array gives all of the effects and parameters
     # but the order of items in the array is random and does not reflect
@@ -78,11 +105,6 @@ def _make_preset_canonical(candidate_dict):
 
     # Finally, we filter the FenderId of the node to remove prefixes
     # and suffixes which differ between LT- and MMP- ranges.
-    required_order = None
-    if candidate_dict["info"]["product_id"] == "rumble-lt":
-        required_order = ("stomp", "mod", "amp", "eq", "delay")
-    else:
-        required_order = ("stomp", "mod", "amp", "delay", "reverb")
     original_nodes = candidate_dict["audioGraph"]["nodes"]
     reordered_nodes = [None, None, None, None, None]
     for i in range(0, 5):
@@ -107,7 +129,7 @@ def _make_preset_canonical(candidate_dict):
             candidate_dict = original_dict
             return None
     candidate_dict["audioGraph"]["nodes"] = reordered_nodes
-    """
+    # """
     return candidate_dict
 
 
@@ -225,6 +247,8 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                 continue
             # """
 
+            if node_type == "preset":
+                candidate_dict = _make_preset_canonical(candidate_dict)
             candidate_pretty_json = json.dumps(candidate_dict, indent=4, sort_keys=True)
             candidate_pretty_hash = hashlib.sha256(candidate_pretty_json.encode("utf-8")).hexdigest()[0:7]
             if candidate_pretty_hash not in json_dict_objects.keys():
@@ -237,8 +261,10 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                 # We use the product_family_name parameter to restrict the data
                 # captured to one family or the other so that we have
                 # less data to plough through.
+                candidate_fname = None
                 if node_type == "preset":
-                    pass
+                    product_name = candidate_dict["info"]["product_id"]
+                    candidate_fname = f"{node_type}-{node_name}-{product_name}-{candidate_pretty_hash}.json"
                 else:
                     candidate_fenderid = candidate_dict.get("FenderId", "")
                     """
@@ -248,7 +274,7 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                     else:
                         pass
                     """
-                candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
+                    candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
                 json_dict_objects[candidate_pretty_hash] = [
                     candidate_fname, candidate_pretty_json, [str(candidate_lineno),]
                 ]
