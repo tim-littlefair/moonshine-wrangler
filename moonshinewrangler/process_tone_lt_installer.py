@@ -306,7 +306,10 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                     if group_lineno in lines_to_fnames.keys():
                         group_fnames += [ lines_to_fnames[group_lineno] ]
                 group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
-                print(fname_at_line,file=group_csv)
+                if fname_at_line.startswith("module_list"):
+                    print(fname_at_line,file=group_csv)
+                else:
+                    print("?",file=group_csv)
                 for fname in sorted(set(group_fnames)):
                     print(fname,file=group_csv)
                 group_csv.close()
@@ -317,6 +320,8 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                 group_index += 1
             elif group_start_lineno is None:
                 group_start_lineno = lineno
+                # back off one line and reprocess
+                lineno = lineno-1
             last_line_processed = lineno
 
 if __name__ == "__main__":
