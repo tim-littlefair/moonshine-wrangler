@@ -44,12 +44,12 @@ import _get_working_resources as _GWR
 
 def _make_preset_canonical(candidate_dict):
     # This function assumes and asserts that the audio chain is either
-    # stomp-mod-amp-reverb-delay (for Mustang LT- 25, 40S, 50 and MMP) or
+    # stomp-mod-amp-reverb-delay (for Mustang LT- 25, 40S, 50) or
     # stomp-mod-amp-eq-delay (for Rumble LT-25 only).
-    # The older Mustang I-V V2 series or higher-end GT-, GTX- series may
-    # be capable of operating effects in orders varying for this - I don't
-    # know whether these can be replicated on the models covered by this
-    # software.
+    # The older Mustang I-V V2 series, the MMP or higher-end GT-, GTX- 
+    # series are capable of operating effects in orders varying for this 
+    # - I don't know whether these can be replicated on the models covered 
+    # by this software.
 
     if len(candidate_dict["audioGraph"]["nodes"]) != 5:
         return None
@@ -170,6 +170,7 @@ def find_fender_lt_json_snippets(tone_lt_dir):
     json_dict_objects = {}
     candidate_lineno = 0
     while candidate_lineno < len(fender_tone_macos_executable_strings):
+        product_module_json_text = None
         try:
             # Note that we choose for candidate_lineno to match the 1-based index
             # of the line in the output if we ran /usr/bin/strings by hand,
@@ -195,7 +196,7 @@ def find_fender_lt_json_snippets(tone_lt_dir):
             # print(f"{node_type}:{node_name}@{candidate_lineno}")
 
             """
-            if node_type == "module_list"
+            if node_type == "module_list":
                 if product_module_json_text is None:
                     # This line contains a lists of the amp and effect modules
                     # available on the selected family
@@ -216,7 +217,7 @@ def find_fender_lt_json_snippets(tone_lt_dir):
                 # Ignore for now, this line will be processed again after
                 # the module list is seen and the line number is reset.
                 continue
-            """
+            # """
 
             candidate_pretty_json = json.dumps(candidate_dict, indent=4, sort_keys=True)
             candidate_pretty_hash = hashlib.sha256(candidate_pretty_json.encode("utf-8")).hexdigest()[0:7]
@@ -270,7 +271,29 @@ def find_fender_lt_json_snippets(tone_lt_dir):
     first_line_of_group = min(lines_to_fnames.keys())
     last_line_of_group = first_line_of_group
     last_line_in_file = max(lines_to_fnames.keys())
+    group_start_lineno = None
+    group_index = 0
     for lineno in sorted(lines_to_fnames.keys()):
+        fname_at_line = lines_to_fnames[lineno]
+        if fname_at_line.startswith("module_list"):
+            ##if group_start_lineno is None:
+            ##    print(f"No files found for {fname_at_line}",file=sys.stderr)
+            ##    continue
+            if group_start_lineno is not None:
+                group_csv_basename = f"_module-group-{group_index}.csv"
+                group_fnames = []
+                for group_lineno in range(group_start_lineno, lineno):
+                    if group_lineno in lines_to_fnames.keys():
+                        group_fnames += [ lines_to_fnames[group_lineno] ]
+                group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
+                print(group_fnames,file=group_csv)
+                for fname in sorted(set(group_fnames)):
+                    print(fname,file=group_csv)
+                group_csv.close()
+                print("Modules:",group_csv_basename)
+            group_start_lineno = lineno + 1
+            group_index += 1
+        continue
         if (
             lineno < last_line_in_file and 
             lineno-last_line_of_group<=_MIN_GAP_BETWEEN_GROUPS
@@ -278,7 +301,7 @@ def find_fender_lt_json_snippets(tone_lt_dir):
             last_line_of_group = lineno
         else:
             # a new group (might be the first one)
-            group_csv_basename = f"{first_line_of_group}-{last_line_of_group}_dsp_modules.json"
+            group_csv_basename = f"{first_line_of_group}-{last_line_of_group}_dsp_modules.csv"
             group_fnames = []
             for group_lineno in sorted(lines_to_fnames.keys()):
                 if (
