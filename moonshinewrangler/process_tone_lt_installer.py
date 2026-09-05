@@ -119,13 +119,37 @@ def _make_preset_canonical(candidate_dict):
                     # or required_order[i].endswith(a_node["nodeId"])
                 )
             ]
-            if next_node["FenderId"] == "DUBS_Passthru":
-                next_node["dspUnitParameters"] = {}
+
+            # Some presets exist in more than one variant where the 
+            # only difference is whther the bypass and bypassType 
+            # in dspUnitParameters are explicit or implicit
+            # The next few lines attempt to make them explicit
+            default_bypass_type = None
+            if next_node["nodeId"] in ("stomp", "mod"):
+                default_bypass_type = "Post"
+            else:
+                default_bypass_type = "Pre"
+            if next_node["FenderId"] != "DUBS_Passthru":
+                pass
+            elif "dspUnitParameters" not in next_node:
+                next_node["dspUnitParameters"] = {
+                    "bypass": False,
+                    "bypassType": default_bypass_type
+                }
+            elif len(next_node["dspUnitParameters"]) == 0:
+                next_node["dspUnitParameters"] = {
+                    "bypass": False,
+                    "bypassType": default_bypass_type
+                }
+
             next_node["FenderId"] = _GWR.filter_fender_id(next_node["FenderId"])
             reordered_nodes[i] = next_node
         except ValueError:
-            print(f"Missing expected node {i} : {required_order[i]}")
-            print(f"{[n.get('nodeId', "?").encode("utf-8") for n in original_nodes]}")
+            print(f"Missing expected node {i} : {required_order[i]}", file=sys.stderr)
+            print(
+                f"{[n.get('nodeId', "?").encode("utf-8") for n in original_nodes]}", 
+                file=sys.stderr
+            )
             candidate_dict = original_dict
             return None
     candidate_dict["audioGraph"]["nodes"] = reordered_nodes

@@ -21,6 +21,7 @@ _DB_SCHEMA = """
         app_id INTEGER NOT NULL,
         product_id INTEGER NOT NULL,
         product_name TEXT NOT NULL,
+        aliases TEXT,
         PRIMARY KEY (app_id, product_id),
         FOREIGN KEY (app_id) REFERENCES apps
     );
@@ -29,6 +30,7 @@ _DB_SCHEMA = """
         app_module_name TEXT NOT NULL,
         app_id INTEGER NOT NULL,
         module_type_id INTEGER NOT NULL,
+        aliases TEXT,
         PRIMARY KEY(app_module_id AUTOINCREMENT),
         FOREIGN KEY(module_type_id) REFERENCES module_types,
         FOREIGN KEY(app_id) REFERENCES apps 

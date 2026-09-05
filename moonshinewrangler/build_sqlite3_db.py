@@ -9,8 +9,12 @@ from db_populate_from_tone_lt_data import populate_tone_lt_product_metadata
 from db_populate_from_tone_mobile_data import populate_tone_mobile_product_metadata
 
 def dump(cxn):
-    for tbl in ( "apps", "app_products", "module_types", "app_modules", "app_product_modules" ):
-        print(f"{tbl}:")
+    for tbl in ( 
+        # "apps", "app_products", "module_types", 
+        "app_modules", 
+        # "app_product_modules" 
+    ):
+        print(f"{tbl}:","|".join([s[1] for s in cxn.execute(f"PRAGMA TABLE_INFO('{tbl}')")]))
         for row in cxn.execute(f"SELECT * FROM {tbl};"):
             print(row)
 

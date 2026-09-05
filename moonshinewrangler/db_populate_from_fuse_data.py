@@ -16,15 +16,17 @@ def populate_fuse_product_metadata(cxn, xml_filename):
     _PRODUCT_NAME_FILTER = "Mustang I/II"
     _get_root_node = lambda xml_filename: minidom.parse(xml_filename)
     _get_product_nodes = lambda root_node: root_node.getElementsByTagName("Product")
-    _get_node_name_and_id = lambda module_node: (
+    _get_product_name_and_id = lambda module_node: (
         module_node.getAttribute("Name"),
-        module_node.getAttribute("ID"),
+        module_node.getAttribute("ID")
     )
     _get_module_nodes = lambda product_node: product_node.getElementsByTagName("Module") 
-    _get_node_name = lambda module_node: module_node.getAttribute("Name")
+    _get_module_node_name = lambda module_node: module_node.getAttribute("Name")
+    _get_module_node_aliases = lambda module_node: module_node.getAttribute("ShortName")
     populate_product_metadata_for_app(
         cxn, xml_filename, 
         _FUSE_MODULE_TYPES, _FUSE_APP_ID, _PRODUCT_NAME_FILTER, 
-        _get_root_node, _get_product_nodes, _get_node_name_and_id, _get_module_nodes, _get_node_name
+        _get_root_node, _get_product_nodes, _get_product_name_and_id, 
+        _get_module_nodes, _get_module_node_name, _get_module_node_aliases
     )
 
