@@ -11,12 +11,14 @@ def populate_tone_mobile_product_metadata(cxn, json_filename):
     _PRODUCT_NAME_FILTER = None
     _get_root_node = lambda json_filename: None
     _get_product_nodes = lambda root_node: ()
-    _get_node_name_and_id = lambda module_node: (None, None, )
+    _get_product_name_and_id = lambda module_node: (None, None, )
     _get_module_nodes = lambda product_node: ()
-    _get_node_name = lambda module_node: None
+    _get_module_name = lambda module_node: None
+    _get_module_aliases = lambda module_node: None
     populate_product_metadata_for_app(
         cxn, json_filename, 
         _TONE_MOBILE_MODULE_TYPES, _TONE_MOBILE_APP_ID, _PRODUCT_NAME_FILTER, 
-        _get_root_node, _get_product_nodes, _get_node_name_and_id, _get_module_nodes, _get_node_name
+        _get_root_node, _get_product_nodes, _get_product_name_and_id,
+         _get_module_nodes, _get_module_name, _get_module_aliases
     )
 

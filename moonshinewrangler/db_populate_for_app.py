@@ -12,15 +12,17 @@ def populate_product_metadata_for_app(
     root_node = _get_root_node(xml_filename)
     for product_node in _get_product_nodes(root_node):
         product_name, product_id = _get_product_name_and_id(product_node)
-        if (
-            app_product_name_filter is not None and 
-            product_name not in app_product_name_filter
-        ):
-            continue
         cxn.execute(
             "INSERT INTO app_products values ( ?, ?, ?, ? )",
             (app_id, product_id, product_name, None)
         )
+        if (
+            app_product_name_filter is not None and 
+            product_name not in app_product_name_filter
+        ):
+            print(f"Filtering {product_name}")
+            continue
+        print(f"Processing {product_name}")
         for module_type in app_module_types:
             ((mtid,),) = cxn.execute("""
                 SELECT module_type_id 
