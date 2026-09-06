@@ -22,7 +22,8 @@ def populate_fuse_product_metadata(cxn, xml_filename):
         module_node.getAttribute("Name"),
         module_node.getAttribute("ID")
     )
-    _get_module_nodes = lambda product_node: product_node.getElementsByTagName("Module") 
+    _get_module_nodes = lambda product_node, module_type: \
+        product_node.getElementsByTagName(module_type)[0].getElementsByTagName("Module") 
     _get_module_name = lambda module_node: module_node.getAttribute("Name")
     _get_module_aliases = lambda module_node: module_node.getAttribute("ShortName")
     populate_product_metadata_for_app(
