@@ -26,23 +26,24 @@ _DB_SCHEMA = """
         FOREIGN KEY (app_id) REFERENCES apps
     );
     CREATE TABLE app_modules (
+        module_type_id INTEGER NOT NULL,
         app_module_id INTEGER NOT NULL,
         app_module_name TEXT NOT NULL,
         app_id INTEGER NOT NULL,
-        module_type_id INTEGER NOT NULL,
         aliases TEXT,
-        PRIMARY KEY(app_module_id AUTOINCREMENT),
+        PRIMARY KEY(module_type_id, app_module_id ),
         FOREIGN KEY(module_type_id) REFERENCES module_types,
         FOREIGN KEY(app_id) REFERENCES apps 
     );
     CREATE TABLE app_product_modules (
         product_id INTEGER NOT NULL,
+        module_type_id INTEGER NOT NULL,
         app_module_id INTEGER NOT NULL,
         -- app_id could be accessed via app_module, but is also 
         -- included in this table so that we can constrain product_id
         -- using a lookup into app_products
         app_id INTEGER NOT NULL,
-        PRIMARY KEY (product_id, app_module_id),
+        PRIMARY KEY (product_id, module_type_id, app_module_id),
         FOREIGN KEY (app_id, product_id) REFERENCES app_products
         FOREIGN KEY (app_module_id) REFERENCES app_modules
     );

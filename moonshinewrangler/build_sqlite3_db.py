@@ -15,7 +15,7 @@ def dump(cxn):
         # "app_product_modules" 
     ):
         print(f"{tbl}:","|".join([s[1] for s in cxn.execute(f"PRAGMA TABLE_INFO('{tbl}')")]))
-        for row in cxn.execute(f"SELECT * FROM {tbl};"):
+        for row in cxn.execute(f"SELECT * FROM {tbl} ORDER BY 1,2;"):
             print(row)
 
 if __name__ == "__main__":
