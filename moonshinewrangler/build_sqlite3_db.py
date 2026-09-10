@@ -25,7 +25,7 @@ if __name__ == "__main__":
     try:
         populate_constant_tables(cxn)
         populate_fuse_product_metadata(cxn,"_work/fuse_data/all_products.xml")
-        populate_tone_lt_product_metadata(cxn,None)        
+        populate_tone_lt_product_metadata(cxn,"./_work/tone_lt_data")
         populate_tone_mobile_product_metadata(cxn,None)        
         dump(cxn)
     except:

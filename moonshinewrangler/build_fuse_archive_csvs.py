@@ -41,10 +41,18 @@ def summarize_by_amp():
     for k in sorted(_AMP_DICT.keys()):
         print(f"{k},{len(_AMP_DICT[k]),(sorted(_AMP_DICT[k].keys())[0])}")
 
-def summarize_by_sctypes():
+def summarize_by_sctypes(filter=None):
+    if filter is None:
+        filter = (
+            "SMADR", 
+            "MADR", "SADR","SMAD","SMAR",
+            "ADR", "SAD", "SAR","MAD","MAR","ADR",
+            "SA", "MA", "AR", "AD",
+            "A",
+        )
     for k in sorted(_SC_DICT.keys()):
-        print(f"{k},{len(_SC_DICT[k]),(sorted(_SC_DICT[k].keys())[0])}")
-
+        if k in filter or filter is None:
+            print(f"{k},{len(_SC_DICT[k]),(sorted(_SC_DICT[k].keys())[0])}")
 
 def effects_sequence(root_node):
     fx_node_names = ( "Stompbox","Modulation","Delay","Reverb")
@@ -82,11 +90,6 @@ def effects_sequence(root_node):
         sigchain_ids += [ fx_pti_array[0][2] ]
         sigchain_types += "A"
     return sigchain_types, sigchain_ids
-
-
-
-
-    
 
 if __name__ == "__main__":
     dir = "_work/fuse_archive"

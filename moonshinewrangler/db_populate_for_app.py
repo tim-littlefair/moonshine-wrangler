@@ -4,7 +4,7 @@ import sys
 
 from sqlite3 import Warning as Sqlite3Warning
 
-_ALIAS_SEPARATOR=","
+_ALIAS_SEPARATOR=";"
 
 class AppModuleNameResolutionWarning(Sqlite3Warning):
     def __init__(self,*param_tuple):
