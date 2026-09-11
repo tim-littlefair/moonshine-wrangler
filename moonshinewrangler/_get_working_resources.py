@@ -62,6 +62,9 @@ _REFERENCE_FILE_DIRECT_URLS = (
     ('https://guitarpedaldemos.com/wp-content/uploads/2020/04/intheblues.zip',),
     ('https://guitarpedaldemos.com/wp-content/uploads/2020/04/factory-presets.zip',),
 
+    # Firmware updater for the MMP
+    ('https://www.fmicassets.com/Damroot/Original/10132/Fender-Device-Manager_v1_1.dmg',),
+
 )
 
 # URLS which, as at 3/1/2026, can be used manually with a browser to download
@@ -128,6 +131,7 @@ _REFERENCE_FILE_EXPECTED_CHECKSUMS = {
     "MustangIII-V_1.10.zip": "d0b9b865d91f3bfe38744309e894fe3ff5ef1e8d5cd75a09b8afcb2bd1fd741d",
     "V2_Mustang1_2.2.zip": "b8542354fd396cc37da615a2abf07c85c706186f8d9325b588ba03de7918d962",
     "V2_Mustang3_2.2.zip": "80a23011bfafa738cef78e8a10ac15df58320217d0e0af323cf5566093079492",
+    "Fender-Device-Manager_v1_1.dmg": "44d5dabb231da9b95ca926f2e6fd5d65651e0d1fd3aa7d1491361291742d8b2e",
     "entire-archive.zip": "562301403fa77b4e9ea09eb21f0a043be0aff7a2278a517151c7aef1c3ebd785",
     "factory-presets.zip": "6579c4ab6ecc3af6245d43b6ec075ff81da649e8c57b5fd6d5514fa9a430b6a0",
     "intheblues.zip": "87def677aedaee5e4dc5dfcd6a7767916696802c56fb1eba8778f634429b30f9"    
