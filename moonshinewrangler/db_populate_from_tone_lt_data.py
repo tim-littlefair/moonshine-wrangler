@@ -2,6 +2,7 @@
 
 import json
 import os
+import traceback
 
 from db_schema_and_constants import APPS
 from db_populate_for_app import populate_product_metadata_for_app
@@ -13,7 +14,6 @@ _ALIAS_FROM_ML = "_alias_from_module_list"
 
 _missing_modules = []
 
-
 def _lt_json_objects(fname_prefix):
     matching_paths = [
         os.path.join(_EXTRACTED_LT_DATA_DIR,fname)
@@ -24,6 +24,20 @@ def _lt_json_objects(fname_prefix):
         )
     ]
     return [ json.load(open(path)) for path in matching_paths ]
+
+def _merge_module_objects(module_object_list):
+    try:
+        while len(module_object_list)>1:
+            # merge first element into second element
+            # TODO: Is this efficient? 
+            # I only care if time for a full run against extracted
+            # data blows out beyond 5 secs
+            m_first_two_merged = module_object_list[0] | module_object_list[1]
+            module_object_list = module_object_list[1:]
+            module_object_list[0] = m_first_two_merged
+    except:
+        traceback.print_exc(0)
+    return module_object_list[0]
 
 def __get_module_nodes(product_node, module_type_name):
     global _missing_modules
@@ -64,10 +78,11 @@ def __get_module_nodes(product_node, module_type_name):
         else:
             _missing_modules += [ (product_name,module_type_name,du["FenderId"],), ]
             continue
-        candidate_module_dicts[0][_MODULE_NAME_WITHOUT_PREFIX] = trimmed_module_name
-        candidate_module_dicts[0][_MODULE_TYPE_NAME] = module_type_name
-        candidate_module_dicts[0][_ALIAS_FROM_ML] = du["menuName18Max"]
-        product_modules += [ candidate_module_dicts[0] ]
+        merged_modules = _merge_module_objects(candidate_module_dicts)
+        merged_modules[_MODULE_NAME_WITHOUT_PREFIX] = trimmed_module_name
+        merged_modules[_MODULE_TYPE_NAME] = module_type_name
+        merged_modules[_ALIAS_FROM_ML] = du["menuName18Max"]
+        product_modules += [ merged_modules ]
     return  product_modules
 
 _next_lt_module_id = 7101
