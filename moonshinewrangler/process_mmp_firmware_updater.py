@@ -1,0 +1,351 @@
+# python3
+# _extract_lt_json_metadata.py
+# Author: Tim Littlefair, October 2025-
+# The purpose of this script is extract and process
+# useful JSON metadata available from running the
+# 'strings' utility on the Fender Tone LT Desktop
+# executable.
+
+import copy
+import hashlib
+import json
+import os
+import sys
+
+import _get_working_resources as _GWR
+
+
+def _make_preset_canonical(candidate_dict):
+    # This function assumes and asserts that the audio chain is either
+    # stomp-mod-amp-reverb-delay (for Mustang LT- 25, 40S, 50) or
+    # stomp-mod-amp-eq-delay (for Rumble LT-25 only).
+    # The older Mustang I-V V2 series, the MMP or higher-end GT-, GTX- 
+    # series are capable of operating effects in orders varying for this 
+    # - I don't know whether these can be replicated on the models covered 
+    # by this software.
+
+    if len(candidate_dict["audioGraph"]["nodes"]) != 5:
+        return None
+    elif "connections" in candidate_dict["audioGraph"]:
+        pass
+    elif candidate_dict["info"]["product_id"] == "rumble-lt":
+        # ignoring these for now
+        return candidate_dict
+    else:
+        print(f"No connection map in preset:",file=sys.stderr)
+        print(f"name: {candidate_dict["info"]["displayName"]}",file=sys.stderr)
+        print(f"product: {candidate_dict["info"]["product_id"]}",file=sys.stderr)
+        return candidate_dict
+
+    # We retain a deep copy of the original dict in case assertions here
+    # fail and we want to restore the initial state before exiting.
+    original_dict = copy.deepcopy(candidate_dict)
+
+    # """
+    # The audioGraph.connections array models a set of cables connecting
+    # input, through effect and amp modules, through to output, but is
+    # very verbose, and redundant if we make the assumption described
+    # in the comment above, so we would like to remove it.
+    # del candidate_dict["audioGraph"]["connections"]
+    # For now we keep it, but forced it to canonical order for the
+    # target product
+    required_order = None
+    if candidate_dict["info"]["product_id"] == "rumble-lt":
+        required_order = ("stomp", "mod", "amp", "eq", "delay")
+    else:
+        required_order = ("stomp", "mod", "amp", "delay", "reverb")
+    cxns_list = candidate_dict["audioGraph"]["connections"]
+    assert len(cxns_list) == 12, "Unexpected connection count"
+    required_order_dict = dict(zip(range(0,5), required_order))
+    for cxn_unit_index in range(0,6):
+        dsptype_in = required_order_dict.get(cxn_unit_index-1,"preset")
+        dsptype_out = required_order_dict.get(cxn_unit_index,"preset")
+        for channel_index in (0,1):
+            cxns_list[2*cxn_unit_index+channel_index]["input"]["nodeId"] = dsptype_in
+            cxns_list[2*cxn_unit_index+channel_index]["output"]["nodeId"] = dsptype_out
+    candidate_dict["audioGraph"]["connections"] = cxns_list # might be redundant
+
+    # The audioGraph.nodes array gives all of the effects and parameters
+    # but the order of items in the array is random and does not reflect
+    # the module processing order.  By sorting it into the expected order
+    # described in the top of function comment we ensure that the canonical
+    # preset retains an explicit expression of the assumed order.
+
+    # Some presets have multiple variants which differ only in
+    # whether nodes with FenderId DUBS_Passthru have explicit
+    # bypass and bypassMode parameters.  This setting is irrelevant for
+    # passthru nodes, so we remove this source of difference.
+
+    # Finally, we filter the FenderId of the node to remove prefixes
+    # and suffixes which differ between LT- and MMP- ranges.
+    original_nodes = candidate_dict["audioGraph"]["nodes"]
+    reordered_nodes = [None, None, None, None, None]
+    for i in range(0, 5):
+        try:
+            (next_node,) = [
+                a_node
+                for a_node in original_nodes
+                if (
+                    a_node["nodeId"] == required_order[i]
+                    # or a_node["nodeId"].replace("eq", "delay") in required_order[i]
+                    # or required_order[i].startswith(a_node["nodeId"])
+                    # or required_order[i].endswith(a_node["nodeId"])
+                )
+            ]
+
+            # Some presets exist in more than one variant where the 
+            # only difference is whther the bypass and bypassType 
+            # in dspUnitParameters are explicit or implicit
+            # The next few lines attempt to make them explicit
+            default_bypass_type = None
+            if next_node["nodeId"] in ("stomp", "mod"):
+                default_bypass_type = "Post"
+            else:
+                default_bypass_type = "Pre"
+            if next_node["FenderId"] != "DUBS_Passthru":
+                pass
+            elif "dspUnitParameters" not in next_node:
+                next_node["dspUnitParameters"] = {
+                    "bypass": False,
+                    "bypassType": default_bypass_type
+                }
+            elif len(next_node["dspUnitParameters"]) == 0:
+                next_node["dspUnitParameters"] = {
+                    "bypass": False,
+                    "bypassType": default_bypass_type
+                }
+
+            next_node["FenderId"] = _GWR.filter_fender_id(next_node["FenderId"])
+            reordered_nodes[i] = next_node
+        except ValueError:
+            print(f"Missing expected node {i} : {required_order[i]}", file=sys.stderr)
+            print(
+                f"{[n.get('nodeId', "?").encode("utf-8") for n in original_nodes]}", 
+                file=sys.stderr
+            )
+            candidate_dict = original_dict
+            return None
+    candidate_dict["audioGraph"]["nodes"] = reordered_nodes
+    # """
+    return candidate_dict
+
+
+def _get_node_type_and_name(candidate_dict):
+    try:
+        node_type = candidate_dict.get("nodeType", "module_list")
+        if node_type == "dspUnit":
+            # we expect an amp, effect or a utility
+            # any of these will have an "info" subobject with keys
+            # subcategory and displayName
+            info = candidate_dict.get(
+                "info", {
+                    "subcategory": "unknown_dsp_unit_type",
+                    "displayName": "unknown_dsp_unit_name"
+                }
+            )
+            node_type = info["subcategory"]
+            node_name = _GWR.filter_fender_id(candidate_dict["FenderId"])
+            param_count = len(candidate_dict["ui"]["uiParameters"])
+            if param_count == 0:
+                pass
+            elif "orderBMT" in candidate_dict["ui"]:
+                # The parameters support parameter rendering on the desktop app
+                node_name += f".{param_count:02}appparams"
+            else:
+                # The parameters support parameter rendering on the device LED
+                node_name += f".{param_count:02}dvcparams"
+            return node_type, node_name
+        elif node_type == "preset":
+            node_name = _GWR.filter_name_chars(candidate_dict["info"]["displayName"])
+            candidate_dict = _make_preset_canonical(candidate_dict)
+            if candidate_dict is not None:
+                return node_type, node_name
+            elif node_name == "EMPTY_________":
+                # ignore these
+                pass
+            else:
+                print(
+                    f"Preset with node_name {node_name} cannot be made canonical",
+                    file=sys.stderr
+                )
+            return None
+        if node_type == "module_list":
+            node_name = candidate_dict["productFamily"]
+        else:
+            pass
+    except KeyError:
+        print(
+            f"Unable to derive name for node of type {node_type} with keys [{','.join(candidate_dict.keys())}]",
+            file=sys.stderr
+        )
+        return None
+    # If we get to here, we expect to have a usable node type and node name
+    return node_type, node_name
+
+
+def find_fender_lt_json_snippets(tone_lt_dir):
+    fender_mmp_firmware_updater_executable_bytes = _GWR.extract_file_bytes_from_dmg(
+        "_work/reference_files/Fender-Device-Manager_v1_1.dmg",
+        "Device Manager/Device Manager.app/Contents/Frameworks/ccltext.framework/Versions/A/ccltext"
+    )
+    fender_tone_macos_executable_strings = _GWR.extract_strings_from_file_bytes(
+        fender_mmp_firmware_updater_executable_bytes
+    )
+
+    json_dict_objects = {}
+    candidate_lineno = 0
+    while candidate_lineno < len(fender_tone_macos_executable_strings):
+        product_module_json_text = None
+        try:
+            # Note that we choose for candidate_lineno to match the 1-based index
+            # of the line in the output if we ran /usr/bin/strings by hand,
+            # not the 0-based array subscript.
+            candidate_text = fender_tone_macos_executable_strings[candidate_lineno]
+            candidate_lineno += 1
+
+            candidate_dict = json.loads(candidate_text)
+            if not isinstance(candidate_dict, dict):
+                # The line of text was decodeable as JSON but did not
+                # deserialize to a dictionary
+                # Expected for integers, floats and strings which match
+                # JSON constants like null, true, false
+                continue
+            if len(candidate_dict.keys()) == 0:
+                # There are a few empty dictionaries, clearly these
+                # are not interesting
+                continue
+            node_type_and_name = _get_node_type_and_name(candidate_dict)
+            if node_type_and_name is None:
+                continue
+            node_type, node_name = node_type_and_name
+            # print(f"{node_type}:{node_name}@{candidate_lineno}")
+
+            """
+            if node_type == "module_list":
+                if product_module_json_text is None:
+                    # This line contains a lists of the amp and effect modules
+                    # available on the selected family
+                    product_module_json_text = candidate_text
+                    # Reset the line number to zero to trigger
+                    # reprocessing of all lines already checked
+                    candidate_lineno = 0
+                    # No further processing on this pass - the line
+                    # will be saved to a file with the right line number
+                    # when it is reached in the next pass
+                    continue
+                else:
+                    pass
+            elif product_module_json_text is None:
+                # We haven't seen the module_list node yet so
+                # we don't know which effects to preserve and
+                # which to ignore.
+                # Ignore for now, this line will be processed again after
+                # the module list is seen and the line number is reset.
+                continue
+            # """
+
+            if node_type == "preset":
+                candidate_dict = _make_preset_canonical(candidate_dict)
+            candidate_pretty_json = json.dumps(candidate_dict, indent=4, sort_keys=True)
+            candidate_pretty_hash = hashlib.sha256(candidate_pretty_json.encode("utf-8")).hexdigest()[0:7]
+            if candidate_pretty_hash not in json_dict_objects.keys():
+
+                # First occurrence of a particular canonical JSON text has been seen
+
+                # The LT data captured includes metadata associated with the
+                # Fender Rumble LT25 as well as the Mustang LT25/LT40S/LT50
+                # amps.
+                # We use the product_family_name parameter to restrict the data
+                # captured to one family or the other so that we have
+                # less data to plough through.
+                candidate_fname = None
+                if node_type == "preset":
+                    product_name = candidate_dict["info"]["product_id"]
+                    candidate_fname = f"{node_type}-{node_name}-{product_name}-{candidate_pretty_hash}.json"
+                else:
+                    candidate_fenderid = candidate_dict.get("FenderId", "")
+                    """
+                    if candidate_fenderid not in product_module_json_text:
+                        # print(f"Filtering candidate of type {node_type} with FenderId {candidate_fenderid}")
+                        continue
+                    else:
+                        pass
+                    """
+                    candidate_fname = f"{node_type}-{node_name}-{candidate_pretty_hash}.json"
+                json_dict_objects[candidate_pretty_hash] = [
+                    candidate_fname, candidate_pretty_json, [str(candidate_lineno),]
+                ]
+            else:
+                # Second or later occurrence of a particular pattern has been seen
+                json_dict_objects[candidate_pretty_hash][2] += [str(candidate_lineno),]
+        except json.decoder.JSONDecodeError:
+            continue
+    # All snippets have been processed - dump the valid ones
+    os.makedirs(tone_lt_dir, exist_ok=True)
+    lines_to_fnames = {}
+    fnames_to_lines_csv = open(os.path.join(tone_lt_dir, "_fnames_to_lines.csv"), "wt")
+    for fname, text, lines in sorted(json_dict_objects.values()):
+        line_list = ", ".join(sorted(lines))
+        open(os.path.join(tone_lt_dir, fname), "wt").write(text)
+        print(f"{fname} found at line(s): {line_list}")
+        for lineno in lines:
+            lines_to_fnames[int(lineno)]=fname
+        print(f'{fname},"{line_list}"',file=fnames_to_lines_csv)
+    fnames_to_lines_csv.close()
+    lines_to_fnames_csv = open(os.path.join(tone_lt_dir, "_lines_to_fnames.csv"), "wt")
+    for lineno in sorted(lines_to_fnames.keys()):
+        print(f'{lineno},{lines_to_fnames[lineno]}',file=lines_to_fnames_csv)
+    lines_to_fnames_csv.close()
+
+    # For most or all of the DSP module definitions there are multiple JSON files
+    # I am presuming that this reflects (hopefully small) differences in the definitions
+    # between FMIC device models supported by the Fender TONE LT Desktop software.
+    # I am going to make the assumption that the definitions are grouped by target model
+    # in the source code, and that I can use the order of occurrence of the JSON strings
+    # as a grouping mechanism to select a single coherent set of definitions.
+    """
+    first_line_of_group = min(lines_to_fnames.keys())
+    last_line_of_group = first_line_of_group
+    """
+    group_start_lineno = None
+    group_index = 0
+    last_line_in_file = max(lines_to_fnames.keys())
+    last_line_processed = 0
+    _MIN_GAP_BETWEEN_GROUPS=1000
+    for lineno in sorted(lines_to_fnames.keys()):
+        fname_at_line = lines_to_fnames[lineno]
+        if (
+            fname_at_line.startswith("module_list") or 
+            lineno==last_line_in_file or 
+            lineno > last_line_processed + _MIN_GAP_BETWEEN_GROUPS
+        ):
+            ##if group_start_lineno is None:
+            ##    print(f"No files found for {fname_at_line}",file=sys.stderr)
+            ##    continue
+            if group_start_lineno is not None:
+                group_csv_basename = f"_module-group-{group_index}.csv"
+                group_fnames = []
+                for group_lineno in range(group_start_lineno, lineno):
+                    if group_lineno in lines_to_fnames.keys():
+                        group_fnames += [ lines_to_fnames[group_lineno] ]
+                group_csv = open(os.path.join(tone_lt_dir,group_csv_basename),"wt")
+                if fname_at_line.startswith("module_list"):
+                    print(fname_at_line,file=group_csv)
+                else:
+                    print("?",file=group_csv)
+                for fname in sorted(set(group_fnames)):
+                    print(fname,file=group_csv)
+                group_csv.close()
+                print(
+                    f"{group_csv_basename} contains modules from lines {group_start_lineno} to {lineno}"
+                )
+                group_start_lineno = lineno + 1
+                group_index += 1
+            elif group_start_lineno is None:
+                group_start_lineno = lineno
+                # back off one line and reprocess
+                lineno = lineno-1
+            last_line_processed = lineno
+
+if __name__ == "__main__":
+    find_fender_lt_json_snippets("_work/mmp_fw_updater_data")

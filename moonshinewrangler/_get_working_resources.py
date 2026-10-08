@@ -76,14 +76,14 @@ _REFERENCE_FILE_MANUAL_URLS = {
     # As at 3/1/2023, page accessible via the following URL 
     # provides click through download links for the following Mustang firmware files:
     "https://drivers.softpedia.com/dyn-search.php?search_term=Fender+Mustang" : (
-        "Mustang1_1.9.upd",      # for both (v1) Mustang I and  II
-        "Mustang3_1.9.upd",      # for all of (v1) Mustang III, IV and V
+        # "Mustang1_1.9.upd",      # for both (v1) Mustang I and  II
+        # "Mustang3_1.9.upd",      # for all of (v1) Mustang III, IV and V
         "MustangI-II_1.10.zip",  # also for both (v1) Mustang I and  II
         "MustangIII-V_1.10.zip", # also for all of (v1) Mustang III, IV and V
         "V2_Mustang1_2.2.zip",   # for both of v2 Mustang I amd II
         "V2_Mustang3_2.2.zip",   # for all of v2 Mustang III, IV and V
-        "MustangFloor_1.3.upd",  # ) Mustang Floor is a device in pedal-board 
-        "MustangFloor_1.4.zip",  # ) form factor device introduced in 2012
+        # "MustangFloor_1.3.upd",  # ) Mustang Floor is a device in pedal-board 
+        # "MustangFloor_1.4.zip",  # ) form factor device introduced in 2012
     ),
 
     # As at 29/8/2026, page accessible via the following URL 
@@ -122,10 +122,10 @@ _REFERENCE_FILE_EXPECTED_CHECKSUMS = {
     "OM_2311700000_Mustang-LTX50_EN.pdf": "8ec9f1920e7660e24428ade009d03bbf0266a12ed104fd04bed537ebeeff0b67",
     "OM_leg_gtramp_FUSE_MANUAL.pdf": "2a6da151721bf2dbbd02754f54bd4cca17c40b81f9948b2a43b3bc8f1c84e325",
     "OM_leg_gtramp_Mustang_12_Advanced_Manual_English.pdf": "df241e7f0c2e6809d60f88d3d3400ccfcc554dd6fbefd3a85d0b409b795de1ba",
-    "Mustang1_1.9.upd": "ba216b118dbee89b7f6949dcd03e699a7042471aaba746c6264e967c0844ac87",
-    "Mustang3_1.9.upd": "33e52d26dff5ced81a3f3f97edf0d674ebaf9de4d859ed4b4e93702d92d032c4",
-    "MustangFloor_1.3.upd": "3520955c7c2e18595ac3d132e5e645b3edb84ae47b2ff7f56f6956f8f54290e1",
-    "MustangFloor_1.4.zip": "d4073df1dfae01d8ac36de5a1590e4d5931f65b2aa73a9163f50c2211022c21f",
+    # "Mustang1_1.9.upd": "ba216b118dbee89b7f6949dcd03e699a7042471aaba746c6264e967c0844ac87",
+    # "Mustang3_1.9.upd": "33e52d26dff5ced81a3f3f97edf0d674ebaf9de4d859ed4b4e93702d92d032c4",
+    # "MustangFloor_1.3.upd": "3520955c7c2e18595ac3d132e5e645b3edb84ae47b2ff7f56f6956f8f54290e1",
+    # "MustangFloor_1.4.zip": "d4073df1dfae01d8ac36de5a1590e4d5931f65b2aa73a9163f50c2211022c21f",
     "MustangI-II_1.10.zip": "d338c4de73d3c9ce05ff57cb08a0ec8966b39ce36d350a5a365fa56b70c8b4ec",
     "MustangI-V_v.2_advanced_manual_revA_English.pdf": "211ff31cfaa16be6c6720c5c2844455355d9846835c1b01956f9759d285e740f",
     "MustangIII-V_1.10.zip": "d0b9b865d91f3bfe38744309e894fe3ff5ef1e8d5cd75a09b8afcb2bd1fd741d",
