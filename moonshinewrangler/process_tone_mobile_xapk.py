@@ -24,7 +24,7 @@ def extract_product_json():
         _TONE_MOBILE_XAPK_PATH,
         extension_list = [ ".xapk", ".apk", ".zip" ]
     )
-    print("\n".join([str(s_and_p) for s_and_p in streams_and_paths]))
+    #print("\n".join([str(s_and_p) for s_and_p in streams_and_paths]))
     for s,p,_ in streams_and_paths:
         if p == "config.arm64_v8a.apk":
             find_strings(s, p, _TONE_MOBILE_DATA)
@@ -32,7 +32,7 @@ def extract_product_json():
 def extract_fenderid_roots():
     dubs_prefix_regex = "DUBS_[[:alnum:]_]+"
     acd_prefix_regex = "ACD_[[:alnum:]_]+"
-    grep_cmd = f"grep -h -E -o -e {dubs_prefix_regex} -e {acd_prefix_regex} {_TONE_MOBILE_DATA}/productFamily-*.json|sort|uniq"
+    grep_cmd = f"grep -h -E -o -e {dubs_prefix_regex} -e {acd_prefix_regex} {_TONE_MOBILE_DATA}/productFamily-mustang.json|sort|uniq"
     grep_result = subprocess.run(grep_cmd, shell=True, text=True, capture_output=True)
     grep_result.check_returncode()
     all_fender_ids = grep_result.stdout.strip().split("\n")
@@ -57,9 +57,9 @@ def group_fids_into_families(all_fid_roots):
     while len(fid_roots_to_process)>0:
         next_fid_root = fid_roots_to_process.pop()
         variants = []
-        if next_fid_root in ("Fuzz",):
+        if next_fid_root in ("Fuzz","Wah",):
             # There are multiple effects containing the 
-            # substring Fuzz which we do not wish to 
+            # substrings Fuzz and Wah which we do not wish to 
             # treat as variants of a common family
             # TBD: Are there any other substrings
             # we need to handle here
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     all_fid_roots = extract_fenderid_roots()
     fid_roots_sorted_by_length = sorted(all_fid_roots,key=len)
     fid_families = group_fids_into_families(fid_roots_sorted_by_length)
-    print(sorted(fid_families.keys()))
+    print("\n".join(sorted(fid_families.keys())))
     print(len(fid_families.keys()))
 
 

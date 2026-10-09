@@ -14,6 +14,36 @@ _ALIAS_FROM_ML = "_alias_from_module_list"
 
 _missing_modules = []
 
+def populate_tone_lt_product_metadata(cxn, extracted_json_dir):
+    global _EXTRACTED_LT_DATA_DIR
+    _EXTRACTED_LT_DATA_DIR = extracted_json_dir
+    _TONE_LT_MODULE_TYPES = ( "amp", "stomp", "mod", "delay", "reverb", "eq", )
+    ( _TONE_LT_APP_ID, ) = [ k for k in APPS.keys() if APPS[k][0] == 'fender-tone-lt' ]
+    _PRODUCT_NAME_FILTER = None
+
+    # The extracted data from the LT installer consists of many
+    # documents, the root 'node' is the directory which contains 
+    # them
+    _get_root_node = lambda source_path: extracted_json_dir
+
+    # The Fender Tone LT Desktop app supports Mustang and Rumble devices.
+    # There are 3 Mustang LT models, but they share a single list of 
+    # modules extracted from the app installer.
+    _get_product_nodes = lambda root_node: ( (6101, "mustang-lt"), (6102, "rumble-lt") )
+    _get_product_name_and_id = lambda product_node: product_node
+
+    _get_module_nodes = lambda product_node, module_type_name: __get_module_nodes(product_node, module_type_name)
+    _get_module_name_and_id = lambda module_node: __get_module_name_and_id(module_node)
+    _get_module_aliases = lambda module_node: module_node[_ALIAS_FROM_ML]
+    populate_product_metadata_for_app(
+        cxn, extracted_json_dir, 
+        _TONE_LT_MODULE_TYPES, _TONE_LT_APP_ID, _PRODUCT_NAME_FILTER, 
+        _get_root_node, _get_product_nodes, _get_product_name_and_id, 
+        _get_module_nodes, _get_module_name_and_id, _get_module_aliases
+    )
+    for mm in _missing_modules:
+        print(mm)
+
 def _lt_json_objects(fname_prefix):
     matching_paths = [
         os.path.join(_EXTRACTED_LT_DATA_DIR,fname)
@@ -41,7 +71,7 @@ def _merge_module_objects(module_object_list):
 
 def __get_module_nodes(product_node, module_type_name):
     global _missing_modules
-    product_name = product_node[1]
+    product_name = product_node[1].replace("-lt","")
     ( product_modules, ) = _lt_json_objects(f"module_list-{product_name}-")
     dspunits_for_type = None
     if( 
@@ -113,7 +143,7 @@ def populate_tone_lt_product_metadata(cxn, extracted_json_dir):
     # The Fender Tone LT Desktop app supports Mustang and Rumble devices.
     # There are 3 Mustang LT models, but they share a single list of 
     # modules extracted from the app installer.
-    _get_product_nodes = lambda root_node: ( (6101, "mustang"), (6102, "rumble") )
+    _get_product_nodes = lambda root_node: ( (6101, "mustang-lt"), (6102, "rumble-lt") )
     _get_product_name_and_id = lambda product_node: product_node
 
     _get_module_nodes = lambda product_node, module_type_name: __get_module_nodes(product_node, module_type_name)
